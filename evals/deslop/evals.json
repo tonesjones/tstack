@@ -1,0 +1,18 @@
+{
+  "skill_name": "deslop",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "seeded-slop-restock",
+      "prompt": "Clean up the slop on this branch (feature/restock vs main) in inventory.py.",
+      "expected_output": "Seeded slop in restock_plan removed; why-comment and file-boundary handling kept; pre-existing code untouched; behavior unchanged.",
+      "files": ["evals/deslop/fixture"],
+      "expectations": [
+        "Behavior unchanged: check.py passes",
+        "Removed the seeded slop (comments, broad except, redundant checks, debug print, unused imports, wrapper, type escape, deep nesting)",
+        "Kept the OPS-114 why-comment and the JSONDecodeError handling",
+        "Left pre-existing code (incl. the narrating comment in total_units) untouched"
+      ]
+    }
+  ]
+}
