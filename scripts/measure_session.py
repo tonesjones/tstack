@@ -22,7 +22,7 @@ def die(msg):
 def parse_ts(s):
     try:
         return datetime.fromisoformat(s.replace("Z", "+00:00"))
-    except Exception:
+    except ValueError:
         return None
 
 
@@ -156,10 +156,10 @@ def main():
     if a.pricing_file:
         with open(a.pricing_file, encoding="utf-8") as fh:
             pr = json.load(fh)
-        src, when = "file:" + a.pricing_file, datetime.now(timezone.utc)
+        src, when = "file:" + a.pricing_file, None
     else:
         pr, src, when = fetch_pricing()
-    print("Pricing source: %s (fetched %s)" % (src, when.strftime("%Y-%m-%d %H:%M:%SZ")))
+    print("Pricing source: %s%s" % (src, " (fetched %s)" % when.strftime("%Y-%m-%d %H:%M:%SZ") if when else ""))
 
     def rates(model):
         n = model_row_name(model)
@@ -207,9 +207,10 @@ def main():
     print("  (definition: per subagent transcript, cache_creation tokens of its first API call, priced at")
     print("   the subagent model's cache-write rate minus the same tokens priced as cache reads)")
     if all_ts:
-        s = int((max(all_ts) - min(all_ts)).total_seconds())
+        start, end = min(all_ts), max(all_ts)
+        secs = int((end - start).total_seconds())
         print("Wall-clock:              %dm%02ds (%s -> %s)" % (
-            s // 60, s % 60, min(all_ts).strftime("%Y-%m-%d %H:%M:%S"), max(all_ts).strftime("%H:%M:%SZ")))
+            secs // 60, secs % 60, start.strftime("%Y-%m-%d %H:%M:%S"), end.strftime("%H:%M:%SZ")))
 
     fix = esc = 0
     rl = Path(a.routing_log)
@@ -218,8 +219,10 @@ def main():
             if "|" not in ln:
                 continue
             cells = [c.strip().lower() for c in ln.strip().strip("|").split("|")]
-            fix += "fix" in cells
-            esc += "escalate" in cells
+            if "fix" in cells:
+                fix += 1
+            if "escalate" in cells:
+                esc += 1
     print("Routing verdicts:        fix=%d escalate=%d (%s)" % (fix, esc, rl))
 
 
