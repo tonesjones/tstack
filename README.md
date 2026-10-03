@@ -14,6 +14,15 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 
 Each skill lives in `skills/<name>/` with a `SKILL.md` and any `reference/`, `references/`, or `scripts/` it needs. The folder name must match the `name` in the frontmatter.
 
+## Agents
+
+`agents/` holds the `worker` (Sonnet) and `grunt` (Haiku) subagents that tokenomics delegates to. Claude Code loads them from `~/.claude/agents/`, so link or copy them there:
+
+```bash
+ln -s "$PWD/agents/worker.md" ~/.claude/agents/worker.md
+ln -s "$PWD/agents/grunt.md" ~/.claude/agents/grunt.md
+```
+
 ## Install
 
 1. Download `<name>.zip` from the [latest release](https://github.com/tonesjones/tstack/releases/latest).
