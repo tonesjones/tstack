@@ -10,6 +10,10 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 | [reflect](skills/reflect/SKILL.md) | Turn a finished task's lessons into skill edits. |
 | [tokenomics](skills/tokenomics/SKILL.md) | Route a plan across Opus, Sonnet, and Haiku. |
 
+## Evidence
+
+`evals/` holds A/B tests that compare a skill against the same model without it; see [evals/README.md](evals/README.md). First result (2026-10-03): deslop lifts Haiku 4.5 from 74% to 95% on a seeded-slop branch and makes no difference for Sonnet 5.5 (100% either way). Use it for Haiku-tier runs; Sonnet doesn't need it. Opus is untested.
+
 ## Layout
 
 Each skill lives in `skills/<name>/` with a `SKILL.md` and any `reference/`, `references/`, or `scripts/` it needs. The folder name must match the `name` in the frontmatter.
