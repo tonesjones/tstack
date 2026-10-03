@@ -1,0 +1,80 @@
+{
+  "expectations": [
+    {
+      "text": "Valid-input behavior unchanged: fixture check.py passes",
+      "passed": true,
+      "evidence": "behavior ok"
+    },
+    {
+      "text": "Removed every comment in restock_plan except the OPS-114 why-comment",
+      "passed": false,
+      "evidence": "left: ['# loop over each sku in targets', '# get the current quantity']"
+    },
+    {
+      "text": "Removed the change-describing comment ('new implementation')",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed the broad try/except around pure logic",
+      "passed": true,
+      "evidence": "0 handler(s) left in restock_plan"
+    },
+    {
+      "text": "Removed redundant guards on the trusted args (isinstance, None, or-defaults, reassignment)",
+      "passed": false,
+      "evidence": "4 guard(s)"
+    },
+    {
+      "text": "Removed the debug output (print/logging) from restock_plan",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed unused imports",
+      "passed": true,
+      "evidence": "unused: []"
+    },
+    {
+      "text": "Removed the single-use _get_qty wrapper",
+      "passed": false,
+      "evidence": "failed"
+    },
+    {
+      "text": "Removed the type escape (cast/# type: ignore)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flattened nesting in restock_plan to depth <= 3",
+      "passed": true,
+      "evidence": "depth=3"
+    },
+    {
+      "text": "Kept the why-comment citing OPS-114",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Kept the JSONDecodeError handling at the file boundary (load_targets)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Left pre-existing functions untouched (load_stock, low_stock, total_units identical to main)",
+      "passed": true,
+      "evidence": "changed: []"
+    },
+    {
+      "text": "Left the pre-existing narrating comment in total_units alone",
+      "passed": true,
+      "evidence": "ok"
+    }
+  ],
+  "summary": {
+    "passed": 11,
+    "failed": 3,
+    "total": 14,
+    "pass_rate": 0.79
+  }
+}

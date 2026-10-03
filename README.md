@@ -12,7 +12,7 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 
 ## Evidence
 
-`evals/` holds A/B tests that compare a skill against the same model without it; see [evals/README.md](evals/README.md). First result (2026-10-03): deslop lifts Haiku 4.5 from 74% to 95% on a seeded-slop branch and makes no difference for Sonnet 5.5 (100% either way). Use it for Haiku-tier runs; Sonnet doesn't need it. Opus is untested.
+`evals/` holds A/B tests that compare a skill against the same model without it; see [evals/README.md](evals/README.md). First result (2026-10-03, one seeded fixture, 3 runs per cell): deslop lifts Haiku 4.5 from 74% to 91% and makes no measurable difference for Sonnet 5.5 (100% either way; the task may be too easy to separate them). Reasonable to use on Haiku-tier runs. Opus is untested, and the fixture overlaps the skill's own examples; see [the results](evals/deslop/results/2026-10-03.md).
 
 ## Layout
 
