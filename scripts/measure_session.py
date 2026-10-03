@@ -12,6 +12,7 @@ PRICING_URLS = [
     "https://platform.claude.com/docs/en/about-claude/pricing.md",
     "https://platform.claude.com/docs/en/about-claude/pricing",
 ]
+ROOT = Path(__file__).resolve().parent.parent
 FIELDS = ("input", "output", "cache_write_5m", "cache_write_1h", "cache_read")
 
 
@@ -75,6 +76,10 @@ def model_row_name(model):
     return "Claude %s %s" % (m.group(1).title(), m.group(2).replace("-", "."))
 
 
+def model_version(model):
+    return tuple(int(x) for x in re.findall(r"\d+", model_row_name(model) or ""))
+
+
 def parse_pricing(text):
     rows = {}
     for ln in text.splitlines():
@@ -118,8 +123,9 @@ def fetch_pricing():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--session-id")
-    ap.add_argument("--project-dir", default=str(Path.home() / ".claude" / "projects" / "C--TestCode-tstack"))
-    ap.add_argument("--routing-log", default=r"C:\TestCode\tstack\routing-log.md")
+    ap.add_argument("--project-dir", default=str(
+        Path.home() / ".claude" / "projects" / re.sub(r"[^A-Za-z0-9]", "-", str(ROOT))))
+    ap.add_argument("--routing-log", default=str(ROOT / "routing-log.md"))
     ap.add_argument("--pricing-file", help="JSON {\"Claude Opus 5.5\": {input, cache_write_5m, cache_write_1h, cache_read, output}, ...} ($/MTok)")
     a = ap.parse_args()
     pdir = Path(a.project_dir)
@@ -170,7 +176,7 @@ def main():
     def cost(u, r):
         return sum(u[k] * r[k] for k in FIELDS) / 1e6
 
-    opus_models = sorted((m for m in usage if "opus" in m), key=lambda m: model_row_name(m) or "")
+    opus_models = sorted((m for m in usage if "opus" in m), key=model_version)
     if opus_models:
         opus_name = model_row_name(opus_models[-1])
         opus_r = rates(opus_models[-1])
