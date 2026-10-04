@@ -8,6 +8,7 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 | [deslop](skills/deslop/SKILL.md) | Remove AI-generated slop from a code diff. |
 | [technical-writing](skills/technical-writing/SKILL.md) | Layered technical-writing standard. |
 | [reflect](skills/reflect/SKILL.md) | Turn a finished task's lessons into skill edits. |
+| [teach](skills/teach/SKILL.md) | Explain what a body of work is, how it works, and why, in plain terms. Folds in pstack's `how` and `why`. |
 | [tokenomics](skills/tokenomics/SKILL.md) | Route a plan across Opus, Sonnet, and Haiku. |
 
 ## Evidence
@@ -31,6 +32,8 @@ ln -s "$PWD/agents/grunt.md" ~/.claude/agents/grunt.md
 
 1. Download `<name>.zip` from the [latest release](https://github.com/tonesjones/tstack/releases/latest).
 2. In the Claude desktop app, open **Settings > Capabilities > Skills** and upload the zip.
+
+`teach` works best in Claude Code (CLI or the desktop Code tab), where it can read the repo, run git, and spawn subagents. Its `disable-model-invocation` frontmatter means it only runs when you invoke it. Check that the skill upload accepts that key.
 
 ## Release
 
