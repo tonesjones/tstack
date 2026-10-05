@@ -13,7 +13,14 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 
 ## Evidence
 
-`evals/` holds A/B tests that compare a skill against the same model without it; see [evals/README.md](evals/README.md). First result (2026-10-03, one seeded fixture, 3 runs per cell): deslop lifts Haiku 4.5 from 74% to 91% and makes no measurable difference for Sonnet 5.5 (100% either way; the task may be too easy to separate them). Reasonable to use on Haiku-tier runs. Opus is untested, and the fixture overlaps the skill's own examples; see [the results](evals/deslop/results/2026-10-03.md).
+`evals/` holds A/B tests that compare each skill against the same model without it; see [evals/README.md](evals/README.md). Latest results: [evals/results-2026-10-05.md](evals/results-2026-10-05.md), with one fixture per skill, Haiku 4.5 and Sonnet 5.5 for every skill, Opus 5.5 for some, 3 runs per cell, and a blind LLM rubric where judgment is needed.
+
+- **unslop:** keep. There's a small gain for Sonnet (blind rubric 67% to 83%), none for Opus, and Haiku still adds new tells.
+- **technical-writing:** keep. Structure improves (Sonnet 90% to 100% deterministic, Haiku rubric 67% to 83%). Every arm still invents some steps.
+- **reflect:** revise. Every model finds the right learnings with or without the skill. The skill changes format and length, not substance, on this fixture.
+- **deslop:** keep for Haiku-tier only. On slop the skill doesn't name, Haiku goes from 81% to 83%. Sonnet and Opus are at 100% without it. The 2026-10-03 gain (74% to 91%) came mostly from slop the skill names.
+
+A trigger-routing test led to tighter descriptions for unslop, technical-writing, and deslop (Haiku routing 84/98 to 90/98, Sonnet 79/98 to 84/98).
 
 ## Layout
 

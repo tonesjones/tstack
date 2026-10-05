@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Tighten three skill descriptions using trigger-routing evidence from `evals/triggers/` (2026-10-05). Skill bodies are unchanged.
+  - deslop 1.0.1: also triggers on pasted code, not only a branch diff.
+  - unslop 1.0.1: also triggers when text "sounds robotic, salesy, like marketing copy, or full of filler and buzzwords".
+  - technical-writing 1.0.1: names tutorials, how-to guides, and CONTRIBUTING or setup docs, and excludes product UI strings.
+- Add A/B evals for unslop, technical-writing, and reflect, a second deslop fixture with slop the skill doesn't name, Opus 5.5 cells, a blind LLM rubric grader, and a trigger-routing eval. Results: `evals/results-2026-10-05.md`.
+
 ## 1.1.0 (2026-10-04)
 
 - Add the `worker` and `grunt` subagents from claude-tokenomics-skill, which is now archived.
