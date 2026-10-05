@@ -7,9 +7,9 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 | [unslop](skills/unslop/SKILL.md) | Remove AI writing tells from prose. |
 | [deslop](skills/deslop/SKILL.md) | Remove AI-generated slop from a code diff. |
 | [technical-writing](skills/technical-writing/SKILL.md) | Layered technical-writing standard. |
-| [reflect](skills/reflect/SKILL.md) | Turn a finished task's lessons into skill edits. |
+| [reflect](skills/reflect/SKILL.md) | Turn a finished task's lessons into skill edits. Runs only when you ask. |
 | [teach](skills/teach/SKILL.md) | Explain what a body of work is, how it works, and why, in plain terms. Folds in pstack's `how` and `why`. |
-| [tokenomics](skills/tokenomics/SKILL.md) | Route a plan across Opus, Sonnet, and Haiku. |
+| [tokenomics](skills/tokenomics/SKILL.md) | Route a plan's tasks to the main session's model or a cheaper tier. |
 
 ## Evidence
 
@@ -41,13 +41,15 @@ ln -s "$PWD/agents/explore.md" ~/.claude/agents/explore.md
 1. Download `<name>.zip` from the [latest release](https://github.com/tonesjones/tstack/releases/latest).
 2. In the Claude desktop app, open **Settings > Capabilities > Skills** and upload the zip.
 
+Each uploaded skill updates separately. After a release, upload every changed skill's zip from the same tag, so the installed set matches one version of this repo.
+
 `teach` works best in Claude Code (CLI or the desktop Code tab), where it can read the repo, run git, and spawn subagents. Its `disable-model-invocation` frontmatter means it only runs when you invoke it. Check that the skill upload accepts that key.
 
 ## Release
 
-1. Bump the `Version:` line in each changed `SKILL.md` and add an entry to [CHANGELOG.md](CHANGELOG.md).
+1. Bump the `Version:` line in each changed `SKILL.md` and add an entry to [CHANGELOG.md](CHANGELOG.md) that names each one as `<skill> X.Y.Z`.
 2. Run `python scripts/validate_skills.py`.
-3. Push a tag such as `v1.1.0`. The release workflow validates the skills, zips each one, and attaches the zips to a GitHub release.
+3. Push a tag such as `v1.2.0`. The release workflow validates the skills, zips each one, and attaches the zips to a GitHub release.
 
 ## Scripts
 
