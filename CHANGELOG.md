@@ -12,6 +12,12 @@
   - deslop 1.0.1: also triggers on pasted code, not only a branch diff.
   - unslop: also triggers when text "sounds robotic, salesy, like marketing copy, or full of filler and buzzwords".
   - technical-writing: names tutorials, how-to guides, and CONTRIBUTING or setup docs, and excludes product UI strings.
+- tokenomics 1.2.0: routing is relative to the main session's model instead of assuming Opus.
+  - The delegation gate uses numbers: delegate a task above about 3K tokens written or 6K read.
+  - Cache TTLs corrected against the Claude Code docs: 1 hour for the main conversation on a subscription, 5 minutes for subagents, 5 minutes for both on API billing.
+  - `routing-log.md` defaults to `~/.claude/routing-log.md`, with `project` and `main model` columns.
+  - The Codex and worktree Gotchas move to `reference/gotchas.md`.
+- Add an `Explore` agent on Haiku that overrides the built-in Explore, which runs on the main session's model.
 - unslop 1.1.0: narrow the Scope line from "any prose you write or edit" to explicit edit or de-AI requests plus prose the user will publish, so the wider description doesn't make it fire on every reply. Add a rule against adding facts, steps, or escalation paths that aren't in the source.
 - technical-writing 1.1.0: add review checklist item 9, the same no-invented-content rule. In the 2026-10-05 evals, 11 of 12 runs invented a step.
 - Add A/B evals for unslop, technical-writing, and reflect, a second deslop fixture with slop the skill doesn't name, Opus 5.5 cells, a blind LLM rubric grader, and a trigger-routing eval. Results: `evals/results-2026-10-05.md`.
