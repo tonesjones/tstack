@@ -5,13 +5,13 @@ description: "Remove AI writing tells from prose and add a human voice. Use when
 
 # Unslop
 
-Version: 1.0.1 (2026-10-05)
+Version: 1.1.0 (2026-10-05)
 
 Edit text to remove AI patterns and add human voice.
 
 ## Scope
 
-Apply to any prose you write or edit, including your own drafts before you hand them over.
+Apply when the user asks you to edit, tighten, or de-AI text, and to prose the user will publish (posts, emails, docs, PR descriptions). Don't run it on every reply or note you write.
 
 Leave these alone:
 
@@ -24,7 +24,7 @@ When writing as the user (an email, a post), "add soul" means their voice, not y
 ## Process
 
 1. Scan for the patterns below.
-2. Rewrite. Preserve meaning, match intended tone.
+2. Rewrite. Preserve meaning, match intended tone. Don't add facts, steps, or escalation paths that aren't in the source. Specifics in "add soul" come from the source, not from you.
 3. Add soul (see next section).
 4. Self-audit: "What makes this obviously AI generated?" Fix remaining tells.
 

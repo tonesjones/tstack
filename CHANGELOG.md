@@ -4,8 +4,10 @@
 
 - Tighten three skill descriptions using trigger-routing evidence from `evals/triggers/` (2026-10-05). Skill bodies are unchanged.
   - deslop 1.0.1: also triggers on pasted code, not only a branch diff.
-  - unslop 1.0.1: also triggers when text "sounds robotic, salesy, like marketing copy, or full of filler and buzzwords".
-  - technical-writing 1.0.1: names tutorials, how-to guides, and CONTRIBUTING or setup docs, and excludes product UI strings.
+  - unslop: also triggers when text "sounds robotic, salesy, like marketing copy, or full of filler and buzzwords".
+  - technical-writing: names tutorials, how-to guides, and CONTRIBUTING or setup docs, and excludes product UI strings.
+- unslop 1.1.0: narrow the Scope line from "any prose you write or edit" to explicit edit or de-AI requests plus prose the user will publish, so the wider description doesn't make it fire on every reply. Add a rule against adding facts, steps, or escalation paths that aren't in the source.
+- technical-writing 1.1.0: add review checklist item 9, the same no-invented-content rule. In the 2026-10-05 evals, 11 of 12 runs invented a step.
 - Add A/B evals for unslop, technical-writing, and reflect, a second deslop fixture with slop the skill doesn't name, Opus 5.5 cells, a blind LLM rubric grader, and a trigger-routing eval. Results: `evals/results-2026-10-05.md`.
 
 ## 1.1.0 (2026-10-04)

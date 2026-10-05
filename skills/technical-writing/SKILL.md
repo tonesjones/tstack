@@ -5,7 +5,7 @@ description: "Layered technical-writing standard (Diataxis, Google developer sty
 
 # Technical writing
 
-Version: 1.0.1 (2026-10-05)
+Version: 1.1.0 (2026-10-05)
 
 The goal is writing a tired engineer understands on the first read. Four layers get you there, one question each: what kind of document is this, how do sentences address the reader, how much does each sentence carry, and can any sentence be read two ways. Apply all four.
 
@@ -129,6 +129,7 @@ Apply to any prose this skill covers. Item 1 applies only to document sets:
 6. Does each thing have exactly one name across the docs?
 7. Would a developer say these words out loud? Replace invented metaphors and fancy synonyms with the plain word or the real symbol name.
 8. Are all symbols, paths, and counts real at this commit, with the commands that regenerate the counts?
+9. Does every fact, step, and escalation path come from the source? Don't add ones that aren't there. If the doc seems to need one, ask the user.
 
 ## Output
 
