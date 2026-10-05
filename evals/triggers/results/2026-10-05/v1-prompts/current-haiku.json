@@ -1,0 +1,565 @@
+{
+ "model": "haiku",
+ "label": "current",
+ "rows": [
+  {
+   "id": "d1",
+   "prompt": "Claude wrote most of this branch. Strip the AI slop out of the diff before I open a PR.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.1,
+   "rep": 1
+  },
+  {
+   "id": "d2",
+   "prompt": "Remove the pointless comments and try/excepts the agent added in my last two commits.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.0,
+   "rep": 1
+  },
+  {
+   "id": "d3",
+   "prompt": "/deslop",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.3,
+   "rep": 1
+  },
+  {
+   "id": "d4",
+   "prompt": "Tidy up the code changes on this branch, it has debug prints and redundant null checks everywhere.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.6,
+   "rep": 1
+  },
+  {
+   "id": "d5",
+   "prompt": "Clean up this Python function an LLM generated, it's overly defensive: <pasted function>",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 4.3,
+   "rep": 1
+  },
+  {
+   "id": "d6",
+   "prompt": "Open a PR for this branch against main.",
+   "ok": [
+    "none",
+    "deslop"
+   ],
+   "tag": "near-miss: description says 'before opening a PR'",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.6,
+   "rep": 1
+  },
+  {
+   "id": "d7",
+   "prompt": "Refactor the whole utils/ package to remove dead code and duplication.",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: repo-wide refactor, not a branch diff",
+   "got": "none",
+   "other_skills": [
+    "artifact-capabilities"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 2.6,
+   "rep": 1
+  },
+  {
+   "id": "d8",
+   "prompt": "Review my diff for bugs and security issues.",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: code review, not slop removal",
+   "got": "none",
+   "other_skills": [
+    "code-review"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 8.3,
+   "rep": 1
+  },
+  {
+   "id": "n1",
+   "prompt": "Fix the failing test in tests/test_parser.py.",
+   "ok": [
+    "none"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [
+    "run"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 2.5,
+   "rep": 1
+  },
+  {
+   "id": "n2",
+   "prompt": "Translate this email into Spanish.",
+   "ok": [
+    "none"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.2,
+   "rep": 1
+  },
+  {
+   "id": "n3",
+   "prompt": "Change the error toast text in the checkout UI to something friendlier.",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: UI copy, which technical-writing excludes",
+   "got": "none",
+   "other_skills": [
+    "run"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 3.2,
+   "rep": 1
+  },
+  {
+   "id": "n4",
+   "prompt": "Proofread this paragraph for typos only, don't change the wording.",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: proofreading, not style",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.7,
+   "rep": 1
+  },
+  {
+   "id": "n5",
+   "prompt": "Summarize this article in three bullets.",
+   "ok": [
+    "none"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.2,
+   "rep": 1
+  },
+  {
+   "id": "n6",
+   "prompt": "Simplify this function, it's hard to read.",
+   "ok": [
+    "none",
+    "deslop"
+   ],
+   "tag": "near-miss: simplify, not AI slop",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.1,
+   "rep": 1
+  },
+  {
+   "id": "r1",
+   "prompt": "/reflect",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 3.9,
+   "rep": 1
+  },
+  {
+   "id": "r2",
+   "prompt": "That took way too long. What should change in our skills so next time goes faster?",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 5.3,
+   "rep": 1
+  },
+  {
+   "id": "r3",
+   "prompt": "We hit three dead ends before the deploy worked. Capture what we learned so the skill doesn't repeat them.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 5.1,
+   "rep": 1
+  },
+  {
+   "id": "r4",
+   "prompt": "Before we wrap up, mine this session for anything worth adding to the release skill.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 4.8,
+   "rep": 1
+  },
+  {
+   "id": "r5",
+   "prompt": "Write up a postmortem doc for yesterday's outage for the team.",
+   "ok": [
+    "technical-writing",
+    "none"
+   ],
+   "tag": "near-miss: retrospective about an incident, not this session",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.9,
+   "rep": 1
+  },
+  {
+   "id": "r6",
+   "prompt": "What did you learn about this codebase today? Just summarize.",
+   "ok": [
+    "none",
+    "reflect"
+   ],
+   "tag": "near-miss: summary request, no skill edit asked",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.1,
+   "rep": 1
+  },
+  {
+   "id": "r7",
+   "prompt": "You kept forgetting to run the linter before committing and I corrected you twice. Make sure that sticks for future sessions.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [
+    "update-config"
+   ],
+   "pass": false,
+   "error": null,
+   "seconds": 3.4,
+   "rep": 1
+  },
+  {
+   "id": "r8",
+   "prompt": "Task's done. Do a retro on this session and propose edits to the skills we used.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 6.6,
+   "rep": 1
+  },
+  {
+   "id": "r9",
+   "prompt": "deep reflect on this session, use subagents",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "reflect",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 6.0,
+   "rep": 1
+  },
+  {
+   "id": "t1",
+   "prompt": "Write a README for this CLI tool: what it does, install, and the three main commands.",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [
+    "artifact-design"
+   ],
+   "pass": false,
+   "error": null,
+   "seconds": 2.6,
+   "rep": 1
+  },
+  {
+   "id": "t2",
+   "prompt": "Turn my notes about restoring the Postgres replica into a runbook the on-call can follow.",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [
+    "artifact-design"
+   ],
+   "pass": false,
+   "error": null,
+   "seconds": 2.6,
+   "rep": 1
+  },
+  {
+   "id": "t3",
+   "prompt": "Review this RFC draft for clarity and structure before I circulate it.",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 4.8,
+   "rep": 1
+  },
+  {
+   "id": "t4",
+   "prompt": "Document the /v2/orders endpoints as API reference: parameters, responses, errors.",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [
+    "artifact-capabilities"
+   ],
+   "pass": false,
+   "error": null,
+   "seconds": 2.5,
+   "rep": 1
+  },
+  {
+   "id": "t5",
+   "prompt": "Our getting-started tutorial loses people at step 4. Rewrite it so every step shows what they should see.",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [
+    "artifact-design"
+   ],
+   "pass": false,
+   "error": null,
+   "seconds": 2.5,
+   "rep": 1
+  },
+  {
+   "id": "t6",
+   "prompt": "Write a commit message for the staged changes.",
+   "ok": [
+    "technical-writing",
+    "unslop"
+   ],
+   "tag": "collision: both descriptions list commit messages",
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 5.1,
+   "rep": 1
+  },
+  {
+   "id": "t7",
+   "prompt": "Write the PR description for this branch.",
+   "ok": [
+    "technical-writing",
+    "unslop"
+   ],
+   "tag": "collision: both list PR descriptions",
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.1,
+   "rep": 1
+  },
+  {
+   "id": "t8",
+   "prompt": "Edit our CONTRIBUTING.md so the setup steps are numbered commands instead of a wall of text.",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [
+    "Read"
+   ],
+   "pass": false,
+   "error": null,
+   "seconds": 2.7,
+   "rep": 1
+  },
+  {
+   "id": "u1",
+   "prompt": "This LinkedIn post reads like ChatGPT wrote it. Can you make it sound like me? 'In today's fast-paced landscape, I'm thrilled to announce...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.4,
+   "rep": 1
+  },
+  {
+   "id": "u2",
+   "prompt": "De-AI this email before I send it to my landlord: 'I hope this message finds you well. I wanted to reach out regarding...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 5.2,
+   "rep": 1
+  },
+  {
+   "id": "u3",
+   "prompt": "Tighten this paragraph from my blog draft, it's full of fluff and buzzwords.",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 4.6,
+   "rep": 1
+  },
+  {
+   "id": "u4",
+   "prompt": "Rewrite the intro of my conference talk abstract so it doesn't sound robotic.",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 3.2,
+   "rep": 1
+  },
+  {
+   "id": "u5",
+   "prompt": "My manager says my status updates sound like marketing copy. Here's this week's, fix it.",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 2.7,
+   "rep": 1
+  },
+  {
+   "id": "u6",
+   "prompt": "Write a short thank-you note to the team for shipping the migration.",
+   "ok": [
+    "unslop",
+    "none"
+   ],
+   "tag": "near-miss: drafting prose, no slop named",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 7.2,
+   "rep": 1
+  },
+  {
+   "id": "u7",
+   "prompt": "Cut the filler from this product announcement, it's full of 'seamless' and 'robust'.",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 2.8,
+   "rep": 1
+  }
+ ]
+}

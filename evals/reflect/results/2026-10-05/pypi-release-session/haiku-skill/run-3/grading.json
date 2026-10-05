@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": false,
+      "evidence": "1384 chars (graded final message instead)"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "Proposal 1 tells pypi-release's 'Bump the version' section to check pyproject.toml for static vs dynamic version config (Hatch/__about__.py) before editing, correct content and routing."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "Proposal 2 adds clearing dist/ before build in the Build section and proposal 3 warns against --skip-existing in the Upload section, both routed to pypi-release."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": false,
+      "evidence": "Proposal 1 is vague ('check pyproject.toml for version configuration... handle both patterns') without specifying the actual text, e.g. look for dynamic/[tool.hatch.version] path and edit that file such as __about__.py, so it can't be applied without rereading the session."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": false,
+      "evidence": "Proposal 3 includes an unsupported claim that the flag 'skips deterministically only if dist/ is verified clean', and proposal 2/3 problem statements misdescribe the session (silent failures, masking upload failures) when the upload actually succeeded and the stale-file issue was the 2.3.1 files."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The proposals end with 'Ready to apply these three edits...?', presenting them for approval rather than claiming the files were changed."
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 3,
+    "total": 13,
+    "pass_rate": 0.77
+  },
+  "info": {
+    "words": 204,
+    "has_accepted_table": true
+  }
+}

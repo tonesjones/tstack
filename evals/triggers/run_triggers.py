@@ -11,6 +11,7 @@ import json
 import os
 import shutil
 import subprocess
+import re
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -41,7 +42,7 @@ def one(p, model, skills_dir):
                              "--no-session-persistence"],
                             cwd=work, env=env_for(home), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                             stdin=subprocess.DEVNULL, text=True)
-    called, err = [], None
+    called, err, said = [], None, ""
     try:
         for line in proc.stdout:
             try:
@@ -52,6 +53,17 @@ def one(p, model, skills_dir):
                 for c in d["message"].get("content", []):
                     if c.get("type") == "tool_use" and c.get("name") == "Skill":
                         called.append(c["input"].get("skill"))
+                    elif c.get("type") == "text":
+                        said += c["text"]
+            elif d.get("type") == "user" and not called:
+                # A "/name" prompt expands the skill directly, with no Skill tool call.
+                content = d["message"].get("content")
+                texts = [content] if isinstance(content, str) else [
+                    c.get("text", "") for c in content or [] if isinstance(c, dict)]
+                for t in texts:
+                    m = re.search(r"Base directory for this skill: \S*/skills/([\w-]+)", t or "")
+                    if m:
+                        called.append(m.group(1))
             if d.get("type") == "result":
                 if d.get("is_error") or d.get("terminal_reason") == "api_error":
                     err = str(d.get("result"))[:200]
@@ -69,7 +81,7 @@ def one(p, model, skills_dir):
     other = [c for c in called if c and c.split(":")[-1] not in PHASE1]
     got = first or "none"
     return {"id": p["id"], "prompt": p["prompt"], "ok": p["ok"], "tag": p.get("tag"), "got": got,
-            "other_skills": other, "pass": got in p["ok"], "error": err, "seconds": round(time.time() - t0, 1)}
+            "other_skills": other, "pass": got in p["ok"], "error": err, "seconds": round(time.time() - t0, 1), "said": said[:240]}
 
 
 def main():
@@ -79,21 +91,23 @@ def main():
     ap.add_argument("--skills-dir", default=str(ROOT / "skills"))
     ap.add_argument("--jobs", type=int, default=6)
     ap.add_argument("--ids")
+    ap.add_argument("--reps", type=int, default=1)
     ap.add_argument("--date", default="2026-10-05")
     a = ap.parse_args()
     prompts = json.load(open(HERE / "prompts.json"))["prompts"]
     if a.ids:
         prompts = [p for p in prompts if p["id"] in a.ids.split(",")]
     with ThreadPoolExecutor(a.jobs) as ex:
-        rows = list(ex.map(lambda p: one(p, a.model, Path(a.skills_dir)), prompts))
+        rows = list(ex.map(lambda pr: dict(one(pr[0], a.model, Path(a.skills_dir)), rep=pr[1]),
+                           [(p, k) for k in range(1, a.reps + 1) for p in prompts]))
     out = HERE / "results" / a.date / ("%s-%s.json" % (a.label, a.model))
     out.parent.mkdir(parents=True, exist_ok=True)
-    old = {r["id"]: r for r in json.load(open(out))["rows"]} if out.exists() else {}
-    old.update({r["id"]: r for r in rows})
-    rows = sorted(old.values(), key=lambda r: r["id"])
+    old = {(r["id"], r.get("rep", 1)): r for r in json.load(open(out))["rows"]} if out.exists() else {}
+    old.update({(r["id"], r["rep"]): r for r in rows})
+    rows = sorted(old.values(), key=lambda r: (r["id"], r["rep"]))
     json.dump({"model": a.model, "label": a.label, "rows": rows}, open(out, "w"), indent=1)
     for r in rows:
-        print("%s %-3s got=%-17s ok=%s %s%s" % ("PASS" if r["pass"] else "FAIL", r["id"], r["got"], r["ok"],
+        print("%s %-3s #%d got=%-17s ok=%s %s%s" % ("PASS" if r["pass"] else "FAIL", r["id"], r["rep"], r["got"], r["ok"],
                                               r["tag"] or "", " ERR " + r["error"] if r["error"] else ""))
     errs = sum(1 for r in rows if r["error"])
     print("pass %d/%d (errors %d)" % (sum(r["pass"] for r in rows), len(rows), errs))

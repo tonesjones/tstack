@@ -1,5 +1,5 @@
 {
- "note": "Each prompt lists the skills that may acceptably load first. [] means none of the four phase-1 skills should load. Near-misses are tagged.",
+ "note": "v2 (2026-10-05): prompts now carry the content a real user would paste, and reflect prompts r2-r9 carry a one-paragraph summary of an earlier session (a real reflect runs at the end of a session; -p has none). v1 prompts and results are in results/2026-10-05/v1-prompts/. Each prompt lists the skills that may acceptably load first; 'none' means no phase-1 skill should load. Near-misses are tagged.",
  "prompts": [
   {
    "id": "u1",
@@ -17,21 +17,21 @@
   },
   {
    "id": "u3",
-   "prompt": "Tighten this paragraph from my blog draft, it's full of fluff and buzzwords.",
+   "prompt": "Tighten this paragraph from my blog draft, it's full of fluff and buzzwords:\n\n\"In an era where developer experience is paramount, our team embarked on a journey to fundamentally reimagine how we approach CI. Leveraging cutting-edge caching strategies, we unlocked unprecedented velocity, empowering engineers to focus on what truly matters.\"",
    "ok": [
     "unslop"
    ]
   },
   {
    "id": "u4",
-   "prompt": "Rewrite the intro of my conference talk abstract so it doesn't sound robotic.",
+   "prompt": "Rewrite the intro of my conference talk abstract so it doesn't sound robotic:\n\n\"In this talk, we will delve into the multifaceted landscape of observability. Attendees will gain valuable insights and actionable takeaways to elevate their monitoring journey.\"",
    "ok": [
     "unslop"
    ]
   },
   {
    "id": "u5",
-   "prompt": "My manager says my status updates sound like marketing copy. Here's this week's, fix it.",
+   "prompt": "My manager says my status updates sound like marketing copy. Here's this week's, fix it:\n\n\"This week I spearheaded a robust overhaul of our alerting pipeline, seamlessly integrating PagerDuty and unlocking significant gains in on-call efficiency. Excited to keep driving impact!\"",
    "ok": [
     "unslop"
    ]
@@ -47,35 +47,35 @@
   },
   {
    "id": "t1",
-   "prompt": "Write a README for this CLI tool: what it does, install, and the three main commands.",
+   "prompt": "Write a README for this CLI tool: what it does, install, and the three main commands. It's `logtail`, a Go binary that tails JSON logs from S3. Install with `go install github.com/acme/logtail@latest`. Commands: `logtail ls <bucket>`, `logtail tail <bucket/prefix> --since 10m`, `logtail grep <bucket/prefix> <expr>`.",
    "ok": [
     "technical-writing"
    ]
   },
   {
    "id": "t2",
-   "prompt": "Turn my notes about restoring the Postgres replica into a runbook the on-call can follow.",
+   "prompt": "Turn my notes about restoring the Postgres replica into a runbook the on-call can follow.\n\nnotes:\n- replica lag alert -> check pg_stat_replication on primary\n- if lag > 1h just rebuild, dont bother\n- stop postgres on replica, wipe /var/lib/postgresql/16/main (careful!!)\n- pg_basebackup -h db-primary -D ... -R -X stream\n- start, watch logs, takes ~40min for 300GB\n- tell #data-oncall when done",
    "ok": [
     "technical-writing"
    ]
   },
   {
    "id": "t3",
-   "prompt": "Review this RFC draft for clarity and structure before I circulate it.",
+   "prompt": "Review this RFC draft for clarity and structure before I circulate it:\n\n\"RFC: move sessions to Redis. So basically right now sessions live in Postgres and it's slow at peak and also there was the incident. We could use Redis. Or Memcached maybe. Redis has persistence. Plan is to dual-write for a week then cut over, rollback is just flip the flag back. Open question: TTLs?\"",
    "ok": [
     "technical-writing"
    ]
   },
   {
    "id": "t4",
-   "prompt": "Document the /v2/orders endpoints as API reference: parameters, responses, errors.",
+   "prompt": "Document the /v2/orders endpoints as API reference: parameters, responses, errors. GET /v2/orders?status=&limit= (limit max 100) returns {orders:[...], next_cursor}; POST /v2/orders takes {sku, qty} and returns 201 with the order, 409 if out of stock, 422 on bad input.",
    "ok": [
     "technical-writing"
    ]
   },
   {
    "id": "t5",
-   "prompt": "Our getting-started tutorial loses people at step 4. Rewrite it so every step shows what they should see.",
+   "prompt": "Our getting-started tutorial loses people at step 4. Rewrite it so every step shows what they should see:\n\n1. Install the CLI.\n2. Run `acme login`.\n3. Create a project with `acme init demo`.\n4. Configure the webhook and deploy.\n5. You're done!",
    "ok": [
     "technical-writing"
    ]
@@ -100,7 +100,7 @@
   },
   {
    "id": "t8",
-   "prompt": "Edit our CONTRIBUTING.md so the setup steps are numbered commands instead of a wall of text.",
+   "prompt": "Edit our CONTRIBUTING.md so the setup steps are numbered commands instead of a wall of text:\n\n\"To get set up you'll want to clone the repo and then install deps with pnpm (we use pnpm 9, not npm) and copy .env.example to .env and then run the db with docker compose up db and then pnpm dev should work, ping #dev if not.\"",
    "ok": [
     "technical-writing"
    ]
@@ -135,7 +135,7 @@
   },
   {
    "id": "d5",
-   "prompt": "Clean up this Python function an LLM generated, it's overly defensive: <pasted function>",
+   "prompt": "Clean up this Python function an LLM generated, it's overly defensive:\n\n```python\ndef total(items):\n    # Initialize the total to zero\n    result = 0\n    if items is not None:\n        if isinstance(items, list):\n            for item in items:\n                try:\n                    if item is not None:\n                        result = result + int(item.price)\n                except Exception:\n                    pass\n    return result\n```",
    "ok": [
     "deslop"
    ]
@@ -170,25 +170,26 @@
    "prompt": "/reflect",
    "ok": [
     "reflect"
-   ]
+   ],
+   "tag": "slash command with no prior session: counts the direct expansion as a load"
   },
   {
    "id": "r2",
-   "prompt": "That took way too long. What should change in our skills so next time goes faster?",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nThat took way too long. What should change in our skills so next time goes faster?",
    "ok": [
     "reflect"
    ]
   },
   {
    "id": "r3",
-   "prompt": "We hit three dead ends before the deploy worked. Capture what we learned so the skill doesn't repeat them.",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nWe hit three dead ends before the deploy worked. Capture what we learned so the skill doesn't repeat them.",
    "ok": [
     "reflect"
    ]
   },
   {
    "id": "r4",
-   "prompt": "Before we wrap up, mine this session for anything worth adding to the release skill.",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nBefore we wrap up, mine this session for anything worth adding to the release skill.",
    "ok": [
     "reflect"
    ]
@@ -204,7 +205,7 @@
   },
   {
    "id": "r6",
-   "prompt": "What did you learn about this codebase today? Just summarize.",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nWhat did you learn about this codebase today? Just summarize.",
    "ok": [
     "none",
     "reflect"
@@ -220,14 +221,14 @@
   },
   {
    "id": "n2",
-   "prompt": "Translate this email into Spanish.",
+   "prompt": "Translate this email into Spanish:\n\n\"Hi Marta, the shipment left on Monday and should arrive by Thursday. Let me know if anything is missing.\"",
    "ok": [
     "none"
    ]
   },
   {
    "id": "n3",
-   "prompt": "Change the error toast text in the checkout UI to something friendlier.",
+   "prompt": "Change the error toast text in the checkout UI to something friendlier. Current string in src/checkout/messages.ts: `PAYMENT_ERR: 'Transaction failed. Error code 402.'`",
    "ok": [
     "none"
    ],
@@ -235,7 +236,7 @@
   },
   {
    "id": "n4",
-   "prompt": "Proofread this paragraph for typos only, don't change the wording.",
+   "prompt": "Proofread this paragraph for typos only, don't change the wording:\n\n\"Teh migration finished at 3am and we seen no errors in the logs, the dashbaord is green.\"",
    "ok": [
     "none"
    ],
@@ -243,14 +244,14 @@
   },
   {
    "id": "n5",
-   "prompt": "Summarize this article in three bullets.",
+   "prompt": "Summarize this article in three bullets:\n\n\"The city council voted 7-2 on Tuesday to extend the bike-lane pilot on Elm Street for another year. Supporters cited a 30% drop in collisions; opponents said deliveries got harder. Staff will report back on loading zones in March.\"",
    "ok": [
     "none"
    ]
   },
   {
    "id": "n6",
-   "prompt": "Simplify this function, it's hard to read.",
+   "prompt": "Simplify this function, it's hard to read:\n\n```js\nfunction f(a){return a.filter(x=>x).map(x=>x.trim()).filter(x=>x.length>0?true:false).reduce((acc,x)=>{acc[x]=(acc[x]||0)+1;return acc},{})}\n```",
    "ok": [
     "none",
     "deslop"
@@ -259,28 +260,28 @@
   },
   {
    "id": "r7",
-   "prompt": "You kept forgetting to run the linter before committing and I corrected you twice. Make sure that sticks for future sessions.",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nYou kept forgetting to run the linter before committing and I corrected you twice. Make sure that sticks for future sessions.",
    "ok": [
     "reflect"
    ]
   },
   {
    "id": "r8",
-   "prompt": "Task's done. Do a retro on this session and propose edits to the skills we used.",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nTask's done. Do a retro on this session and propose edits to the skills we used.",
    "ok": [
     "reflect"
    ]
   },
   {
    "id": "r9",
-   "prompt": "deep reflect on this session, use subagents",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\ndeep reflect on this session, use subagents",
    "ok": [
     "reflect"
    ]
   },
   {
    "id": "u7",
-   "prompt": "Cut the filler from this product announcement, it's full of 'seamless' and 'robust'.",
+   "prompt": "Cut the filler from this product announcement, it's full of 'seamless' and 'robust':\n\n\"We're thrilled to unveil Sync 2.0, a seamless, robust solution that empowers teams to effortlessly collaborate across every touchpoint.\"",
    "ok": [
     "unslop"
    ]
