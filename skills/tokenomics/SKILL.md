@@ -5,7 +5,7 @@ description: After a plan is drafted, decide whether delegation pays, map each t
 
 # Tokenomics
 
-Version: 1.0.0 (2026-10-03)
+Version: 1.1.0 (2026-10-04)
 
 Turn a finished plan into routed, delegated work, then review it. Cheaper tiers
 save money on **output tokens and new input** (file reads, tool output), not on
@@ -95,3 +95,9 @@ package is fine); otherwise write `n/a`. The session transcripts under
 `~/.claude/projects/` hold per-model usage for later cost analysis.
 
 Escalations are the tuning signal: if a (tier, shape) pair keeps escalating, route it higher next time. If inline runs were consistently trivial, tighten the gate.
+
+## Gotchas
+- **Codex in the background waits on stdin.** A backgrounded `codex exec` with no TTY prints "Reading additional input from stdin..." and does nothing. Append `< /dev/null` to the command.
+- **Codex can't commit in a git worktree.** Its `workspace-write` sandbox can't reach the git metadata, which lives outside the worktree. Tell it not to commit, and commit yourself after review.
+- **Codex leaves locked pytest folders.** Cache and temp folders created in its sandbox get ACLs that block deletion, so `git worktree remove` fails. Have it run `python -m pytest -p no:cacheprovider`. If folders are already locked, the user runs `takeown /f <dir> /r /d y` from an elevated shell, then deletes them.
+- **Deleting the base of stacked PRs closes them.** `gh pr merge --delete-branch` on a PR that other PRs target closes those PRs instead of retargeting them, and a closed PR whose base is gone can't be reopened. Merge the base PR without `--delete-branch`. Then retarget each stacked PR with `gh pr edit <n> --base main`, merge `main` into its branch (a plain merge, not a rebase and force-push), and delete the base branch afterwards.
