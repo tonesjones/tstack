@@ -1,26 +1,41 @@
 ---
 name: tokenomics
-description: After a plan is drafted, decide whether delegation pays, map each task to Opus, Sonnet, or Haiku by difficulty and token shape, bundle and delegate to the matching subagent without breaking the main session's prompt cache, then have Opus review results against acceptance criteria. Use at the end of any planning session or when asked to "route the plan" or run /tokenomics.
+description: After a plan is drafted, decide whether delegation pays, map each task to the main session's model or a cheaper tier (Sonnet, Haiku) by difficulty and token shape, bundle and delegate to the matching subagent without breaking the main session's prompt cache, then review results in the main session against acceptance criteria. Use at the end of any planning session or when asked to "route the plan" or run /tokenomics.
 ---
 
 # Tokenomics
 
-Version: 1.1.0 (2026-10-04)
+Version: 1.2.0 (2026-10-05)
 
-Turn a finished plan into routed, delegated work, then review it. Cheaper tiers
-save money on **output tokens and new input** (file reads, tool output), not on
-re-reading context: the main session re-reads its warm cache at about the same
-price as Sonnet. Every subagent starts cold. If unsure whether delegation pays,
-see `reference/economics.md`.
+Turn a finished plan into routed, delegated work, then review it. Routing is
+relative to whatever model the main session runs (call it **Main**): Main keeps
+the hard work, and only tiers *below* Main are worth delegating to.
+
+Tier ladder, strongest first: Fable > Opus > Sonnet > Haiku.
+- Main on Fable or Opus: delegate to Sonnet (`worker`) and Haiku (`grunt`). On Fable, Opus is also a delegation tier (general-purpose agent with `model: opus`).
+- Main on Sonnet: Sonnet-tier work stays inline; only Haiku-tier work is delegated.
+- Main on Haiku: run everything inline.
+
+Cheaper tiers save money on **output tokens and new input** (file reads, tool
+output), not on re-reading context: Main re-reads its warm cache at about the
+same price as Sonnet. Every subagent starts cold. If unsure whether delegation
+pays, see `reference/economics.md`.
 
 ## 0. Delegation gate
-Execute the plan inline in the main session (lower `/effort` if the work is
-routine) and skip steps 2–5 when **any** of these is true:
-- ≤ 3 tasks, or one dependent chain where each step needs the last one's reasoning.
-- The files involved are already in context and the edits are small.
-- The "done when" can't be checked objectively (a cheap tier risks paying twice).
+Delegate a task only when it is expected to **write more than about 3K tokens
+or read more than about 6K tokens of new input** (files and tool output not
+already in context). Below both thresholds, the subagent's cold start costs
+more than it saves.
 
-State the decision in one line, e.g. *"Inline: 2 sequential edits, files already loaded."*
+Execute the whole plan inline in the main session (lower `/effort` if the work
+is routine) and skip steps 2–5 when **any** of these is true:
+- No task crosses either threshold.
+- One dependent chain where each step needs the last one's reasoning.
+- The files involved are already in context.
+- The "done when" can't be checked objectively (a cheap tier risks paying twice).
+- No tier exists below Main.
+
+State the decision in one line, e.g. *"Inline: 2 edits, ~1K written, files already loaded."*
 
 Inline still means using the right skill. If a dedicated skill covers the work
 (`code-review` for a review, `security-review` for a security pass), invoke it
@@ -34,35 +49,38 @@ Each task must be independently executable and include:
 - **Touches**: files it will modify
 - **Done when**: concrete, checkable acceptance criteria (tests pass, file exists, output matches spec)
 - **Depends on**: task IDs, if any
-- **Shape**: `read-heavy` (lots of new input), `write-heavy` (lots of output), `reasoning` (small I/O, hard), or `touch-up` (small change to already-loaded context)
+- **Shape**: `read-heavy` (> ~6K new input), `write-heavy` (> ~3K output), `reasoning` (small I/O, hard), or `touch-up` (small change to already-loaded context)
+- **Size**: rough tokens read / written, e.g. `20K / 2K`
 
-If a task can't be given concrete acceptance criteria, it is still ambiguous and stays with Opus.
+If a task can't be given concrete acceptance criteria, it is still ambiguous and stays with Main.
 
 ## 2. Route each task
 
-| Model | Route here when the task… | Examples |
+| Tier | Route here when the task… | Examples |
 |---|---|---|
-| **Opus** (main session) | needs judgment, design choices, ambiguity resolution, cross-cutting reasoning, or security-sensitive decisions; or is a `reasoning`/`touch-up` task | architecture, tricky debugging, API design, small fixes in loaded files |
+| **Main** (main session) | needs judgment, design choices, ambiguity resolution, cross-cutting reasoning, or security-sensitive decisions; is a `reasoning`/`touch-up` task; or is under both delegation thresholds | architecture, tricky debugging, API design, small fixes in loaded files |
 | **Sonnet** (`worker`) | is well specified, needs real reasoning or non-trivial code, and is `read-heavy` or `write-heavy` | implementing a feature to spec, refactors, writing tests, moderate debugging |
-| **Haiku** (`grunt`) | is mechanical, follows a clear pattern, and has an objective "done when" | renames, formatting, boilerplate, docstrings, extracting or summarizing, lookups |
+| **Haiku** (`grunt`, `Explore`) | is mechanical, follows a clear pattern, and has an objective "done when" | renames, formatting, boilerplate, docstrings, extracting or summarizing, lookups, codebase searches |
 
 Routing rules:
+- Never route a task to a tier at or above Main; that tier is Main itself, inline.
 - When in doubt between two tiers, choose the cheaper one **only if** the "done when" is fully objective; otherwise choose the stronger one.
-- Any task touching auth, crypto, data deletion, or migrations is routed to Sonnet at minimum and is always flagged for Opus review.
+- Any task touching auth, crypto, data deletion, or migrations goes to Sonnet at minimum (Main if Main is Sonnet) and is always flagged for review by Main.
 - Split a mixed task rather than routing the whole thing up a tier.
-- Don't give Haiku open-ended exploration or long multi-turn loops: its context is smaller (200K) and a failed run costs a redo one tier up.
+- Don't give Haiku open-ended reasoning or long multi-turn loops: its context is smaller (200K) and a failed run costs a redo one tier up. Read-only searches with a clear question are fine; use `Explore`.
 
 ## 3. Bundle into packages
 Group same-tier tasks that share inputs into **one** subagent call (P1, P2, …),
-so the cold start is paid once. Run packages in parallel only when they are
+so the cold start is paid once. A package can cross the thresholds even when
+its tasks don't individually. Run packages in parallel only when they are
 independent (no dependency between them and no overlap in **Touches**) and
 latency matters; each parallel spawn is another cold start.
 
 ## 4. Output the routing table
 Present it before delegating:
 
-| ID | Task | Shape | Model | Package | Why | Done when | Touches | Depends on |
-|---|---|---|---|---|---|---|---|---|
+| ID | Task | Shape | Size (read/write) | Tier | Package | Why | Done when | Touches | Depends on |
+|---|---|---|---|---|---|---|---|---|---|
 
 Then add a one-line estimate of the share of expected **tokens** (not tasks) on each tier.
 
@@ -73,31 +91,32 @@ confirmation. Otherwise continue straight to delegation.
 
 ## 5. Delegate (cache-safe)
 - Never switch the main session's model (`/model`). That cold-starts the whole conversation cache. Cheaper tiers run only as subagents.
-- Opus tasks run in the main session; Sonnet packages go to `worker`, Haiku packages to `grunt`. Respect dependencies.
-- If `worker` or `grunt` isn't defined in this environment, use the general-purpose agent with a model override (`sonnet` / `haiku`) and put the agent's report contract (≤ 10 lines, no diffs or file contents) in the brief.
-- Briefs carry **pointers, not pastes**: paths, line ranges, each task's description and "done when", constraints. Never paste file contents or the whole plan; Opus output is the most expensive token you can spend.
+- Main-tier tasks run in the main session; Sonnet packages go to `worker`, Haiku packages to `grunt`, and read-only searches to `Explore`. Respect dependencies.
+- If `worker`, `grunt`, or `Explore` isn't defined in `~/.claude/agents/`, use the general-purpose agent with a model override (`sonnet` / `haiku`) and put the agent's report contract (≤ 10 lines, no diffs or file contents) in the brief. The built-in `Explore` runs on Main's model (or Opus when Main is Fable), so don't use it for cheap searches.
+- Briefs carry **pointers, not pastes**: paths, line ranges, each task's description and "done when", constraints. Never paste file contents or the whole plan; Main's output is the most expensive token you can spend.
 - Expect compact reports (the agents are told ≤ 10 lines). Everything returned is re-read on every later main-session turn.
-- While a subagent runs, do Opus-tier tasks rather than idling past the cache TTL.
+- Cache TTLs differ (Claude Code docs, checked 2026-10-05): on a Claude subscription within plan usage, the main conversation gets a **1-hour** cache; subagents get **5 minutes**. On an API key, cloud provider, or once usage credits kick in, both get 5 minutes unless `promptCacheTtl` / `subagentPromptCacheTtl` say otherwise. So a subagent idle between turns past 5 minutes pays its cold start again, and on API billing, Main should do its own tasks while a subagent runs rather than idle past 5 minutes.
 
-## 6. Review (Opus), proportionate
+## 6. Review (Main), proportionate
 For each completed task:
 - Objective "done when" (tests, lint, build, file exists): run the check yourself and accept on pass. Don't re-read the diff.
 - Read the diff only for flagged tasks (auth, crypto, deletion, migrations), spot-checks of Haiku output, and integration points between tasks.
-- Mark it **pass**, **fix** (small correction done by Opus), or **escalate** (redo one tier up, with the original brief plus the failure reason).
-- A task escalates at most once. If it fails again, Opus does it in the main session.
+- Mark it **pass**, **fix** (small correction done by Main), or **escalate** (redo one tier up, with the original brief plus the failure reason).
+- A task escalates at most once. If it fails again, Main does it inline.
 
 ## 7. Log
-Append to `routing-log.md`, one line per task (inline runs get one line for the whole plan):
-`date | task ID | shape | model | package | result (pass/fix/escalate/inline) | tokens in/out | notes`
+Append to `~/.claude/routing-log.md` (create it with the header line below if
+it doesn't exist), one line per task; inline runs get one line for the whole
+plan. Use a different path only when the user names one.
 
-Record token usage when the subagent result reports it (one figure per
-package is fine); otherwise write `n/a`. The session transcripts under
-`~/.claude/projects/` hold per-model usage for later cost analysis.
+`date | project | task ID | shape | main model | tier | package | result (pass/fix/escalate/inline) | tokens in/out | notes`
 
-Escalations are the tuning signal: if a (tier, shape) pair keeps escalating, route it higher next time. If inline runs were consistently trivial, tighten the gate.
+`project` is the repository or working-directory name. Record token usage when
+the subagent result reports it (one figure per package is fine); otherwise
+write `n/a`. The session transcripts under `~/.claude/projects/` hold per-model
+usage for later cost analysis.
+
+Escalations are the tuning signal: if a (tier, shape) pair keeps escalating, route it higher next time. If inline runs were consistently trivial, raise the thresholds.
 
 ## Gotchas
-- **Codex in the background waits on stdin.** A backgrounded `codex exec` with no TTY prints "Reading additional input from stdin..." and does nothing. Append `< /dev/null` to the command.
-- **Codex can't commit in a git worktree.** Its `workspace-write` sandbox can't reach the git metadata, which lives outside the worktree. Tell it not to commit, and commit yourself after review.
-- **Codex leaves locked pytest folders.** Cache and temp folders created in its sandbox get ACLs that block deletion, so `git worktree remove` fails. Have it run `python -m pytest -p no:cacheprovider`. If folders are already locked, the user runs `takeown /f <dir> /r /d y` from an elevated shell, then deletes them.
-- **Deleting the base of stacked PRs closes them.** `gh pr merge --delete-branch` on a PR that other PRs target closes those PRs instead of retargeting them, and a closed PR whose base is gone can't be reopened. Merge the base PR without `--delete-branch`. Then retarget each stacked PR with `gh pr edit <n> --base main`, merge `main` into its branch (a plain merge, not a rebase and force-push), and delete the base branch afterwards.
+- Delegating to Codex or working in git worktrees: read `reference/gotchas.md` first.

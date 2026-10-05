@@ -29,9 +29,15 @@ rather than dollars, but the ratios still hold.
   context (file contents, tool output, subagent reports) is paid for again on
   every later turn. Bulky reading done inline costs once to read and then keeps
   costing.
-- **The cache expires** after its TTL (5 minutes by default, refreshed on every
-  read). A main session idle past the TTL pays the write price again on its
-  next turn.
+- **The cache expires** after its TTL, refreshed on every read. In Claude Code
+  on a subscription within plan usage, the main conversation gets 1 hour and
+  subagents get 5 minutes. On an API key, a cloud provider, or usage credits,
+  both get 5 minutes. `promptCacheTtl` and `subagentPromptCacheTtl` override
+  either (https://code.claude.com/docs/en/prompt-caching, checked 2026-10-05).
+  A session idle past its TTL pays the write price again on its next turn.
+- **Break-even thresholds.** With a few thousand to ~10K tokens of cold
+  overhead per spawn, delegation starts to pay above about 3K tokens written
+  or 6K tokens of new input read. Below both, keep the task in the main session.
 - **Minimum cacheable prefix** is 512 tokens on Opus 5.5 / Sonnet 5.5 and 4096
   on Haiku 4.5. Shorter prefixes silently don't cache.
 
