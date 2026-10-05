@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": false,
+      "evidence": "The rewrite adds operational claims not in the original, such as \"If the alert fires during close, wait until close ends. You have 14 days of margin,\" and \"Ask for help in #billing-oncall. The old certificate is still close to expiry\" as a rollback escalation step, plus a rollback health recheck and resume that the original does not state."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 4 \"Back up the current certificate. Do this before the swap\" (cp current.pem to previous.pem) comes before step 5's swap, and Roll back restores previous.pem to current.pem with \"sudo cp /etc/billing/tls/previous.pem /etc/billing/tls/current.pem\" then restarts billing-worker."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "History and the 2024 Vault move are dropped, and the only background is a brief intro (\"The alert fires 14 days before the certificate expires. Each certificate is valid for 90 days.\") kept outside the numbered steps."
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": true,
+      "evidence": "Warnings and preconditions sit in \"Before you start\" ahead of the steps, the steps are numbered with one action each (issue, save, drain, backup, swap, restart, check, resume), and the backup precedes the swap it guards."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

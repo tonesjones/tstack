@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": true,
+      "evidence": "All figures survive (41 to 19 min p95, 12% to 87% in two weeks, 3 of 11 services at 70%, 6 minutes from sharding, $2,400/month, Priya's quote), and \"the cache and the test shards did the rest\" only restates what the original implies."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": true,
+      "evidence": "No em dashes, staged reveals or cliches; \"The result?\" and \"Let's dive in\" are gone, and the close is a plain recap (\"Builds went from 41 minutes to 19.\") rather than an uplifting sign-off."
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "Wording is concrete and sentence lengths vary, e.g. \"Most of our time wasn't spent compiling. It was spent downloading the same dependencies over and over again.\""
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It stays a plain engineering team blog post with headings, a code block and the refrain, neither hype nor a bullet list."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "grader_model": "sonnet"
+}

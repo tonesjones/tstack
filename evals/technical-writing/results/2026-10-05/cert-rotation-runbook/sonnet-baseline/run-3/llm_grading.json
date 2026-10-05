@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": false,
+      "evidence": "The rewrite adds \"Expected duration: about 10 minutes\", \"you have 14 days of runway, so wait until close ends\", \"ask in #billing-oncall before retrying\", and \"The old cert is still close to expiry, so don't leave the rollback in place\", none of which the original states."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 3 backs up with `sudo cp .../current.pem .../previous.pem` before the step 4 swap, and Rollback does `sudo cp .../previous.pem .../current.pem` then `sudo systemctl restart billing-worker`."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "The 2024 Vault move history is dropped, and the steps are short with only brief notes such as \"This can take up to 2 minutes.\""
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": true,
+      "evidence": "The month-end warning, VPN and role checks come under \"Before you start\" ahead of the numbered steps, each step has one action, and the backup (step 3) comes before the swap (step 4)."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

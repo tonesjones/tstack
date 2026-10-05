@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": true,
+      "evidence": "1785 chars"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "The proposal adds a check before 'Bump the version' in pypi-release to look for the version in pyproject.toml or in tool.hatch.version pointing to src/*/__about__.py, which covers the dynamic/hatch case and is routed to the right skill and section."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "It adds `rm -rf dist/` before Build and removes --skip-existing in Upload, both routed to pypi-release."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": false,
+      "evidence": "The optional 'Verify' section is vague (\"confirm expected files are on the index\") with no command or wording, and the version-location step says \"Provide location-specific instructions\" without saying what text to write."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": true,
+      "evidence": "All proposals rest on events that happened (the __about__.py version, stale dist/, --skip-existing), all are routed to pypi-release, and none mention the typo, the 429 feature or docker-deploy."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The document is titled 'Recommended Changes' and 'Proposals' and never says the skill files were already modified."
+    }
+  ],
+  "summary": {
+    "passed": 12,
+    "failed": 1,
+    "total": 13,
+    "pass_rate": 0.92
+  },
+  "info": {
+    "words": 248,
+    "has_accepted_table": false
+  }
+}

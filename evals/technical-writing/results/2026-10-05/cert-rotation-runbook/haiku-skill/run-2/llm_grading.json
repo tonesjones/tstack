@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": false,
+      "evidence": "The rewrite adds a rollback sequence with `curl ... /healthz` and \"Verify you see `ok`\" after restore, and the original never states re-checking health after rollback; it also uses `cp` for the backup, which is a reasonable reading but the rollback `mv` of previous.pem consumes the backup, which the original doesn't specify (it says \"restoring\")."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 2 \"sudo cp /etc/billing/tls/current.pem /etc/billing/tls/previous.pem\" precedes the swap in step 4, and rollback runs \"sudo mv /etc/billing/tls/previous.pem /etc/billing/tls/current.pem\" then restarts billing-worker."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "The 2024 Vault move and history are dropped, and the steps contain only commands with at most a one-line note such as \"(takes up to 2 minutes)\"."
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": true,
+      "evidence": "Preconditions and the month-end warning come under \"Before you start\" ahead of the numbered steps, each step has one action, and the backup is placed before the swap with rollback linked from step 6."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

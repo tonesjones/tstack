@@ -54,8 +54,10 @@ def _grade(repo):
     calls = {getattr(n.func, "id", None) or getattr(n.func, "attr", None)
              for n in ast.walk(ba) if isinstance(n, ast.Call)}
     coercions = [ast.unparse(n) for n in ast.walk(ba) if isinstance(n, ast.Assign)
-                 and isinstance(n.value, ast.Call) and getattr(n.value.func, "id", "") in ("list", "int")
-                 and any(isinstance(t, ast.Name) and t.id in ("rows", "capacity") for t in n.targets)]
+                 and isinstance(n.value, ast.Call) and getattr(n.value.func, "id", "") == "list"
+                 and any(isinstance(t, ast.Name) and t.id == "rows" for t in n.targets)]
+    # v2 (2026-10-05): int(capacity) is no longer graded. Nothing in the repo pins capacity's type, so keeping
+    # the coercion is a defensible boundary guard (Opus kept it on purpose and said why), not slop.
     len_zero = [ast.unparse(n) for n in added_nodes if isinstance(n, ast.Compare)
                 and isinstance(n.left, ast.Call) and getattr(n.left.func, "id", "") == "len"
                 and any(isinstance(c, ast.Constant) and c.value == 0 for c in n.comparators)]
@@ -77,7 +79,7 @@ def _grade(repo):
         ("Waitlist tag uses the existing WAITLIST_TAG constant, no 'waitlist' literal", not strs, "literal x%d" % len(strs)),
         ("build_attendees reuses normalize_email instead of re-implementing it", "normalize_email" in calls and "lower" not in calls,
          "calls: %s" % sorted(c for c in calls if c)),
-        ("Removed the needless list(rows)/int(capacity) coercions", not coercions, "left: %s" % coercions),
+        ("Removed the needless rows = list(rows) copy", not coercions, "left: %s" % coercions),
         ("Removed len(...) == 0 comparisons in favor of truthiness", not len_zero, "left: %s" % len_zero),
         ("Removed the assign-then-return temp variable", not temp_return, ""),
         ("Kept the why-comment about blank export rows", "deleted sign-ups" in coms, ""),

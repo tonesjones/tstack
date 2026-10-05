@@ -32,11 +32,18 @@ def accepted_part(text):
     return text[:m.start()] if m else text
 
 
+def proposals_text(work):
+    p, fm = Path(work) / "proposals.md", Path(work) / "final_message.md"
+    if p.exists() and p.read_text().strip():
+        return p.read_text()
+    return fm.read_text() if fm.exists() else ""
+
+
 def llm(work, model):
     prompt = (open(HERE / "rubric.md").read() + "\n\n## Session transcript\n\n" + (FIX / "session.md").read_text()
               + "\n\n## skills/pypi-release/SKILL.md\n\n" + (FIX / "skills/pypi-release/SKILL.md").read_text()
               + "\n\n## skills/docker-deploy/SKILL.md\n\n" + (FIX / "skills/docker-deploy/SKILL.md").read_text()
-              + "\n\n## Proposals\n\n" + (Path(work) / "proposals.md").read_text())
+              + "\n\n## Proposals\n\n" + proposals_text(work))
     env = {k: v for k, v in os.environ.items()
            if k not in ("CLAUDE_CODE_SESSION_ID", "CLAUDECODE", "CLAUDE_CODE_CHILD_SESSION", "CLAUDE_CODE_REMOTE_SESSION_ID")}
     with tempfile.TemporaryDirectory() as home:
@@ -51,12 +58,15 @@ def llm(work, model):
 
 def grade(work, model=None):
     p = Path(work) / "proposals.md"
-    text = p.read_text() if p.exists() else ""
+    wrote = p.exists() and bool(p.read_text().strip())
+    fm = Path(work) / "final_message.md"
+    # Content checks fall back to the final message when the file is missing; "Wrote proposals.md" still fails.
+    text = p.read_text() if wrote else (fm.read_text() if fm.exists() else "")
     acc = accepted_part(text)
     low, alow = text.lower(), acc.lower()
     unchanged = digest(Path(work) / "skills") == digest(FIX / "skills")
     checks = [
-        ("Wrote proposals.md", bool(text.strip()), "%d chars" % len(text)),
+        ("Wrote proposals.md", wrote, "%d chars%s" % (len(text), "" if wrote else " (graded final message instead)")),
         ("Left the skill files unchanged (nothing applied before approval)", unchanged, ""),
         ("Names the version-source learning (__about__.py, dynamic, or hatch)",
          bool(re.search(r"__about__|dynamic|hatch", alow)), ""),
@@ -83,10 +93,16 @@ def grade(work, model=None):
 
 
 if __name__ == "__main__":
-    model = sys.argv[sys.argv.index("--llm") + 1] if "--llm" in sys.argv else None
-    g = grade(sys.argv[1], model)
-    if "--out" in sys.argv:
-        Path(sys.argv[sys.argv.index("--out") + 1]).write_text(json.dumps(g, indent=2))
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("work")
+    ap.add_argument("--out")
+    ap.add_argument("--llm")
+    a = ap.parse_args()
+    model = a.llm
+    g = grade(a.work, model)
+    if a.out:
+        Path(a.out).write_text(json.dumps(g, indent=2))
     for e in g["expectations"]:
         print("%s %s  [%s]" % ("PASS" if e["passed"] else "FAIL", e["text"], e["evidence"]))
     print(g["summary"], g["info"])

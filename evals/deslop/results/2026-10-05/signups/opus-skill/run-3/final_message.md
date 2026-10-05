@@ -1,0 +1,3 @@
+I cleaned up the new code in `signups.py`. It now uses the existing `MAX_NAME_LEN`, `WAITLIST_TAG` and `normalize_email` where the branch had hardcoded `64`, `"waitlist"` and its own copy of the email cleanup. I also simplified the empty-email check and `clean_name`, and removed the unneeded `list(rows)` and temporary `result` variable. The project has no tests, so I checked it with a quick hand-run that covered blank, duplicate, staff and waitlisted rows, and the output was what I expected.
+
+I kept two things on purpose: the `or ""` fallbacks, because the CSV reader returns `None` for missing columns, and `int(capacity)`, because nothing calls this function yet so I can't tell what type `capacity` will be.

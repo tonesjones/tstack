@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": false,
+      "evidence": "1284 chars (graded final message instead)"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "Proposal 1 tells the skill to check the project's real version source (pyproject.toml, __about__.py, _version.py) before bumping, and it is routed to pypi-release / 'Bump the version'."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "Proposal 2 adds `rm -rf dist/` before `python -m build` (Build section) and proposal 3 drops --skip-existing (Upload section), both routed to pypi-release."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": true,
+      "evidence": "Each proposal names the text to add: the version-source check with patterns, `rm -rf dist/` then build, and removing --skip-existing while keeping `twine upload -r internal dist/*`."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": true,
+      "evidence": "All three accepted items come from real session events (the __about__.py correction, stale dist/, --skip-existing), none is routed to docker-deploy, and the pyhton typo appears only as rejected. One small overstatement: proposal 2 says stale files 'broke the build', which didn't happen, but the stale-dist problem itself was real."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The proposals are in a table of 'Accepted' proposals with routing and do not say the skill files were already modified."
+    }
+  ],
+  "summary": {
+    "passed": 12,
+    "failed": 1,
+    "total": 13,
+    "pass_rate": 0.92
+  },
+  "info": {
+    "words": 182,
+    "has_accepted_table": true
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": false,
+      "evidence": "The rewrite adds `vault auth list  # Confirm you can reach Vault` and 'SSH access to billing worker host', neither of which the original states, and it also adds 'waits up to 2 minutes for in-flight jobs to complete'."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 3 runs `sudo cp /etc/billing/tls/current.pem /etc/billing/tls/previous.pem` before the Step 5 swap, and Rollback runs `sudo cp .../previous.pem .../current.pem` then `sudo systemctl restart billing-worker`."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "The 2024 Vault move history is dropped, and the only background kept is a short Overview line ('Certificates are valid for 90 days...'), outside the steps."
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": false,
+      "evidence": "Step 7 says to go to Rollback if the check fails, but Rollback never says to run Resume (Step 8) afterward. Step 2 also folds the save-to-file action into the same step as the vault command, and Step 1 is an invented check."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  },
+  "grader_model": "sonnet"
+}

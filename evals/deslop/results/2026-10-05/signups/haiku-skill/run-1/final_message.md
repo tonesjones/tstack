@@ -1,0 +1,1 @@
+Done. Removed defensive type conversions (`rows = list(rows)`, `capacity = int(capacity)`), replaced hardcoded 64 with the `MAX_NAME_LEN` constant, reused the existing `normalize_email()` function instead of duplicating `.strip().lower()`, and eliminated the unnecessary `result` variable. Syntax verified.

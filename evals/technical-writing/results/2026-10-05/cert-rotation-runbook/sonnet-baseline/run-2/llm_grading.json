@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": false,
+      "evidence": "The rewrite adds invented operational guidance: \"If the cert expires before close ends, ask in #billing-oncall first,\" \"Re-run the health check from step 5. It should return `ok`,\" and \"The old cert is still close to expiry,\" none of which the original states."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 3 \"Back up the current cert. Do this before the swap\" runs `cp current.pem previous.pem` before step 4's mv, and Rollback copies previous.pem to current.pem and restarts billing-worker."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "Background is limited to short bullets outside the steps (\"Certs are issued by Vault (automated since 2024)\"), and the steps themselves are brief."
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": true,
+      "evidence": "Preconditions (\"Check the date\", VPN and role) come under \"Before you start\" ahead of the procedure, the backup precedes the swap, and each step has one main action with rollback clearly separated."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

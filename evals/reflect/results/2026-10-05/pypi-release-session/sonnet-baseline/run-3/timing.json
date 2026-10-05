@@ -1,0 +1,15 @@
+{
+  "total_tokens": 120208,
+  "duration_ms": 16219,
+  "total_duration_seconds": 16.2,
+  "output_tokens": 1607,
+  "cost_usd_list": 0.0708826,
+  "num_turns": 4,
+  "model": "claude-sonnet-5-5",
+  "models_used": [
+    "claude-haiku-4-5-20251001",
+    "claude-sonnet-5-5"
+  ],
+  "skills_called": [],
+  "prompt": "session.md is the transcript of a work session that just finished, and skills/ holds the skills it had. Treat that transcript as the current session. Review it for durable learnings and propose skill edits. Write your full output to proposals.md. Do not load or invoke any skill."
+}

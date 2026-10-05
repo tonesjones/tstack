@@ -122,6 +122,7 @@ def run_one(skill, case, cfg, model, arm, n, date, scratch):
         if (work / d).exists():
             shutil.copytree(work / d, out / d, dirs_exist_ok=True)
     (out / "final_message.md").write_text(result.get("result") or "")
+    (work / "final_message.md").write_text(result.get("result") or "")
     timing = {"total_tokens": tokens, "duration_ms": result.get("duration_ms"),
               "total_duration_seconds": round((result.get("duration_ms") or wall * 1000) / 1000, 1),
               "output_tokens": sum(v.get("outputTokens", 0) for v in mu.values()),

@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": false,
+      "evidence": "The rewrite adds \"Six months later\" (original gives no time span for the 19-minute result) and \"40 minutes of thumbs twiddling\", and it drops the original's quoted retro wording (\"game changer\" became \"the fix\") and the cache-sharding/ECONOMICS framing is altered to \"pocket change\", a new characterization."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": false,
+      "evidence": "It opens with \"Waiting on CI builds is soul-crushing,\" uses an em dash connector in \"compilation\u2014it was downloading\" and \"$2,400/month\u2014pocket change\", and ends with a generic \"When you're waiting on CI, you're not shipping.\""
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "Sentence lengths vary and the wording is concrete (\"We had that problem bad.\", \"Otherwise you're just guessing.\"), so it reads like an engineer wrote it, despite a few stock phrases."
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It stays a conversational engineering team blog post with sections, a code block and a quoted retro line, without turning into hype or a bullet list."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  },
+  "grader_model": "sonnet"
+}

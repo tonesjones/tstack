@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": false,
+      "evidence": "The rewrite adds \"> /etc/billing/tls/new.pem\" as a shell redirect (original only says output should be saved there), \"Then restart the drain and investigate the issue\" (invented rollback step), and a rollback curl check, plus \"Allow up to 2 minutes for existing jobs to complete\" (embellishes the drain claim)."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 2 \"sudo cp /etc/billing/tls/current.pem /etc/billing/tls/previous.pem\" precedes the step 4 swap, and Rollback does \"cp previous.pem current.pem\" then \"systemctl restart billing-worker\"."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "The 2024 Vault move history is dropped, the Overview is two short sentences, and the steps contain only brief one-line notes."
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": true,
+      "evidence": "Prerequisites (VPN, role, not month-end) come before the steps, each numbered step has one action, and backup (step 2) precedes the swap (step 4) with no forward dependencies."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

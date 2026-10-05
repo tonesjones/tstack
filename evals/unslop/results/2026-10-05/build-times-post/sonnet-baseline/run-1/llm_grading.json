@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": false,
+      "evidence": "The rewrite adds \"Next we want to look at the slowest remaining services,\" a plan the original never states, and \"stay in the flow of what they're working on\"; it also drops the 'led by' framing only loosely, but the new future-work claim is a new fact."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": true,
+      "evidence": "The rewrite has no em dashes, cliches or staged reveals, and \"The pipeline now finishes in 19 minutes at p95.\" is plain; the only 'game changer' is inside the quoted retro line."
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "Short concrete sentences like \"Waiting on CI is miserable, and it wears on a team more than most people admit.\" and \"Questions? Reach out.\" vary in length and sound like a specific engineer."
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It stays an engineering team blog post with headings like \"Sharding and cost\", the code block and the retro quote, without hype, jokes or bullet-list dryness."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

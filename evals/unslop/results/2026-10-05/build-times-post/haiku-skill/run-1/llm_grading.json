@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": false,
+      "evidence": "The rewrite adds claims such as \"tanking productivity and killing momentum\" and \"compounds across a team\", and it changes the retro quote to \"The cache mattered, but the benchmark told us what to fix\" (original: \"The cache was a game changer, but the benchmark is what told us where to look\"); it also drops the \"p95\" qualifier on the 19-minute figure (\"Now it finishes in 19 minutes\")."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": false,
+      "evidence": "It introduces stock phrasing like \"a developer's worst enemy\", the staged reveal \"Here's what changed.\", \"Priya said it best\", and a generic closing section \"What changed\" with \"spend less time waiting and more time shipping\"."
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "Mostly short, concrete sentences with varied length, e.g. \"The problem was obvious once we looked: we weren't compiling slowly. We were downloading the same dependencies over and over.\""
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It stays in an engineering team blog register with plain, concrete statements like \"We benchmarked all 11 services first\" and no hype or jokes beyond the cliche opener."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  },
+  "grader_model": "sonnet"
+}

@@ -57,7 +57,7 @@ def main():
     skill = sys.argv[1]
     model = sys.argv[sys.argv.index("--model") + 1] if "--model" in sys.argv else "sonnet"
     if "--all" in sys.argv:
-        base = Path(sys.argv[sys.argv.index("--all") + 1])
+        base = Path(sys.argv[sys.argv.index("--all") + 1]).resolve()
         jobs = int(sys.argv[sys.argv.index("--jobs") + 1]) if "--jobs" in sys.argv else 4
         runs = sorted(p.parent for p in base.rglob("grading.json") if not (p.parent / "llm_grading.json").exists())
         with ThreadPoolExecutor(jobs) as ex:
