@@ -32,13 +32,13 @@
     },
     {
       "text": "Routes nothing to docker-deploy (unused in the session)",
-      "passed": false,
-      "evidence": "failed"
+      "passed": true,
+      "evidence": "ok"
     },
     {
       "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
-      "passed": false,
-      "evidence": "failed"
+      "passed": true,
+      "evidence": "ok"
     },
     {
       "text": "[LLM sonnet] version_source_routed",
@@ -67,10 +67,10 @@
     }
   ],
   "summary": {
-    "passed": 9,
-    "failed": 4,
+    "passed": 11,
+    "failed": 2,
     "total": 13,
-    "pass_rate": 0.69
+    "pass_rate": 0.85
   },
   "info": {
     "words": 946,

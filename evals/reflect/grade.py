@@ -26,10 +26,32 @@ def digest(root):
             for p in sorted(Path(root).rglob("*")) if p.is_file()}
 
 
+DECLINE = re.compile(r"rejected|skipped|dropped|not (accepted|proposed)|no change|nothing to|out of scope", re.I)
+NEG = re.compile(r"\bno\b|\bnot\b|n't|nothing|unused|skip|reject|one-off|out of scope", re.I)
+
+
 def accepted_part(text):
-    """Text before any 'Rejected'/'Skipped'/'Dropped' heading: what the writer actually proposes."""
-    m = re.search(r"^#+\s*(rejected|skipped|dropped|not (accepted|proposed))", text, re.I | re.M)
-    return text[:m.start()] if m else text
+    """What the writer actually proposes (v2, 2026-10-05): drop sections under a declining heading ('Rejected',
+    'Not proposed', 'No change: ...') up to the next heading of the same or higher level, then drop lines that
+    mention a thing only to decline it ("docker-deploy wasn't used, so no change"). v1 cut at the first
+    'Rejected' heading only, which scored the skill's table format and not the routing."""
+    out, skip_level = [], None
+    for line in text.splitlines():
+        h = re.match(r"^(#+)\s*(.*)", line)
+        if h:
+            level = len(h.group(1))
+            if skip_level is not None and level <= skip_level:
+                skip_level = None
+            if skip_level is None and DECLINE.search(h.group(2)):
+                skip_level = level
+        if skip_level is None:
+            out.append(line)
+    return "\n".join(out)
+
+
+def proposed_lines(text, pattern):
+    """Lines in the accepted part that mention pattern without declining it."""
+    return [l for l in accepted_part(text).splitlines() if re.search(pattern, l, re.I) and not NEG.search(l)]
 
 
 def proposals_text(work):
@@ -73,9 +95,10 @@ def grade(work, model=None):
         ("Names the stale dist/ learning", bool(re.search(r"(clear|clean|empty|rm |remov|delet|wipe|purge|stale)[^\n]{0,80}dist|dist/?[^\n]{0,80}(clear|clean|empty|stale|remov|delet|wipe)", alow)), ""),
         ("Flags --skip-existing as unsafe or to avoid", "skip-existing" in alow, ""),
         ("Routes proposals to pypi-release", "pypi-release" in alow, ""),
-        ("Routes nothing to docker-deploy (unused in the session)", "docker" not in alow, ""),
+        ("Routes nothing to docker-deploy (unused in the session)", not proposed_lines(text, "docker"),
+         "; ".join(proposed_lines(text, "docker"))[:200]),
         ("Does not promote the 'pyhton' typo or the 429 feature to a learning",
-         "pyhton" not in alow and "429" not in alow, ""),
+         not proposed_lines(text, r"pyhton|\b429\b"), "; ".join(proposed_lines(text, r"pyhton|\b429\b"))[:200]),
     ]
     exp = [{"text": t, "passed": bool(ok), "evidence": ev or ("ok" if ok else "failed")} for t, ok, ev in checks]
     if model:
@@ -98,9 +121,16 @@ if __name__ == "__main__":
     ap.add_argument("work")
     ap.add_argument("--out")
     ap.add_argument("--llm")
+    ap.add_argument("--keep-llm", action="store_true", help="reuse [LLM] items from the existing --out file")
     a = ap.parse_args()
     model = a.llm
     g = grade(a.work, model)
+    if a.keep_llm and a.out and Path(a.out).exists():
+        old = [e for e in json.loads(Path(a.out).read_text())["expectations"] if e["text"].startswith("[LLM")]
+        g["expectations"] += old
+        n = sum(e["passed"] for e in g["expectations"])
+        t = len(g["expectations"])
+        g["summary"] = {"passed": n, "failed": t - n, "total": t, "pass_rate": round(n / t, 2)}
     if a.out:
         Path(a.out).write_text(json.dumps(g, indent=2))
     for e in g["expectations"]:

@@ -1,0 +1,21 @@
+{
+  "skill_name": "reflect",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "pypi-release-session",
+      "prompt": "session.md is the transcript of a work session that just finished, and skills/ holds the skills it had. Treat that transcript as the current session. Review it for durable learnings and propose skill edits. Write your full output to proposals.md.",
+      "expected_output": "Proposals routed to pypi-release: find the real version source; clear dist/ and never use --skip-existing. Nothing routed to the unused docker-deploy skill, no typo or invented learnings, skill files unchanged.",
+      "files": [
+        "evals/reflect/fixture"
+      ],
+      "expectations": [
+        "Wrote proposals.md; left skill files unchanged",
+        "Names the version-source learning and the stale dist/ learning; flags --skip-existing",
+        "Routes to pypi-release, nothing to docker-deploy",
+        "Does not promote the 'pyhton' typo or the 429 feature",
+        "Blind LLM rubric (evals/reflect/rubric.md): version_source_routed, stale_dist_routed, concrete, no_invented_learnings, no_edits_claimed"
+      ]
+    }
+  ]
+}

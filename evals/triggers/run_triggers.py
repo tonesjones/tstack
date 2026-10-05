@@ -92,6 +92,7 @@ def main():
     ap.add_argument("--jobs", type=int, default=6)
     ap.add_argument("--ids")
     ap.add_argument("--reps", type=int, default=1)
+    ap.add_argument("--rep-start", type=int, default=1)
     ap.add_argument("--date", default="2026-10-05")
     a = ap.parse_args()
     prompts = json.load(open(HERE / "prompts.json"))["prompts"]
@@ -99,7 +100,7 @@ def main():
         prompts = [p for p in prompts if p["id"] in a.ids.split(",")]
     with ThreadPoolExecutor(a.jobs) as ex:
         rows = list(ex.map(lambda pr: dict(one(pr[0], a.model, Path(a.skills_dir)), rep=pr[1]),
-                           [(p, k) for k in range(1, a.reps + 1) for p in prompts]))
+                           [(p, k) for k in range(a.rep_start, a.rep_start + a.reps) for p in prompts]))
     out = HERE / "results" / a.date / ("%s-%s.json" % (a.label, a.model))
     out.parent.mkdir(parents=True, exist_ok=True)
     old = {(r["id"], r.get("rep", 1)): r for r in json.load(open(out))["rows"]} if out.exists() else {}

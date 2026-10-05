@@ -15,6 +15,10 @@ def pct(x):
     return "%d%%" % round(100 * x)
 
 
+def rate(exps):
+    return sum(e["passed"] for e in exps) / len(exps) if exps else None
+
+
 def load(p):
     return json.load(open(p)) if p.exists() else None
 
@@ -28,7 +32,8 @@ def main():
         for run in sorted(case.glob("*/run-*")):
             model, arm = run.parent.name.rsplit("-", 1)
             cells[(model, arm)].append(run)
-        has_llm = any((r / "llm_grading.json").exists() for rs in cells.values() for r in rs)
+        has_llm = any((r / "llm_grading.json").exists() or "[LLM" in (r / "grading.json").read_text()
+                      for rs in cells.values() for r in rs)
         print("### %s / %s\n" % (skill, case.name))
         hdr = "| Model | Arm | Det. mean | Det. per run |" + (" LLM mean | LLM per run |" if has_llm else "") + \
               " Tokens (mean) | Time (mean) | Skill loaded |"
@@ -40,11 +45,13 @@ def main():
             g = [load(r / "grading.json") for r in runs]
             l = [load(r / "llm_grading.json") for r in runs]
             t = [load(r / "timing.json") for r in runs]
-            det = [x["summary"]["pass_rate"] for x in g]
+            det = [rate([e for e in x["expectations"] if not e["text"].startswith("[LLM")]) for x in g]
             row = "| %s | %s | %s | %s |" % (NAMES.get(model, model), "skill" if arm == "skill" else "no skill",
                                            pct(sum(det) / len(det)), ", ".join(pct(x) for x in det))
             if has_llm:
-                lv = [x["summary"]["pass_rate"] for x in l if x]
+                lv = [rate([e for e in x["expectations"] if e["text"].startswith("[LLM")]
+                           + (y["expectations"] if y else [])) for x, y in zip(g, l)]
+                lv = [v for v in lv if v is not None]
                 row += " %s | %s |" % (pct(sum(lv) / len(lv)) if lv else "-", ", ".join(pct(x) for x in lv) or "-")
             tok = sum(x["total_tokens"] for x in t) / len(t)
             sec = sum(x["total_duration_seconds"] for x in t) / len(t)
