@@ -1,17 +1,18 @@
 ---
 name: "reflect"
-description: "After a task lands, mine the conversation for durable learnings and route each to a skill edit or description tune. Use when the user says reflect or /reflect, or after a task with dead ends or corrections."
+description: "After a task lands, mine the current conversation for durable learnings and propose skill edits or description tunes for approval. Use when the user says reflect or /reflect. Works from this conversation only. For building or testing a skill from scratch, use skill-creator. For a staleness review of the whole skill library, use skill-review."
 ---
 
 # Reflect
 
-Version: 1.0.0 (2026-10-03)
+Version: 1.1.0 (2026-10-05)
 
 Mine the current conversation for durable learnings, then route them into skill edits. Nothing is applied until the user approves it.
 
 ## When to invoke
 
-- The user said "reflect" or "/reflect".
+Run when the user says "reflect" or "/reflect". Don't start on your own. At the end of a task, offer it in one line when:
+
 - A complex task (5+ tool calls) just landed cleanly and the recipe is worth keeping.
 - The agent hit dead ends, found the working path, and the path generalizes.
 - The user corrected the agent's approach mid-task.
@@ -145,7 +146,7 @@ Backlog items go to whatever tracker the user's team uses. List them for the use
 
 Follow each row's Routing:
 
-- **Small edit to a skill the user owns** (a bullet, a tightened sentence, a corrected fact): make it directly if you can write the skill file, for example `.claude/skills/` or `~/.claude/skills/` in Claude Code.
+- **Small edit to a skill the user owns** (a bullet, a tightened sentence, a corrected fact): make it directly if you can write the skill file, for example `.claude/skills/` or `~/.claude/skills/` in Claude Code. If the skill comes from a source repo (such as tstack), edit the repo copy, not the installed copy, which a sync can overwrite. Bump its `Version:` line, add a `CHANGELOG.md` entry, and run the repo's validator.
 - **Substantive edit** (a new section or table, more than about 10 lines), **`tune description`**, or **`new skill`**: use the `skill-creator` skill and run its draft, test, and iterate loop, or its description-optimization loop for a tune. Don't invent a new skill's shape ad hoc.
 - **Read-only skills** (claude.ai skills under `/mnt/skills/`, built-in skills, plugin skills): you can't edit these in place. If a skill-proposal tool such as `propose_skills` is available, present the complete updated `SKILL.md` through it. Otherwise hand the user the complete file. A built-in or plugin skill can't be updated by the user either, so propose the change as a new skill with its own name and a description that says when to use it instead of the original.
 

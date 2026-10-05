@@ -50,5 +50,5 @@ ln -s "$PWD/agents/grunt.md" ~/.claude/agents/grunt.md
 
 ## Scripts
 
-- `scripts/validate_skills.py` checks frontmatter, folder names, version lines, and Cursor-specific leftovers.
+- `scripts/validate_skills.py` checks frontmatter, folder names, version lines, and Cursor-specific leftovers. For each skill changed since the last `v*` tag, it also checks that the newest CHANGELOG entry names the skill's version, as `<skill> X.Y.Z`.
 - `scripts/measure_session.py` totals a Claude Code session's tokens per model and compares the cost with an all-Opus baseline.
