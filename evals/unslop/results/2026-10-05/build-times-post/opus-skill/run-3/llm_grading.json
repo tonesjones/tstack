@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": false,
+      "evidence": "The closing line \"so we didn't waste time on the other 8\" is a new claim, because the original only says the 3 services were tackled first, not that the other 8 were left alone."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": true,
+      "evidence": "There are no em dashes, cliches, or staged reveals, and the closing \"The cache got the headlines, but the benchmark did the real work\" is a concrete point rather than an uplifting generic wrap-up."
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "Sentence lengths vary and the wording is plain, as in \"Most of that time wasn't compiling. It was downloading the same dependencies over and over.\""
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It stays an engineering team blog post with first-person plural, concrete figures, and the retained quote, without hype or bullet-list dryness."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

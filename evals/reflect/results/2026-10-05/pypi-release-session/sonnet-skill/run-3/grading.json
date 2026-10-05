@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": true,
+      "evidence": "1991 chars"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "Row 1 replaces the 'Bump the version' step with checking whether `version` is in `dynamic` (e.g. `[tool.hatch.version] path`) and bumping that source file, routed to pypi-release 'Bump the version'."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "Row 2 adds `rm -rf dist/` before the build and forbids `--skip-existing` in Upload, routed to pypi-release 'Build' and 'Upload'."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": true,
+      "evidence": "Rows 1-3 each state the text to add or replace (for example the exact `rm -rf dist/` line and the verify-two-files-then-tag step), and the backlog items are non-skill CI mechanisms rather than skill edits."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": true,
+      "evidence": "Every row traces to something that happened (the dynamic-version break, stale dist/ with --skip-existing, the 'index is correct' claim made from upload output alone); the typo and docker-deploy items appear only as rejected."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The items are written as proposals with a Proposal and Routing column and nowhere say the SKILL.md files were already modified."
+    }
+  ],
+  "summary": {
+    "passed": 13,
+    "failed": 0,
+    "total": 13,
+    "pass_rate": 1.0
+  },
+  "info": {
+    "words": 313,
+    "has_accepted_table": true
+  }
+}

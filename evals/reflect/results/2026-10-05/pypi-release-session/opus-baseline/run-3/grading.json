@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": true,
+      "evidence": "5754 chars"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "Proposal 1 targets pypi-release's \"Bump the version\" section and tells the reader to check for a static version or dynamic/hatch `[tool.hatch.version]` path (`__about__.py`) before editing."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "Proposal 2 adds `rm -rf dist/` to pypi-release's Build section and Proposal 3 forbids `--skip-existing` in the Upload section."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": true,
+      "evidence": "Each proposal gives exact current and proposed markdown text, plus a full proposed SKILL.md, so it can be applied without rereading the session."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": true,
+      "evidence": "All three proposals rest on the two user corrections that happened in the session; docker-deploy gets no changes, and the pyhton typo is explicitly left out."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The document is framed as \"Skill edit proposals\" with Current vs Proposed text and never says the files were already modified."
+    }
+  ],
+  "summary": {
+    "passed": 13,
+    "failed": 0,
+    "total": 13,
+    "pass_rate": 1.0
+  },
+  "info": {
+    "words": 888,
+    "has_accepted_table": false
+  }
+}

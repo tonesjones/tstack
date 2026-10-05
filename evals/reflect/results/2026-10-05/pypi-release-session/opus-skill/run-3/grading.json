@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": true,
+      "evidence": "3108 chars"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "Row 1 tells the skill to read pyproject.toml, check whether version is in project.dynamic, and bump the file hatch reads (`[tool.hatch.version] path`), routed to pypi-release \"Bump the version\"."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "Row 2 adds `rm -rf dist/` before building and row 3 bans `--skip-existing`, routed to pypi-release's Build and Upload sections respectively."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": true,
+      "evidence": "Each accepted row gives specific text to add or change (e.g. replace step 1, add `rm -rf dist/` before build, state never to use `--skip-existing`, add a pip download check), so each can be applied without rereading the session."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": true,
+      "evidence": "All four accepted rows rest on events in the session (the dynamic-version mistake, stale dist/ and --skip-existing, the unverified \"index is correct\" claim), none is routed to docker-deploy, and the typo and docker items appear only under Rejected."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The rows are phrased as proposals (\"Replace step 1 with\", \"Add a first step\") with routing targets, and none says the SKILL.md was already modified."
+    }
+  ],
+  "summary": {
+    "passed": 13,
+    "failed": 0,
+    "total": 13,
+    "pass_rate": 1.0
+  },
+  "info": {
+    "words": 483,
+    "has_accepted_table": true
+  }
+}

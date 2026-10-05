@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": true,
+      "evidence": "2922 chars"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "Accepted #1 tells the skill to check whether version is in `dynamic` and bump the file at `[tool.hatch.version] path` (e.g. `__about__.py`), routed to pypi-release \u00a7 Bump the version."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "Accepted #2 adds `rm -rf dist/` before build (\u00a7 Build) and #3 forbids `--skip-existing` (\u00a7 Upload), both routed to pypi-release."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": true,
+      "evidence": "Each accepted proposal and both backlog items state specific text or mechanism (replace step 1 with explicit check, `rm -rf dist/`, never use `--skip-existing`, named scripts) that can be applied without rereading the session."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": true,
+      "evidence": "All accepted items and backlog items rest on events in the session (static version vs dynamic, stale dist/, --skip-existing); the pyhton typo and docker-deploy appear only as rejected, and nothing about the 429 feature is proposed."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The proposals are laid out in Accepted/Rejected/Backlog tables with Proposal and Routing columns and never state that SKILL.md files were already modified."
+    }
+  ],
+  "summary": {
+    "passed": 13,
+    "failed": 0,
+    "total": 13,
+    "pass_rate": 1.0
+  },
+  "info": {
+    "words": 468,
+    "has_accepted_table": true
+  }
+}

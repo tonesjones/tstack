@@ -1,0 +1,22 @@
+{
+  "skill_name": "technical-writing",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "cert-rotation-runbook",
+      "prompt": "Rewrite RUNBOOK.md in place so an on-call engineer can follow it.",
+      "expected_output": "A how-to with prerequisites first, numbered imperative steps, the month-end warning before the drain, the forgotten backup step made explicit, rollback after the health check, and no lost commands or facts.",
+      "files": [
+        "evals/technical-writing/fixture"
+      ],
+      "expectations": [
+        "Every original command kept verbatim; every operational fact kept",
+        "Backup step is its own command before the swap",
+        "Month-end warning before the drain; VPN and role prerequisites before the first command",
+        "Rollback via previous.pem after the health check",
+        "[named] Numbered steps, imperative; sentence-case headings; chatty phrasing removed",
+        "Blind LLM rubric (evals/technical-writing/rubric.md): no_invented_facts, rollback_correct, how_to_only, first_read"
+      ]
+    }
+  ]
+}

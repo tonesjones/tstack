@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": false,
+      "evidence": "The rewrite drops the p95 qualifier (\"brought it down to 19 minutes\"), and adds a new claim, \"When developers don't have to wait, they stay in flow.\""
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": false,
+      "evidence": "It uses em dashes as connectors (\"compilation\u2014it was re-downloading\", \"a month\u2014less than\", \"real win\u2014without it\") and closes with a generic takeaway: \"Faster builds matter.\""
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "Sentence lengths vary and the wording is plain and concrete, e.g. \"A 41-minute CI pipeline is painful. Last January, ours was sitting at that number, and we decided to fix it.\""
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It keeps an engineering team blog register (\"The platform team, led by Priya Raman, dug in\") without hype, jokes, or a bullet list."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  },
+  "grader_model": "sonnet"
+}

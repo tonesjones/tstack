@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": true,
+      "evidence": "5674 chars"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "The pypi-release rewrite adds 'Identify the version location' (pyproject.toml, __about__.py, dynamic = [\"version\"] means don't add a static version) before the bump step."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "Step 3 of the pypi-release rewrite adds `rm -rf dist/` before `python -m build`, and Step 4 says 'Do NOT use --skip-existing', which matches the user's instruction."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": true,
+      "evidence": "Proposal 1 gives full replacement SKILL.md text, including specific steps such as `rm -rf dist/`, the exact twine command, and a version-location check, so it can be applied without rereading the session."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": true,
+      "evidence": "All learnings come from events in the session (the version in __about__.py, stale dist/, --skip-existing). docker-deploy is explicitly left unchanged, and the pyhton typo and the 429 feature are not proposed as edits."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The edits are labeled 'Proposed Skill Edits' and 'Proposed fix', with an 'Implementation Priority' section, and nothing says the files were already modified."
+    }
+  ],
+  "summary": {
+    "passed": 13,
+    "failed": 0,
+    "total": 13,
+    "pass_rate": 1.0
+  },
+  "info": {
+    "words": 825,
+    "has_accepted_table": false
+  }
+}

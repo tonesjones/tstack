@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": false,
+      "evidence": "The rewrite adds invented operational content: \"If the certificate expires before the close ends, ask in #billing-oncall first\", \"Post the failed output in #billing-oncall\", and a re-run of the health check and resume after rollback, none of which the original states."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 4 backs up with \"sudo cp /etc/billing/tls/current.pem /etc/billing/tls/previous.pem\" before the step 5 swap, and Roll back copies previous.pem to current.pem then runs \"sudo systemctl restart billing-worker\"."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "The 2024 Vault history is dropped entirely, and the steps are short commands with only brief notes such as \"The command waits up to 120 seconds.\""
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": true,
+      "evidence": "Warnings and preconditions sit under \"Before you start\" ahead of the numbered steps, the backup comes before the swap, and each step is a single action, with rollback referenced by link from step 7."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

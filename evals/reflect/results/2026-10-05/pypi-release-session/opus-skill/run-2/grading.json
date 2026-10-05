@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": true,
+      "evidence": "3669 chars"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "Row 1 tells the skill to find where the version comes from first and to bump the file the build backend reads when `version` is in `dynamic` (e.g. `[tool.hatch.version] path`). It is routed to pypi-release \u00a7 Bump the version."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "Row 3 adds `rm -rf dist/` before the build in \u00a7 Build, and row 4 bans `--skip-existing` in \u00a7 Upload. Both are routed to pypi-release."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": true,
+      "evidence": "Each row gives quoted replacement text or a specific command (e.g. `rm -rf dist/` before `python -m build`, \"Never use `--skip-existing`\"), and the backlog items name concrete mechanisms, so all can be applied without rereading the session."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": true,
+      "evidence": "Every row traces to something that happened (build-config edit, stale dist/, --skip-existing, declaring done from upload output alone). Nothing goes to docker-deploy, and the typo and Docker items appear only under Rejected."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The rows are written as proposals (\"Replace step 1 with\u2026\", \"Add a rule\u2026\", \"Make the Build step start with\u2026\"). None says the SKILL.md was already modified."
+    }
+  ],
+  "summary": {
+    "passed": 13,
+    "failed": 0,
+    "total": 13,
+    "pass_rate": 1.0
+  },
+  "info": {
+    "words": 570,
+    "has_accepted_table": true
+  }
+}

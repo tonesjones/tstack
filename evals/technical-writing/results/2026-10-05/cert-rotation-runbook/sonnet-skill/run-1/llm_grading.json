@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": false,
+      "evidence": "The rollback adds \"If the health check still fails, ask for help in #billing-oncall\" and a re-check-then-resume sequence (\"Run the health check from step 6 again. When it returns `ok`, run `billingctl resume`\"), which are escalation and verification steps the original does not state."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 3 runs `sudo cp .../current.pem .../previous.pem` before the step 4 swap, and Roll back runs `sudo cp .../previous.pem .../current.pem` then restarts `billing-worker`."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "The history and the 2024 Vault move are dropped, and the only background kept is one short opening paragraph (alert timing, 90-day validity) outside the numbered steps."
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": true,
+      "evidence": "A \"Before you start\" section puts the month-end, VPN and role warnings ahead of the numbered steps, and the backup in step 3 comes before the swap in step 4; step 1 does combine issuing and saving, which is a minor flaw."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

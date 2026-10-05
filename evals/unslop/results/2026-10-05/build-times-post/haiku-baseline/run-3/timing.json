@@ -1,0 +1,14 @@
+{
+  "total_tokens": 236209,
+  "duration_ms": 26337,
+  "total_duration_seconds": 26.3,
+  "output_tokens": 2475,
+  "cost_usd_list": 0.050695500000000004,
+  "num_turns": 7,
+  "model": "claude-haiku-4-5-20251001",
+  "models_used": [
+    "claude-haiku-4-5-20251001"
+  ],
+  "skills_called": [],
+  "prompt": "Edit post.md in place so it stops reading like AI wrote it. Do not load or invoke any skill."
+}

@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": true,
+      "evidence": "2328 chars"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "Row 1 tells the skill to check for `dynamic` version or `[tool.hatch.version]`, bump the file it points to, and not edit build config. It is routed to pypi-release \"Bump the version\"."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "Row 2 adds `rm -rf dist/` before the build and bans `--skip-existing` in the Upload step, routed to pypi-release \"Build\" and \"Upload\"."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": true,
+      "evidence": "Each of the three accepted rows names specific text or commands to add, such as the dynamic/hatch check, `rm -rf dist/`, and the dist/ filename check against the tag, so each can be applied without rereading the session."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": false,
+      "evidence": "Row 3 (post-upload check that the tag matches the built version) is not tied to any failure in the session, since nothing went wrong with the tag or with confirming the upload. It is a speculative addition. The typo and docker-deploy items were correctly rejected."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The proposals are in Accepted, Rejected and Backlog tables with a Routing column, and none says the SKILL.md files were already modified."
+    }
+  ],
+  "summary": {
+    "passed": 12,
+    "failed": 1,
+    "total": 13,
+    "pass_rate": 0.92
+  },
+  "info": {
+    "words": 361,
+    "has_accepted_table": true
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": false,
+      "evidence": "1989 chars (graded final message instead)"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "Proposal 1 tells the skill to locate the real version definition (__about__.py, __init__.py, setup.py, pyproject) before bumping and is routed to pypi-release / Bump the version."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "Proposals 2 and 3 add `rm -rf dist/` before building and drop `--skip-existing` from upload, routed to pypi-release Build and Upload respectively."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": true,
+      "evidence": "Each proposal names specific text or commands (check specific files, add `rm -rf dist/`, change the twine command, never modify dynamic/[tool.hatch.version]), though proposal 3 describes changing a command the skill never contained; still applicable."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": false,
+      "evidence": "Proposal 3 claims to change `twine upload -r internal --skip-existing dist/*` to the version without it, but the skill's original command never had --skip-existing (only the assistant added it in the session), so the edit rests on a misstated premise."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The proposals end with 'Shall I apply these edits to skills/pypi-release/SKILL.md?', presenting them for approval rather than claiming they were made."
+    }
+  ],
+  "summary": {
+    "passed": 11,
+    "failed": 2,
+    "total": 13,
+    "pass_rate": 0.85
+  },
+  "info": {
+    "words": 295,
+    "has_accepted_table": true
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": true,
+      "evidence": "All figures survive (41 to 19 min p95, 12% to 87% in two weeks, 3 of 11 services at 70%, 6 min from shards, $2,400/month, Priya's quote), and the closing \"three services and a missing cache explained most of the wait\" only restates the original's own claims."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": true,
+      "evidence": "The rewrite has no em dashes, cliches or staged reveals; the stock intro, \"game changer\" and \"journey\" language are gone, and \"It now finishes in 19 minutes at p95.\" states the result plainly."
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "Sentence length varies and the wording is plain and concrete, as in \"Nobody likes waiting on CI. We were waiting a lot.\" and \"It was downloading the same dependencies over and over.\""
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It stays an engineering team blog post, with a direct, unhyped voice, a code block and a collegial close (\"If your builds are slow, don't guess. Benchmark first.\"), and it is neither jokey nor a bullet list."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "grader_model": "sonnet"
+}

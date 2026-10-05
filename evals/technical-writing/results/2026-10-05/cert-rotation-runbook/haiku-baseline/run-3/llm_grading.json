@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": false,
+      "evidence": "The rewrite adds \"SSH access to billing hosts\" as a prerequisite, a `vault login` command in step 1, and \"Contact #billing-oncall for assistance\" as an escalation step, none of which the original states."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 3 runs `sudo cp /etc/billing/tls/current.pem /etc/billing/tls/previous.pem` before the swap in step 5, and troubleshooting copies previous.pem to current.pem and then restarts billing-worker."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "The 2024 Vault move history is dropped, and the steps hold only commands and one-line notes such as \"This can take up to 2 minutes.\""
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": true,
+      "evidence": "Prerequisites and \"Do Not Rotate During\" come before the Procedure, the backup is step 3 ahead of the swap, and each step is a single action. The rollback sits in a separate Troubleshooting section after the steps."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

@@ -1,0 +1,16 @@
+{
+  "total_tokens": 361440,
+  "duration_ms": 38323,
+  "total_duration_seconds": 38.3,
+  "output_tokens": 3451,
+  "cost_usd_list": 0.0750345,
+  "num_turns": 11,
+  "model": "claude-haiku-4-5-20251001",
+  "models_used": [
+    "claude-haiku-4-5-20251001"
+  ],
+  "skills_called": [
+    "unslop"
+  ],
+  "prompt": "Edit post.md in place so it stops reading like AI wrote it. Use the unslop skill."
+}

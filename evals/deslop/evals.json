@@ -6,12 +6,30 @@
       "eval_name": "seeded-slop-restock",
       "prompt": "Clean up the slop on this branch (feature/restock vs main) in inventory.py.",
       "expected_output": "Seeded slop in restock_plan removed; why-comment and file-boundary handling kept; pre-existing code untouched; behavior unchanged.",
-      "files": ["evals/deslop/fixture"],
+      "files": [
+        "evals/deslop/fixture"
+      ],
       "expectations": [
         "Behavior unchanged: check.py passes",
         "Removed the seeded slop (comments, broad except, redundant checks, debug print, unused imports, wrapper, type escape, deep nesting)",
         "Kept the OPS-114 why-comment and the JSONDecodeError handling",
         "Left pre-existing code (incl. the narrating comment in total_units) untouched"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "signups",
+      "prompt": "Clean up the slop this branch (feature/signups) added to signups.py, compared with main.",
+      "expected_output": "Slop not named in SKILL.md removed (re-implemented helper and constants, rows copy, len()==0, temp return); CSV boundary handling, defensive dict(row) copy, and both why-comments kept; pre-existing functions untouched; behavior unchanged.",
+      "files": [
+        "evals/deslop/fixture-signups"
+      ],
+      "expectations": [
+        "Behavior unchanged (check.py core, boundary, nomutate)",
+        "Reuses normalize_email, MAX_NAME_LEN, WAITLIST_TAG",
+        "Removed rows = list(rows), len(...) == 0, assign-then-return",
+        "Kept both why-comments",
+        "Left pre-existing functions untouched"
       ]
     }
   ]

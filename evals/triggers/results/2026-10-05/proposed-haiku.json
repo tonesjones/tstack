@@ -1,0 +1,1512 @@
+{
+ "model": "haiku",
+ "label": "proposed",
+ "rows": [
+  {
+   "id": "d1",
+   "prompt": "Claude wrote most of this branch. Strip the AI slop out of the diff before I open a PR.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.4,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "d1",
+   "prompt": "Claude wrote most of this branch. Strip the AI slop out of the diff before I open a PR.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.3,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "d2",
+   "prompt": "Remove the pointless comments and try/excepts the agent added in my last two commits.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.8,
+   "said": "I'll check the repository state and recent commits to see what needs cleaning up.",
+   "rep": 1
+  },
+  {
+   "id": "d2",
+   "prompt": "Remove the pointless comments and try/excepts the agent added in my last two commits.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.6,
+   "said": "I'll check your git history to see the last two commits and identify what needs cleaning up.",
+   "rep": 2
+  },
+  {
+   "id": "d2",
+   "prompt": "Remove the pointless comments and try/excepts the agent added in my last two commits.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.9,
+   "said": "I'll check the last two commits to see what needs cleaning up.",
+   "rep": 3
+  },
+  {
+   "id": "d2",
+   "prompt": "Remove the pointless comments and try/excepts the agent added in my last two commits.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.9,
+   "said": "I'll check your recent commits and clean up the unnecessary code.",
+   "rep": 4
+  },
+  {
+   "id": "d3",
+   "prompt": "/deslop",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.5,
+   "said": "I'll invoke the deslop skill to remove AI-generated slop from the current branch.",
+   "rep": 1
+  },
+  {
+   "id": "d3",
+   "prompt": "/deslop",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.1,
+   "said": "I'll check if this is a git repository and identify the changes to deslop.",
+   "rep": 2
+  },
+  {
+   "id": "d4",
+   "prompt": "Tidy up the code changes on this branch, it has debug prints and redundant null checks everywhere.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.1,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "d4",
+   "prompt": "Tidy up the code changes on this branch, it has debug prints and redundant null checks everywhere.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.6,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "d5",
+   "prompt": "Clean up this Python function an LLM generated, it's overly defensive:\n\n```python\ndef total(items):\n    # Initialize the total to zero\n    result = 0\n    if items is not None:\n        if isinstance(items, list):\n            for item in items:\n                try:\n                    if item is not None:\n                        result = result + int(item.price)\n                except Exception:\n                    pass\n    return result\n```",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 7.0,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "d5",
+   "prompt": "Clean up this Python function an LLM generated, it's overly defensive:\n\n```python\ndef total(items):\n    # Initialize the total to zero\n    result = 0\n    if items is not None:\n        if isinstance(items, list):\n            for item in items:\n                try:\n                    if item is not None:\n                        result = result + int(item.price)\n                except Exception:\n                    pass\n    return result\n```",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 5.1,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "d5",
+   "prompt": "Clean up this Python function an LLM generated, it's overly defensive:\n\n```python\ndef total(items):\n    # Initialize the total to zero\n    result = 0\n    if items is not None:\n        if isinstance(items, list):\n            for item in items:\n                try:\n                    if item is not None:\n                        result = result + int(item.price)\n                except Exception:\n                    pass\n    return result\n```",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 6.8,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "d5",
+   "prompt": "Clean up this Python function an LLM generated, it's overly defensive:\n\n```python\ndef total(items):\n    # Initialize the total to zero\n    result = 0\n    if items is not None:\n        if isinstance(items, list):\n            for item in items:\n                try:\n                    if item is not None:\n                        result = result + int(item.price)\n                except Exception:\n                    pass\n    return result\n```",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 5.7,
+   "said": "",
+   "rep": 4
+  },
+  {
+   "id": "d6",
+   "prompt": "Open a PR for this branch against main.",
+   "ok": [
+    "none",
+    "deslop"
+   ],
+   "tag": "near-miss: description says 'before opening a PR'",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.4,
+   "said": "I can't open a PR because the working directory isn't a git repository. According to the environment, \"Is a git repository: false\".\n\nTo proceed, you'll need to either:\n1. Initialize git in this directory (`git init`)\n2. Work in a different ",
+   "rep": 1
+  },
+  {
+   "id": "d6",
+   "prompt": "Open a PR for this branch against main.",
+   "ok": [
+    "none",
+    "deslop"
+   ],
+   "tag": "near-miss: description says 'before opening a PR'",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.4,
+   "said": "I notice the current working directory (`/tmp/trig-2025vc77/work`) is not a git repository, so I can't open a PR. \n\nCould you clarify:\n1. Is there a different directory where the git repository is located?\n2. Or do you need to initialize a ",
+   "rep": 2
+  },
+  {
+   "id": "d6",
+   "prompt": "Open a PR for this branch against main.",
+   "ok": [
+    "none",
+    "deslop"
+   ],
+   "tag": "near-miss: description says 'before opening a PR'",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 6.6,
+   "said": "I need to check the repository status first. The system indicates this isn't a git repository yet. Let me verify the current state and ask you for the necessary details.\n\nTo open a PR, I'll need:\n1. Confirmation this is a git repository (or",
+   "rep": 3
+  },
+  {
+   "id": "d6",
+   "prompt": "Open a PR for this branch against main.",
+   "ok": [
+    "none",
+    "deslop"
+   ],
+   "tag": "near-miss: description says 'before opening a PR'",
+   "got": "none",
+   "other_skills": [
+    "run"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 5.7,
+   "said": "I need to check the current state first. According to the environment info, this isn't a git repository. Let me verify what's in the working directory.",
+   "rep": 4
+  },
+  {
+   "id": "d7",
+   "prompt": "Refactor the whole utils/ package to remove dead code and duplication.",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: repo-wide refactor, not a branch diff",
+   "got": "none",
+   "other_skills": [
+    "simplify"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 2.6,
+   "said": "I'll explore the utils/ package to identify dead code and duplication, then refactor it.",
+   "rep": 1
+  },
+  {
+   "id": "d7",
+   "prompt": "Refactor the whole utils/ package to remove dead code and duplication.",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: repo-wide refactor, not a branch diff",
+   "got": "none",
+   "other_skills": [
+    "simplify"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 2.4,
+   "said": "I'll help you refactor the utils package. Let me start by exploring the structure and identifying dead code and duplication.",
+   "rep": 2
+  },
+  {
+   "id": "d8",
+   "prompt": "Review my diff for bugs and security issues.",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: code review, not slop removal",
+   "got": "none",
+   "other_skills": [
+    "code-review"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 2.2,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "d8",
+   "prompt": "Review my diff for bugs and security issues.",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: code review, not slop removal",
+   "got": "none",
+   "other_skills": [
+    "code-review"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 1.9,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "n1",
+   "prompt": "Fix the failing test in tests/test_parser.py.",
+   "ok": [
+    "none"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [
+    "code-review"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 2.2,
+   "said": "I'll look at the test file to see what's failing.",
+   "rep": 1
+  },
+  {
+   "id": "n1",
+   "prompt": "Fix the failing test in tests/test_parser.py.",
+   "ok": [
+    "none"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [
+    "artifact-capabilities"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 2.6,
+   "said": "I'll help you fix the failing test. Let me start by examining the test file and understanding what's failing.",
+   "rep": 2
+  },
+  {
+   "id": "n2",
+   "prompt": "Translate this email into Spanish:\n\n\"Hi Marta, the shipment left on Monday and should arrive by Thursday. Let me know if anything is missing.\"",
+   "ok": [
+    "none"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.6,
+   "said": "Here's the email translated to Spanish:\n\n\"Hola Marta, el env\u00edo sali\u00f3 el lunes y deber\u00eda llegar el jueves. Av\u00edsame si falta algo.\"\n\nOr a slightly more formal version:\n\n\"Hola Marta, el env\u00edo parti\u00f3 el lunes y deber\u00eda llegar el jueves. Inf\u00f3rma",
+   "rep": 1
+  },
+  {
+   "id": "n2",
+   "prompt": "Translate this email into Spanish:\n\n\"Hi Marta, the shipment left on Monday and should arrive by Thursday. Let me know if anything is missing.\"",
+   "ok": [
+    "none"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.3,
+   "said": "Here's the email translated to Spanish:\n\n\"Hola Marta, el env\u00edo sali\u00f3 el lunes y deber\u00eda llegar el jueves. Av\u00edsame si algo falta.\"\n\nOr with a slightly more formal tone:\n\n\"Hola Marta, el env\u00edo parti\u00f3 el lunes y debe llegar el jueves. Por favo",
+   "rep": 2
+  },
+  {
+   "id": "n3",
+   "prompt": "Change the error toast text in the checkout UI to something friendlier. Current string in src/checkout/messages.ts: `PAYMENT_ERR: 'Transaction failed. Error code 402.'`",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: UI copy, which technical-writing excludes",
+   "got": "none",
+   "other_skills": [
+    "artifact-design"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 3.0,
+   "said": "I'll update that error message to be more user-friendly. Let me first check the file.",
+   "rep": 1
+  },
+  {
+   "id": "n3",
+   "prompt": "Change the error toast text in the checkout UI to something friendlier. Current string in src/checkout/messages.ts: `PAYMENT_ERR: 'Transaction failed. Error code 402.'`",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: UI copy, which technical-writing excludes",
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 2.5,
+   "said": "I'll read the file and update the error message to be friendlier.",
+   "rep": 2
+  },
+  {
+   "id": "n3",
+   "prompt": "Change the error toast text in the checkout UI to something friendlier. Current string in src/checkout/messages.ts: `PAYMENT_ERR: 'Transaction failed. Error code 402.'`",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: UI copy, which technical-writing excludes",
+   "got": "none",
+   "other_skills": [
+    "run"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 2.8,
+   "said": "I'll read the file to see the current message and update it to something friendlier.",
+   "rep": 3
+  },
+  {
+   "id": "n3",
+   "prompt": "Change the error toast text in the checkout UI to something friendlier. Current string in src/checkout/messages.ts: `PAYMENT_ERR: 'Transaction failed. Error code 402.'`",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: UI copy, which technical-writing excludes",
+   "got": "none",
+   "other_skills": [
+    "artifact-design"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 3.4,
+   "said": "",
+   "rep": 4
+  },
+  {
+   "id": "n4",
+   "prompt": "Proofread this paragraph for typos only, don't change the wording:\n\n\"Teh migration finished at 3am and we seen no errors in the logs, the dashbaord is green.\"",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: proofreading, not style",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.5,
+   "said": "Here's the proofread version with typos corrected:\n\n\"The migration finished at 3am and we seen no errors in the logs, the dashboard is green.\"\n\n**Typos fixed:**\n- \"Teh\" \u2192 \"The\"\n- \"dashbaord\" \u2192 \"dashboard\"",
+   "rep": 1
+  },
+  {
+   "id": "n4",
+   "prompt": "Proofread this paragraph for typos only, don't change the wording:\n\n\"Teh migration finished at 3am and we seen no errors in the logs, the dashbaord is green.\"",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: proofreading, not style",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.7,
+   "said": "Here are the typos I found:\n\n1. \"Teh\" \u2192 \"The\"\n2. \"dashbaord\" \u2192 \"dashboard\"\n\nNote: \"seen\" should be \"saw\" for grammatical correctness, but that's a word choice error rather than a typo.",
+   "rep": 2
+  },
+  {
+   "id": "n5",
+   "prompt": "Summarize this article in three bullets:\n\n\"The city council voted 7-2 on Tuesday to extend the bike-lane pilot on Elm Street for another year. Supporters cited a 30% drop in collisions; opponents said deliveries got harder. Staff will report back on loading zones in March.\"",
+   "ok": [
+    "none"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.0,
+   "said": "\u2022 City council voted 7-2 to extend the Elm Street bike-lane pilot for another year.\n\n\u2022 Supporters pointed to a 30% reduction in collisions since the pilot began.\n\n\u2022 Opponents raised concerns about delivery difficulties; the council will rev",
+   "rep": 1
+  },
+  {
+   "id": "n5",
+   "prompt": "Summarize this article in three bullets:\n\n\"The city council voted 7-2 on Tuesday to extend the bike-lane pilot on Elm Street for another year. Supporters cited a 30% drop in collisions; opponents said deliveries got harder. Staff will report back on loading zones in March.\"",
+   "ok": [
+    "none"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.1,
+   "said": "- City council voted 7-2 to extend the Elm Street bike-lane pilot for another year\n- Supporters highlighted a 30% drop in collisions, while opponents cited harder delivery access\n- Staff will report on loading zone solutions in March",
+   "rep": 2
+  },
+  {
+   "id": "n6",
+   "prompt": "Simplify this function, it's hard to read:\n\n```js\nfunction f(a){return a.filter(x=>x).map(x=>x.trim()).filter(x=>x.length>0?true:false).reduce((acc,x)=>{acc[x]=(acc[x]||0)+1;return acc},{})}\n```",
+   "ok": [
+    "none",
+    "deslop"
+   ],
+   "tag": "near-miss: simplify, not AI slop",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 10.6,
+   "said": "Here's a simplified version:\n\n```js\nfunction countWords(words) {\n  return words\n    .filter(Boolean)\n    .map(word => word.trim())\n    .filter(Boolean)\n    .reduce((counts, word) => {\n      counts[word] = (counts[word] || 0) + 1;\n      retu",
+   "rep": 1
+  },
+  {
+   "id": "n6",
+   "prompt": "Simplify this function, it's hard to read:\n\n```js\nfunction f(a){return a.filter(x=>x).map(x=>x.trim()).filter(x=>x.length>0?true:false).reduce((acc,x)=>{acc[x]=(acc[x]||0)+1;return acc},{})}\n```",
+   "ok": [
+    "none",
+    "deslop"
+   ],
+   "tag": "near-miss: simplify, not AI slop",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 14.9,
+   "said": "Here's the simplified version:\n\n```js\nfunction f(a) {\n  return a\n    .filter(x => x)\n    .map(x => x.trim())\n    .filter(x => x.length > 0)\n    .reduce((acc, x) => {\n      acc[x] = (acc[x] || 0) + 1;\n      return acc;\n    }, {});\n}\n```\n\nKey",
+   "rep": 2
+  },
+  {
+   "id": "r1",
+   "prompt": "/reflect",
+   "ok": [
+    "reflect"
+   ],
+   "tag": "slash command with no prior session: counts the direct expansion as a load",
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 5.1,
+   "said": "No session to reflect on\u2014this is the first message and it's the reflect command itself. Run /reflect after completing a task or conversation with findings to capture.",
+   "rep": 1
+  },
+  {
+   "id": "r1",
+   "prompt": "/reflect",
+   "ok": [
+    "reflect"
+   ],
+   "tag": "slash command with no prior session: counts the direct expansion as a load",
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 3.6,
+   "said": "This is the start of our conversation\u2014there's no prior work to reflect on yet. The `/reflect` skill is best used after a task lands, you've hit dead ends and found the working path, or a non-trivial workflow has emerged.\n\nWhat would you lik",
+   "rep": 2
+  },
+  {
+   "id": "r2",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nThat took way too long. What should change in our skills so next time goes faster?",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "reflect",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 5.6,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "r2",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nThat took way too long. What should change in our skills so next time goes faster?",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "reflect",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 7.6,
+   "said": "You hit two friction points: version sourcing confusion and leftover build artifacts. Let me extract the learnings so they stick next time.",
+   "rep": 2
+  },
+  {
+   "id": "r3",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nWe hit three dead ends before the deploy worked. Capture what we learned so the skill doesn't repeat them.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "reflect",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.3,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "r3",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nWe hit three dead ends before the deploy worked. Capture what we learned so the skill doesn't repeat them.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "reflect",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 5.2,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "r4",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nBefore we wrap up, mine this session for anything worth adding to the release skill.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "reflect",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.9,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "r4",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nBefore we wrap up, mine this session for anything worth adding to the release skill.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "reflect",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.6,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "r5",
+   "prompt": "Write up a postmortem doc for yesterday's outage for the team.",
+   "ok": [
+    "technical-writing",
+    "none"
+   ],
+   "tag": "near-miss: retrospective about an incident, not this session",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.9,
+   "said": "I'd be happy to help write a postmortem, but I need details about yesterday's outage first. Can you provide:\n\n1. **What happened** \u2014 brief description of the incident\n2. **What systems/services were affected**\n3. **Duration** \u2014 when it star",
+   "rep": 1
+  },
+  {
+   "id": "r5",
+   "prompt": "Write up a postmortem doc for yesterday's outage for the team.",
+   "ok": [
+    "technical-writing",
+    "none"
+   ],
+   "tag": "near-miss: retrospective about an incident, not this session",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.5,
+   "said": "I'd be happy to help write a postmortem, but I need some details about yesterday's outage first. Can you provide:\n\n1. **What happened** \u2014 brief description of the outage\n2. **When it occurred** \u2014 start time, duration, end time\n3. **What was",
+   "rep": 2
+  },
+  {
+   "id": "r6",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nWhat did you learn about this codebase today? Just summarize.",
+   "ok": [
+    "none",
+    "reflect"
+   ],
+   "tag": "near-miss: summary request, no skill edit asked",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.5,
+   "said": "The acme-client project manages its version in `src/acme_client/__about__.py` rather than `pyproject.toml`, which is where you'd typically expect it. The build system needs a clean `dist/` directory before rebuilding wheels\u2014old artifacts fr",
+   "rep": 1
+  },
+  {
+   "id": "r6",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nWhat did you learn about this codebase today? Just summarize.",
+   "ok": [
+    "none",
+    "reflect"
+   ],
+   "tag": "near-miss: summary request, no skill edit asked",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.3,
+   "said": "The acme-client project reads its version from `src/acme_client/__about__.py` rather than `pyproject.toml` \u2014 the first release attempt bumped the wrong file. Also, when twine fails with \"File already exists,\" the fix is to clear the `dist/`",
+   "rep": 2
+  },
+  {
+   "id": "r7",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nYou kept forgetting to run the linter before committing and I corrected you twice. Make sure that sticks for future sessions.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 4.0,
+   "said": "Got it. I'll make sure to run the linter before every commit going forward\u2014no exceptions. That's a solid habit to lock in now rather than having to correct it again.\n\nIs there anything else you'd like to work on with the acme-client project",
+   "rep": 1
+  },
+  {
+   "id": "r7",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nYou kept forgetting to run the linter before committing and I corrected you twice. Make sure that sticks for future sessions.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 4.0,
+   "said": "Got it. I'll make sure to run the linter before every commit on this project going forward\u2014it should be a standard step in my workflow here, not something I skip over. Thanks for the correction; that's a durable lesson.",
+   "rep": 2
+  },
+  {
+   "id": "r8",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nTask's done. Do a retro on this session and propose edits to the skills we used.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "reflect",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.0,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "r8",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\nTask's done. Do a retro on this session and propose edits to the skills we used.",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "reflect",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.3,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "r9",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\ndeep reflect on this session, use subagents",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "reflect",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.6,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "r9",
+   "prompt": "[Earlier in this session: we released acme-client 2.4.0 to the internal index using the pypi-release skill. First attempt bumped the version in pyproject.toml, but the project reads it from src/acme_client/__about__.py, so you reverted. Then twine failed with 'File already exists' because dist/ still held 2.3.1 wheels; you tried --skip-existing and I stopped you, we cleared dist/ and rebuilt, and the upload worked.]\n\ndeep reflect on this session, use subagents",
+   "ok": [
+    "reflect"
+   ],
+   "tag": null,
+   "got": "reflect",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.6,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "t1",
+   "prompt": "Write a README for this CLI tool: what it does, install, and the three main commands. It's `logtail`, a Go binary that tails JSON logs from S3. Install with `go install github.com/acme/logtail@latest`. Commands: `logtail ls <bucket>`, `logtail tail <bucket/prefix> --since 10m`, `logtail grep <bucket/prefix> <expr>`.",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.0,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "t1",
+   "prompt": "Write a README for this CLI tool: what it does, install, and the three main commands. It's `logtail`, a Go binary that tails JSON logs from S3. Install with `go install github.com/acme/logtail@latest`. Commands: `logtail ls <bucket>`, `logtail tail <bucket/prefix> --since 10m`, `logtail grep <bucket/prefix> <expr>`.",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.2,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "t2",
+   "prompt": "Turn my notes about restoring the Postgres replica into a runbook the on-call can follow.\n\nnotes:\n- replica lag alert -> check pg_stat_replication on primary\n- if lag > 1h just rebuild, dont bother\n- stop postgres on replica, wipe /var/lib/postgresql/16/main (careful!!)\n- pg_basebackup -h db-primary -D ... -R -X stream\n- start, watch logs, takes ~40min for 300GB\n- tell #data-oncall when done",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.3,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "t2",
+   "prompt": "Turn my notes about restoring the Postgres replica into a runbook the on-call can follow.\n\nnotes:\n- replica lag alert -> check pg_stat_replication on primary\n- if lag > 1h just rebuild, dont bother\n- stop postgres on replica, wipe /var/lib/postgresql/16/main (careful!!)\n- pg_basebackup -h db-primary -D ... -R -X stream\n- start, watch logs, takes ~40min for 300GB\n- tell #data-oncall when done",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.5,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "t3",
+   "prompt": "Review this RFC draft for clarity and structure before I circulate it:\n\n\"RFC: move sessions to Redis. So basically right now sessions live in Postgres and it's slow at peak and also there was the incident. We could use Redis. Or Memcached maybe. Redis has persistence. Plan is to dual-write for a week then cut over, rollback is just flip the flag back. Open question: TTLs?\"",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.4,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "t3",
+   "prompt": "Review this RFC draft for clarity and structure before I circulate it:\n\n\"RFC: move sessions to Redis. So basically right now sessions live in Postgres and it's slow at peak and also there was the incident. We could use Redis. Or Memcached maybe. Redis has persistence. Plan is to dual-write for a week then cut over, rollback is just flip the flag back. Open question: TTLs?\"",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.6,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "t4",
+   "prompt": "Document the /v2/orders endpoints as API reference: parameters, responses, errors. GET /v2/orders?status=&limit= (limit max 100) returns {orders:[...], next_cursor}; POST /v2/orders takes {sku, qty} and returns 201 with the order, 409 if out of stock, 422 on bad input.",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.3,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "t4",
+   "prompt": "Document the /v2/orders endpoints as API reference: parameters, responses, errors. GET /v2/orders?status=&limit= (limit max 100) returns {orders:[...], next_cursor}; POST /v2/orders takes {sku, qty} and returns 201 with the order, 409 if out of stock, 422 on bad input.",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.0,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "t5",
+   "prompt": "Our getting-started tutorial loses people at step 4. Rewrite it so every step shows what they should see:\n\n1. Install the CLI.\n2. Run `acme login`.\n3. Create a project with `acme init demo`.\n4. Configure the webhook and deploy.\n5. You're done!",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.6,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "t5",
+   "prompt": "Our getting-started tutorial loses people at step 4. Rewrite it so every step shows what they should see:\n\n1. Install the CLI.\n2. Run `acme login`.\n3. Create a project with `acme init demo`.\n4. Configure the webhook and deploy.\n5. You're done!",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 8.5,
+   "said": "I need to see the actual tutorial file to rewrite it properly with expected outputs. Can you point me to where this tutorial lives? \n\nOnce I find it, I'll rewrite it by:\n- Breaking down step 4 into specific substeps (e.g., \"Add webhook URL ",
+   "rep": 2
+  },
+  {
+   "id": "t5",
+   "prompt": "Our getting-started tutorial loses people at step 4. Rewrite it so every step shows what they should see:\n\n1. Install the CLI.\n2. Run `acme login`.\n3. Create a project with `acme init demo`.\n4. Configure the webhook and deploy.\n5. You're done!",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.7,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "t5",
+   "prompt": "Our getting-started tutorial loses people at step 4. Rewrite it so every step shows what they should see:\n\n1. Install the CLI.\n2. Run `acme login`.\n3. Create a project with `acme init demo`.\n4. Configure the webhook and deploy.\n5. You're done!",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.1,
+   "said": "",
+   "rep": 4
+  },
+  {
+   "id": "t6",
+   "prompt": "Write a commit message for the staged changes.",
+   "ok": [
+    "technical-writing",
+    "unslop"
+   ],
+   "tag": "collision: both descriptions list commit messages",
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.7,
+   "said": "I'll check the staged changes first.",
+   "rep": 1
+  },
+  {
+   "id": "t6",
+   "prompt": "Write a commit message for the staged changes.",
+   "ok": [
+    "technical-writing",
+    "unslop"
+   ],
+   "tag": "collision: both descriptions list commit messages",
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.4,
+   "said": "I'll check the staged changes first to understand what needs to be committed.",
+   "rep": 2
+  },
+  {
+   "id": "t7",
+   "prompt": "Write the PR description for this branch.",
+   "ok": [
+    "technical-writing",
+    "unslop"
+   ],
+   "tag": "collision: both list PR descriptions",
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.7,
+   "said": "I'll check the git status and recent changes to write an appropriate PR description.",
+   "rep": 1
+  },
+  {
+   "id": "t7",
+   "prompt": "Write the PR description for this branch.",
+   "ok": [
+    "technical-writing",
+    "unslop"
+   ],
+   "tag": "collision: both list PR descriptions",
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 5.5,
+   "said": "I'll check the current git status and recent changes to understand what's on this branch.",
+   "rep": 2
+  },
+  {
+   "id": "t8",
+   "prompt": "Edit our CONTRIBUTING.md so the setup steps are numbered commands instead of a wall of text:\n\n\"To get set up you'll want to clone the repo and then install deps with pnpm (we use pnpm 9, not npm) and copy .env.example to .env and then run the db with docker compose up db and then pnpm dev should work, ping #dev if not.\"",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.5,
+   "said": "I'll read the CONTRIBUTING.md file first to see the current state.",
+   "rep": 1
+  },
+  {
+   "id": "t8",
+   "prompt": "Edit our CONTRIBUTING.md so the setup steps are numbered commands instead of a wall of text:\n\n\"To get set up you'll want to clone the repo and then install deps with pnpm (we use pnpm 9, not npm) and copy .env.example to .env and then run the db with docker compose up db and then pnpm dev should work, ping #dev if not.\"",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.7,
+   "said": "I'll read the file and reformat those setup steps into a clear numbered list.",
+   "rep": 2
+  },
+  {
+   "id": "t8",
+   "prompt": "Edit our CONTRIBUTING.md so the setup steps are numbered commands instead of a wall of text:\n\n\"To get set up you'll want to clone the repo and then install deps with pnpm (we use pnpm 9, not npm) and copy .env.example to .env and then run the db with docker compose up db and then pnpm dev should work, ping #dev if not.\"",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.7,
+   "said": "I'll check the current CONTRIBUTING.md and reformat the setup section into numbered steps.",
+   "rep": 3
+  },
+  {
+   "id": "t8",
+   "prompt": "Edit our CONTRIBUTING.md so the setup steps are numbered commands instead of a wall of text:\n\n\"To get set up you'll want to clone the repo and then install deps with pnpm (we use pnpm 9, not npm) and copy .env.example to .env and then run the db with docker compose up db and then pnpm dev should work, ping #dev if not.\"",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.3,
+   "said": "I'll read the CONTRIBUTING.md file first, then reformat those setup steps as numbered commands.",
+   "rep": 4
+  },
+  {
+   "id": "u1",
+   "prompt": "This LinkedIn post reads like ChatGPT wrote it. Can you make it sound like me? 'In today's fast-paced landscape, I'm thrilled to announce...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.8,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "u1",
+   "prompt": "This LinkedIn post reads like ChatGPT wrote it. Can you make it sound like me? 'In today's fast-paced landscape, I'm thrilled to announce...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.8,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "u1",
+   "prompt": "This LinkedIn post reads like ChatGPT wrote it. Can you make it sound like me? 'In today's fast-paced landscape, I'm thrilled to announce...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.1,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "u1",
+   "prompt": "This LinkedIn post reads like ChatGPT wrote it. Can you make it sound like me? 'In today's fast-paced landscape, I'm thrilled to announce...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.8,
+   "said": "",
+   "rep": 4
+  },
+  {
+   "id": "u2",
+   "prompt": "De-AI this email before I send it to my landlord: 'I hope this message finds you well. I wanted to reach out regarding...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.7,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "u2",
+   "prompt": "De-AI this email before I send it to my landlord: 'I hope this message finds you well. I wanted to reach out regarding...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 4.0,
+   "said": "I can help with that, but I need the full email text. You've shown me the opening\u2014could you paste the complete message you want to de-AI?",
+   "rep": 2
+  },
+  {
+   "id": "u2",
+   "prompt": "De-AI this email before I send it to my landlord: 'I hope this message finds you well. I wanted to reach out regarding...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 3.8,
+   "said": "I can help with that! I'll need the full email though \u2014 share the complete text and I'll remove the AI tells and add a natural human voice.",
+   "rep": 3
+  },
+  {
+   "id": "u2",
+   "prompt": "De-AI this email before I send it to my landlord: 'I hope this message finds you well. I wanted to reach out regarding...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.4,
+   "said": "",
+   "rep": 4
+  },
+  {
+   "id": "u3",
+   "prompt": "Tighten this paragraph from my blog draft, it's full of fluff and buzzwords:\n\n\"In an era where developer experience is paramount, our team embarked on a journey to fundamentally reimagine how we approach CI. Leveraging cutting-edge caching strategies, we unlocked unprecedented velocity, empowering engineers to focus on what truly matters.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.4,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "u3",
+   "prompt": "Tighten this paragraph from my blog draft, it's full of fluff and buzzwords:\n\n\"In an era where developer experience is paramount, our team embarked on a journey to fundamentally reimagine how we approach CI. Leveraging cutting-edge caching strategies, we unlocked unprecedented velocity, empowering engineers to focus on what truly matters.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.9,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "u4",
+   "prompt": "Rewrite the intro of my conference talk abstract so it doesn't sound robotic:\n\n\"In this talk, we will delve into the multifaceted landscape of observability. Attendees will gain valuable insights and actionable takeaways to elevate their monitoring journey.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.3,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "u4",
+   "prompt": "Rewrite the intro of my conference talk abstract so it doesn't sound robotic:\n\n\"In this talk, we will delve into the multifaceted landscape of observability. Attendees will gain valuable insights and actionable takeaways to elevate their monitoring journey.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.4,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "u4",
+   "prompt": "Rewrite the intro of my conference talk abstract so it doesn't sound robotic:\n\n\"In this talk, we will delve into the multifaceted landscape of observability. Attendees will gain valuable insights and actionable takeaways to elevate their monitoring journey.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.0,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "u4",
+   "prompt": "Rewrite the intro of my conference talk abstract so it doesn't sound robotic:\n\n\"In this talk, we will delve into the multifaceted landscape of observability. Attendees will gain valuable insights and actionable takeaways to elevate their monitoring journey.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.7,
+   "said": "",
+   "rep": 4
+  },
+  {
+   "id": "u5",
+   "prompt": "My manager says my status updates sound like marketing copy. Here's this week's, fix it:\n\n\"This week I spearheaded a robust overhaul of our alerting pipeline, seamlessly integrating PagerDuty and unlocking significant gains in on-call efficiency. Excited to keep driving impact!\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.1,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "u5",
+   "prompt": "My manager says my status updates sound like marketing copy. Here's this week's, fix it:\n\n\"This week I spearheaded a robust overhaul of our alerting pipeline, seamlessly integrating PagerDuty and unlocking significant gains in on-call efficiency. Excited to keep driving impact!\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.4,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "u5",
+   "prompt": "My manager says my status updates sound like marketing copy. Here's this week's, fix it:\n\n\"This week I spearheaded a robust overhaul of our alerting pipeline, seamlessly integrating PagerDuty and unlocking significant gains in on-call efficiency. Excited to keep driving impact!\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.6,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "u5",
+   "prompt": "My manager says my status updates sound like marketing copy. Here's this week's, fix it:\n\n\"This week I spearheaded a robust overhaul of our alerting pipeline, seamlessly integrating PagerDuty and unlocking significant gains in on-call efficiency. Excited to keep driving impact!\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.3,
+   "said": "",
+   "rep": 4
+  },
+  {
+   "id": "u6",
+   "prompt": "Write a short thank-you note to the team for shipping the migration.",
+   "ok": [
+    "unslop",
+    "none"
+   ],
+   "tag": "near-miss: drafting prose, no slop named",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.1,
+   "said": "I'd be happy to help write a thank-you note, but I need a bit more context to make it meaningful:\n\n1. **What migration was shipped?** (e.g., database migration, platform migration, infrastructure migration, etc.)\n2. **Who should I address i",
+   "rep": 1
+  },
+  {
+   "id": "u6",
+   "prompt": "Write a short thank-you note to the team for shipping the migration.",
+   "ok": [
+    "unslop",
+    "none"
+   ],
+   "tag": "near-miss: drafting prose, no slop named",
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.7,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "u7",
+   "prompt": "Cut the filler from this product announcement, it's full of 'seamless' and 'robust':\n\n\"We're thrilled to unveil Sync 2.0, a seamless, robust solution that empowers teams to effortlessly collaborate across every touchpoint.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.9,
+   "said": "",
+   "rep": 1
+  },
+  {
+   "id": "u7",
+   "prompt": "Cut the filler from this product announcement, it's full of 'seamless' and 'robust':\n\n\"We're thrilled to unveil Sync 2.0, a seamless, robust solution that empowers teams to effortlessly collaborate across every touchpoint.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.8,
+   "said": "",
+   "rep": 2
+  },
+  {
+   "id": "u7",
+   "prompt": "Cut the filler from this product announcement, it's full of 'seamless' and 'robust':\n\n\"We're thrilled to unveil Sync 2.0, a seamless, robust solution that empowers teams to effortlessly collaborate across every touchpoint.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.4,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "u7",
+   "prompt": "Cut the filler from this product announcement, it's full of 'seamless' and 'robust':\n\n\"We're thrilled to unveil Sync 2.0, a seamless, robust solution that empowers teams to effortlessly collaborate across every touchpoint.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.3,
+   "said": "",
+   "rep": 4
+  }
+ ]
+}

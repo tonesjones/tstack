@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": false,
+      "evidence": "The rewrite adds a claim the original never makes: \"people started context-switching to other work while they waited\"; it also drops the original's point that the 3 services were tackled with a specific focus on the cache-vs-benchmark framing less, and the \"seamless/robust\" cache claims, but the context-switching claim is a new fact."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": true,
+      "evidence": "No em dashes, staged reveals, or cliches are added; the original's \"The result?\" and \"Let's dive in\" are gone, and the ending \"Start by finding out where the time actually goes.\" is plain rather than uplifting."
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "Wording is plain and concrete with varied sentence length, e.g. \"Most of our time wasn't spent compiling. It was spent downloading the same dependencies over and over.\""
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It stays a straightforward engineering team blog post with section headings like \"Sharding the tests\" and no hype, jokes, or bullet-list dryness."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

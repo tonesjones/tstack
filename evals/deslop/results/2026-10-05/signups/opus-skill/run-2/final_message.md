@@ -1,0 +1,3 @@
+I cleaned up the code this branch added to `signups.py`. It now reuses the file's existing `normalize_email`, `MAX_NAME_LEN` and `WAITLIST_TAG` instead of copying them. I also removed the unneeded `list(rows)` copy, the `result` variable used only for the return, and the length check before slicing in `clean_name`. There's no test suite, so I checked it with a quick script that covers duplicates, blank and missing emails, staff, capacity and a too-long name. The results came out as expected.
+
+I left the `int(capacity)` conversion, the `or ""` fallbacks on CSV fields, and the two comments that explain why, because the data comes from a file and those guards are deliberate.

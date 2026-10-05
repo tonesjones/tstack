@@ -1,0 +1,106 @@
+{
+  "expectations": [
+    {
+      "text": "Removed the 'in today's fast-paced world' opener",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed the 'whether you're a seasoned engineer' audience hedge",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed 'let's dive in'",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed the journey framing ('embarked on a journey', 'continue on this journey')",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed the buzzword cluster (leveraging, seamless, robust, empower, speed of thought, unlock)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed 'game changer' from the author's own prose",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed the staged reveals ('Here's the thing:', 'The result?')",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed 'Notably' and 'Needless to say'",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed 'We didn't stop there'",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed the stock ending (end of the day, culture of excellence, what the future holds)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed the 'feel free to reach out' sign-off",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Removed the stock headings ('Navigating the Complexities', 'A Holistic Approach', 'Wrapping Up')",
+      "passed": false,
+      "evidence": "left: ['wrapping up']"
+    },
+    {
+      "text": "[named] Headings in sentence case",
+      "passed": true,
+      "evidence": "title case: []"
+    },
+    {
+      "text": "Kept 'Measure, then cut.' exactly three times (outside the author's note)",
+      "passed": true,
+      "evidence": "count=3"
+    },
+    {
+      "text": "Kept every fact (times, rates, counts, cost, name, month)",
+      "passed": true,
+      "evidence": "missing: []"
+    },
+    {
+      "text": "Introduced no new numbers",
+      "passed": true,
+      "evidence": "new: []"
+    },
+    {
+      "text": "Left the code block byte-identical",
+      "passed": true,
+      "evidence": "1 block(s)"
+    },
+    {
+      "text": "Kept Priya's quote verbatim (it contains 'game changer' on purpose)",
+      "passed": true,
+      "evidence": ""
+    }
+  ],
+  "summary": {
+    "passed": 17,
+    "failed": 1,
+    "total": 18,
+    "pass_rate": 0.94
+  },
+  "info": {
+    "words": 268,
+    "orig_words": 365,
+    "em_dashes": 0,
+    "orig_em_dashes": 0
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": false,
+      "evidence": "Rollback step 4 adds \"If it still fails, escalate in #billing-oncall,\" an escalation rule the original never states, and \"only the install steps above are manual\" is also a new operational claim."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 3 runs \"sudo cp /etc/billing/tls/current.pem /etc/billing/tls/previous.pem\" before the step 4 swap, and Rollback runs \"sudo cp .../previous.pem .../current.pem\" and then restarts billing-worker."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "History is cut to two sentences in a final \"## Background\" section (\"Certs were rotated by hand on each box until 2024...\"), and the steps contain no long explanation."
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": true,
+      "evidence": "A \"Before you start\" checklist puts the month-end, VPN and role checks ahead of the steps, the backup is step 3 before the swap, and each numbered step has one action with a linked Rollback section."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

@@ -1,0 +1,1 @@
+Removed slop from the new code: replaced magic number `64` and string `"waitlist"` with existing constants `MAX_NAME_LEN` and `WAITLIST_TAG`, reused the `normalize_email()` helper instead of inlining `strip().lower()`, and eliminated an unnecessary intermediate variable. Syntax check passed.

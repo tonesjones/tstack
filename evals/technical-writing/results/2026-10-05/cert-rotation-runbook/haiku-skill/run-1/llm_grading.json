@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": false,
+      "evidence": "Step 1 adds `> /tmp/new-cert.json` and `cat /tmp/new-cert.json | jq -r '.data.certificate' > /etc/billing/tls/new.pem`, which the original never states, and the rollback adds `billingctl resume`, which the original only gives as a final step."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 3 \"sudo cp /etc/billing/tls/current.pem /etc/billing/tls/previous.pem\" runs before the swap in step 4, and the rollback runs \"sudo cp /etc/billing/tls/previous.pem /etc/billing/tls/current.pem\" then restarts billing-worker."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "The 2024 Vault move history is dropped, and the only background is a one-line note on the 90-day validity and the alert timing, outside the steps."
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": true,
+      "evidence": "Prerequisites, including the month-end warning, come before the Procedure. Each step has one action, and the backup (step 3) comes before the swap (step 4). Step 6 points to the Rollback section, which sits after step 7 but is clearly labeled."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

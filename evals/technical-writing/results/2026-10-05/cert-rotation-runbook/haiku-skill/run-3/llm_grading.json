@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] no_invented_facts",
+      "passed": true,
+      "evidence": "Commands, paths, the 2-minute drain and the 90-day/14-day figures all come from the original, and the rollback `sudo cp /etc/billing/tls/previous.pem /etc/billing/tls/current.pem` plus restart does what the original describes; the only additions are minor wording such as \"on Slack\" and \"Verify the certificate is loaded\"."
+    },
+    {
+      "text": "[LLM sonnet] rollback_correct",
+      "passed": true,
+      "evidence": "Step 2 runs `sudo cp .../current.pem .../previous.pem` before the step 4 swap, and the step 6 failure path copies previous.pem back to current.pem and restarts billing-worker."
+    },
+    {
+      "text": "[LLM sonnet] how_to_only",
+      "passed": true,
+      "evidence": "The Vault-move history and the manual-per-box background are dropped, and the steps contain only commands with one-line notes such as \"This takes up to 2 minutes.\""
+    },
+    {
+      "text": "[LLM sonnet] first_read",
+      "passed": true,
+      "evidence": "The VPN/role and month-end warnings sit under Prerequisites before the steps, the backup (step 2) precedes the swap (step 4), and each numbered step has one action; the only ambiguity is whether to run step 7 after a rollback."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "grader_model": "sonnet"
+}

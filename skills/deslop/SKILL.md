@@ -1,11 +1,11 @@
 ---
 name: "deslop"
-description: "Remove AI-generated slop from a code diff: needless comments, abnormal defensive checks, type-escape casts, deep nesting. Use when asked to deslop or tidy AI-written code, or before opening a PR."
+description: "Remove AI-generated slop from a code diff or pasted code: needless comments, abnormal defensive checks, type-escape casts, deep nesting. Use when asked to deslop or tidy AI-written code, or before opening a PR."
 ---
 
 # Deslop
 
-Version: 1.0.0 (2026-10-03)
+Version: 1.0.1 (2026-10-05)
 
 Remove the AI-generated slop a branch introduced, measured against main. Leave everything else alone.
 

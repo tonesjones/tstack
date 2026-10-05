@@ -1,0 +1,67 @@
+{
+  "expectations": [
+    {
+      "text": "Every original command kept verbatim",
+      "passed": true,
+      "evidence": "missing: []"
+    },
+    {
+      "text": "Every operational fact kept (validity, alert lead time, alert name, role, VPN, channel, close window, drain time)",
+      "passed": true,
+      "evidence": "missing: []"
+    },
+    {
+      "text": "The forgotten backup step (cp current.pem previous.pem) is written as its own command before the swap",
+      "passed": true,
+      "evidence": "backup@565 swap@833"
+    },
+    {
+      "text": "The month-end warning comes before the drain step",
+      "passed": true,
+      "evidence": "month-end@294 drain@664"
+    },
+    {
+      "text": "VPN and billing-ops prerequisites come before the first command",
+      "passed": true,
+      "evidence": "vpn@242 issue@407"
+    },
+    {
+      "text": "[named] Steps are a numbered list (at least 6 items)",
+      "passed": true,
+      "evidence": "7 numbered"
+    },
+    {
+      "text": "[named] Every numbered step starts with an imperative verb or its condition",
+      "passed": true,
+      "evidence": "non-imperative starts: []"
+    },
+    {
+      "text": "Rollback via previous.pem is described after the health check",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "Removed the chatty and hedged phrasing (basically, you should, I forgot, !!, it's important to note)",
+      "passed": true,
+      "evidence": "left: []"
+    },
+    {
+      "text": "[named] Headings in sentence case",
+      "passed": false,
+      "evidence": "title case: ['Billing Worker TLS Certificate Rotation']"
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 1,
+    "total": 10,
+    "pass_rate": 0.9
+  },
+  "info": {
+    "words": 200,
+    "orig_words": 239,
+    "numbered_steps": 7,
+    "mentions_2024_history": false,
+    "other_names_for_service": []
+  }
+}

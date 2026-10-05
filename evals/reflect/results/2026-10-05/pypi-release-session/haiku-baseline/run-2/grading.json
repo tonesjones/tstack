@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": true,
+      "evidence": "6349 chars"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "The proposed pypi-release 'Version bump' step says to find where the version is stored, naming `[tool.hatch.version]`, `__about__.py` and `__init__.py` when it is dynamic, and it is routed to pypi-release's bump section."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "The proposed pypi-release Build section adds `rm -rf dist/` before building, and the Upload section drops `--skip-existing` with an explanation."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": false,
+      "evidence": "The full replacement skill text is concrete for most edits, but the Issue 1 proposal is vague ('acknowledge flexibility', 'document that non-standard layouts need manual adjustment'). The 'Before you start' section also still states a pyproject.toml assumption, which conflicts with the new step."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": false,
+      "evidence": "Issue 4 (commit-only-version-bump, signing, push order) rests on nothing that happened; the user's mention of the merged 429 change did not imply it, so this is an invented learning that also appears in the proposed skill text."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The document is titled 'Proposals', gives 'Recommended Skill Edits' and a 'Proposed new structure', and never says the files were already changed."
+    }
+  ],
+  "summary": {
+    "passed": 11,
+    "failed": 2,
+    "total": 13,
+    "pass_rate": 0.85
+  },
+  "info": {
+    "words": 946,
+    "has_accepted_table": false
+  }
+}

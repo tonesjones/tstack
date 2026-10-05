@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": false,
+      "evidence": "The rewrite changes the quoted retro line from \"The cache was a game changer\" to \"The cache was helpful\", altering a direct quote, and it adds a claim that developers \"can actually focus on code instead of staring at CI\" that the original never states; it also drops the 'first two weeks' framing slightly and the 'Priya as team lead' is kept but 'cut test time by 6 minutes on its own' becomes 'another 6 minutes'."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": false,
+      "evidence": "It uses em dashes as connectors (\"wasn't compilation\u2014it was downloading\", \"$2,400/month\u2014cheap compared to\"), \"Priya nailed it\", and ends on a generic uplifting conclusion (\"Faster builds matter. Less waiting means developers get feedback quicker and can actually focus on code\")."
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "The prose is short and concrete with varied sentence lengths (\"Waiting for CI is miserable.\", \"Three services accounted for 70% of build time, so we focused there first.\"), and it drops the marketing filler of the original."
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It stays a plain engineering team blog post with sections and concrete numbers, without hype, jokes, or collapsing into bullets."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  },
+  "grader_model": "sonnet"
+}

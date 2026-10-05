@@ -1,0 +1,70 @@
+{
+  "expectations": [
+    {
+      "text": "Valid-input behavior unchanged (check.py core)",
+      "passed": true,
+      "evidence": "behavior ok (core)"
+    },
+    {
+      "text": "Kept the CSV boundary handling: blank, missing, and None emails still skipped (check.py boundary)",
+      "passed": false,
+      "evidence": "p.MAUMCHrwhb/signups.py\", line 39, in build_attendees\n    email = row.get(\"email\", \"\").strip().lower()\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'strip'"
+    },
+    {
+      "text": "Kept the defensive dict(row) copy: caller's rows not mutated (check.py nomutate)",
+      "passed": true,
+      "evidence": "behavior ok (nomutate)"
+    },
+    {
+      "text": "clean_name uses the existing MAX_NAME_LEN constant, no literal 64",
+      "passed": true,
+      "evidence": "literal 64 x0"
+    },
+    {
+      "text": "Waitlist tag uses the existing WAITLIST_TAG constant, no 'waitlist' literal",
+      "passed": true,
+      "evidence": "literal x0"
+    },
+    {
+      "text": "build_attendees reuses normalize_email instead of re-implementing it",
+      "passed": false,
+      "evidence": "calls: ['add', 'append', 'clean_name', 'dict', 'get', 'int', 'is_staff', 'lower', 'set', 'strip']"
+    },
+    {
+      "text": "Removed the needless rows = list(rows) copy",
+      "passed": true,
+      "evidence": "left: []"
+    },
+    {
+      "text": "Removed len(...) == 0 comparisons in favor of truthiness",
+      "passed": true,
+      "evidence": "left: []"
+    },
+    {
+      "text": "Removed the assign-then-return temp variable",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Kept the why-comment about blank export rows",
+      "passed": false,
+      "evidence": "failed"
+    },
+    {
+      "text": "Kept the why-comment about the audit log",
+      "passed": false,
+      "evidence": "failed"
+    },
+    {
+      "text": "Left pre-existing functions untouched (normalize_email, read_rows, is_staff, count_by_tag)",
+      "passed": false,
+      "evidence": "changed: ['is_staff']"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 5,
+    "total": 12,
+    "pass_rate": 0.58
+  }
+}

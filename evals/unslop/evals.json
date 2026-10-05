@@ -1,0 +1,22 @@
+{
+  "skill_name": "unslop",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "build-times-post",
+      "prompt": "Edit post.md in place so it stops reading like AI wrote it.",
+      "expected_output": "Seeded AI tells removed; every fact, the code block, Priya's quote, and the deliberate three-times refrain kept; no new numbers or claims.",
+      "files": [
+        "evals/unslop/fixture"
+      ],
+      "expectations": [
+        "Removed 12 seeded tells (openers, audience hedge, journey framing, buzzwords, staged reveals, stock ending, sign-off, stock headings)",
+        "[named] Headings in sentence case",
+        "Kept 'Measure, then cut.' exactly three times",
+        "Kept every fact; introduced no new numbers",
+        "Left the code block byte-identical; kept Priya's quote verbatim",
+        "Blind LLM rubric (evals/unslop/rubric.md): meaning_preserved, no_new_tells, reads_human, tone_matches"
+      ]
+    }
+  ]
+}

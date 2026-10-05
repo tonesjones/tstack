@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": false,
+      "evidence": "The rewrite changes the quote to \"moved the needle\" (original: \"game changer\"), adds \"you finish a change, grab coffee\", and adds \"more iterations per day, faster feedback\"; it also drops the \"first two weeks\" framing nuance and the \"far less than engineer-hours\" is softened, and \"22-minute improvement\" is derived but the added productivity claims are new."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": false,
+      "evidence": "It uses em dashes as connectors (\"That's painful\u2014you finish a change\", \"wasn't compilation\u2014it was downloading\", \"$2,400 a month\u2014cheaper than\") and ends with a generic uplifting line, \"It makes the work less frustrating.\""
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "Overall it is concrete and varied, e.g. \"Only 3 of the 11 services accounted for 70% of build time\" and \"cheaper than the engineering time we were bleeding\", and reads like a colleague wrote it."
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It keeps an engineering team blog register with section headings, the code block, and the refrain, without hype or jokes or turning into bullets."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  },
+  "grader_model": "sonnet"
+}

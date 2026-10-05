@@ -1,0 +1,1 @@
+Removed hardcoded constants (now uses `MAX_NAME_LEN` and `WAITLIST_TAG`), eliminated redundant operations (`or ""` fallbacks, double `.strip()` calls), reused `normalize_email()` instead of duplicating the logic, and removed the unnecessary `result` variable. Syntax verified.

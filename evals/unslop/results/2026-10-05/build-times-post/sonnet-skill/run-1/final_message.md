@@ -1,0 +1,3 @@
+I rewrote `post.md` in place. I cut the filler, buzzwords and generic ending, and the numbers are all unchanged. I left the author's note, the code block and Priya's quote as they were. "Measure, then cut." still appears three times.
+
+One line in the new ending is mine: "For us, three services caused most of the wait, and the cache fixed the rest." It follows from the post's own figures, but check that you're happy with it.
