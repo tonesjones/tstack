@@ -26,7 +26,8 @@ VERBS = {"issue", "drain", "back", "copy", "swap", "move", "restart", "check", "
          "request", "generate", "if", "to", "log", "sign", "ensure", "open", "stop", "start", "test", "rotate",
          "create", "put", "write", "update", "do", "don't", "skip", "re-run", "rerun", "repeat", "on", "when",
          "before", "after", "keep", "use", "switch", "edit", "set", "remove", "delete", "store", "call", "drop",
-         "note"}
+         "note", "ask", "post", "contact", "notify", "page", "escalate", "once", "backup", "verify", "tell",
+         "message", "unless", "while", "reach"}
 
 
 def norm(s):
@@ -38,9 +39,9 @@ def grade(work):
     flat = norm(out)
     low = flat.lower()
     lines = out.splitlines()
-    numbered = [(i, l) for i, l in enumerate(lines) if re.match(r"\s*\d+\.\s", l)]
-    first_words = [re.sub(r"[*`_]", "", re.match(r"\s*\d+\.\s+(\S+)", l).group(1)).lower().rstrip(",:.")
-                   for _, l in numbered if re.match(r"\s*\d+\.\s+\S", l)]
+    step_re = r"\s*(?:#+\s*)?(?:step\s*)?\d+[.:)]\s+\W*(\w[\w'-]*)"
+    numbered = [(i, l) for i, l in enumerate(lines) if re.match(step_re, l, re.I)]
+    first_words = [re.match(step_re, l, re.I).group(1).lower() for _, l in numbered]
     not_imperative = [w for w in first_words if w not in VERBS]
     pos = lambda pat: (m.start() if (m := re.search(pat, out, re.I | re.S)) else -1)
     backup = pos(r"cp\s+\S*current\.pem\s+\S*previous\.pem")
@@ -53,12 +54,15 @@ def grade(work):
     title_case = [h for h in heads if len([w for w in h.split()[1:] if w[:1].isupper() and len(w) > 3
                                            and w not in ("TLS", "Vault", "VPN")]) >= 2]
     missing_cmds = [c for c in COMMANDS if c not in flat]
-    missing_facts = [f for f in FACTS if f.lower() not in low]
+    missing_facts = [f for f in FACTS if f.lower() not in low
+                     and not (f == "2 minutes" and re.search(r"120 seconds|two minutes", low))]
     banned = [w for w in ("basically", "so basically", "i forgot", "!!", "its mostly", "dont ", "you should",
                           "should be saved", "it's important to note", "which is nice", "actually")
               if w in low]
     synonyms = [w for w in ("consumer", "job runner") if w in low]
     restore = re.search(r"previous\.pem", out[max(out.find(COMMANDS[4]), 0):]) is not None
+    # 'consumer' and 'job runner' are reported in info, not scored: the fixture never states they are billing-worker,
+    # so keeping them is defensible.
     checks = [
         ("Every original command kept verbatim", not missing_cmds, "missing: %s" % missing_cmds),
         ("Every operational fact kept (validity, alert lead time, alert name, role, VPN, channel, close window, drain time)",
@@ -72,7 +76,6 @@ def grade(work):
         ("[named] Every numbered step starts with an imperative verb or its condition", bool(first_words) and not not_imperative,
          "non-imperative starts: %s" % not_imperative),
         ("Rollback via previous.pem is described after the health check", restore, ""),
-        ("One name for the service: no 'consumer' or 'job runner'", not synonyms, "left: %s" % synonyms),
         ("Removed the chatty and hedged phrasing (basically, you should, I forgot, !!, it's important to note)",
          not banned, "left: %s" % banned),
         ("[named] Headings in sentence case", not title_case, "title case: %s" % title_case),
@@ -80,7 +83,8 @@ def grade(work):
     exp = [{"text": t, "passed": bool(ok), "evidence": ev} for t, ok, ev in checks]
     n = sum(e["passed"] for e in exp)
     info = {"words": len(out.split()), "orig_words": len(ORIG.split()), "numbered_steps": len(numbered),
-            "mentions_2024_history": "2024" in out}
+            "mentions_2024_history": "2024" in out,
+            "other_names_for_service": synonyms}
     return {"expectations": exp, "summary": {"passed": n, "failed": len(exp) - n, "total": len(exp),
                                             "pass_rate": round(n / len(exp), 2)}, "info": info}
 

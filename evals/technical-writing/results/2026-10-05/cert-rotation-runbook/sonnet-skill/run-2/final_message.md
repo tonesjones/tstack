@@ -1,0 +1,7 @@
+I rewrote `RUNBOOK.md` in place as a how-to. I haven't run any of the commands.
+
+- **Backup step:** The old doc told you to copy `current.pem` to `previous.pem` in an afterthought inside the restart step. That copy is now step 4, before the swap. Without it, rollback has nothing to restore.
+- **Rollback:** It now has its own section with numbered steps. It restores `previous.pem`, restarts, rechecks health, and resumes the consumer. The old doc only said to restore the file.
+- **Month-end warning:** The ban on rotating during the first 3 business days of the month now comes first, under "Before you start". I also added "ask in #billing-oncall first" for the case where the certificate expires during the close. That advice is mine, so change it if you handle that case differently.
+- **Removed:** the history paragraph, the filler ("So basically", "it's important to note"), and the standalone line saying the worker is `billing-worker`. That fact is now one line at the top.
+- **Step 2:** The old doc said to save the `vault write` output to `new.pem`. It didn't say how, and I didn't invent a flag. Step 2 says to save the certificate from the output. If you have an exact command that does this, add it there.

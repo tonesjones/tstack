@@ -1,0 +1,16 @@
+{
+  "total_tokens": 106874,
+  "duration_ms": 28846,
+  "total_duration_seconds": 28.8,
+  "output_tokens": 2431,
+  "cost_usd_list": 0.041552900000000004,
+  "num_turns": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "models_used": [
+    "claude-haiku-4-5-20251001"
+  ],
+  "skills_called": [
+    "technical-writing"
+  ],
+  "prompt": "Rewrite RUNBOOK.md in place so an on-call engineer can follow it. Use the technical-writing skill."
+}
