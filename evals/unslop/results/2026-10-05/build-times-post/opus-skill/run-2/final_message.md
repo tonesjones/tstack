@@ -1,0 +1,3 @@
+I rewrote `post.md` in place. I left four things as they were: the author's note, the "Measure, then cut." refrain (still three times), the `make bench` code block, and Priya's quote.
+
+The original ending was generic ("culture of excellence", "excited to see what the future holds"), and the post doesn't say what you plan to do next. So I swapped it for a short takeaway built from facts already in the post. If you have real next steps, that's the place for them.

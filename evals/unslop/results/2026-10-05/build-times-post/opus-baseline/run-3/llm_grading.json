@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": false,
+      "evidence": "The rewrite adds \"the one bottleneck that mattered\" (the original never names a single bottleneck) and \"None of this was clever\", and it drops the original's note that the 12% to 87% hit rate and the 6-minute test-time cut are the stated outcomes only partly tied to the 41-to-19 result, while also asserting \"Most of those 41 minutes\" where the original said most time wasn't spent compiling."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": true,
+      "evidence": "The rewrite has no em dashes, cliches or staged reveals; \"None of this was clever.\" is plain, and the only \"game changer\" is inside the quoted retro line."
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "Sentence lengths vary and the wording is concrete, as in \"They were spent downloading the same dependencies on every run\" and \"Three of the 11 services accounted for 70% of build time, so we started with those.\""
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It stays an engineering team blog post with sections like \"Caching\" and \"Sharding tests\", neither hype nor jokey nor a bare bullet list."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

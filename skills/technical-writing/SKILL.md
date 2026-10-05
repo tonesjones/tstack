@@ -1,11 +1,11 @@
 ---
 name: "technical-writing"
-description: "Layered technical-writing standard (Diataxis, Google developer style, STE, Global English). Use when writing or reviewing docs, READMEs, RFCs, runbooks, API reference, PR descriptions, or commit messages."
+description: "Layered technical-writing standard (Diataxis, Google developer style, STE, Global English). Use when writing or reviewing docs, READMEs, tutorials, how-to guides, runbooks, RFCs, API reference, CONTRIBUTING or setup docs, PR descriptions, or commit messages. Not for product UI strings."
 ---
 
 # Technical writing
 
-Version: 1.0.0 (2026-10-03)
+Version: 1.0.1 (2026-10-05)
 
 The goal is writing a tired engineer understands on the first read. Four layers get you there, one question each: what kind of document is this, how do sentences address the reader, how much does each sentence carry, and can any sentence be read two ways. Apply all four.
 

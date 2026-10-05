@@ -42,8 +42,8 @@
     },
     {
       "text": "Removed the chatty and hedged phrasing (basically, you should, I forgot, !!, it's important to note)",
-      "passed": false,
-      "evidence": "left: ['you should']"
+      "passed": true,
+      "evidence": "left: []"
     },
     {
       "text": "[named] Headings in sentence case",
@@ -52,10 +52,10 @@
     }
   ],
   "summary": {
-    "passed": 9,
-    "failed": 1,
+    "passed": 10,
+    "failed": 0,
     "total": 10,
-    "pass_rate": 0.9
+    "pass_rate": 1.0
   },
   "info": {
     "words": 220,

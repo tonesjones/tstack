@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": true,
+      "evidence": "All figures are kept (41\u219219 min p95, 12%\u219287% in two weeks, 3 of 11 services at 70%, 6 minutes from sharding, $2,400/month, Priya's quote), and the closing advice \"Run the benchmark first, find the few services eating most of the time\" restates the original's own story. The Slack/lost-train-of-thought opener is a generic illustration, not a new fact about the team."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": true,
+      "evidence": "The rewrite has no em dashes, no cliches, no staged reveals like \"The result?\", and the ending \"Don't start with the fix you assume is right\" is concrete advice rather than an uplifting generic conclusion. The only \"game changer\" is in the quoted retro line."
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "Sentence lengths vary and the wording is plain and specific, as in \"You push, you wait, you lose your train of thought\" and \"Most of the time wasn't going to compilation. It was going to downloading the same dependencies on every run.\""
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It stays a first-person-plural engineering team post, with headings like \"Test sharding and cost\" and \"We added a remote cache\". It is neither hype nor a bullet list."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "grader_model": "sonnet"
+}

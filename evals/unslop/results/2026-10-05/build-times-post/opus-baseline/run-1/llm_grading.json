@@ -1,0 +1,31 @@
+{
+  "expectations": [
+    {
+      "text": "[LLM sonnet] meaning_preserved",
+      "passed": false,
+      "evidence": "The rewrite says the platform team \"spent the next few months working on it,\" a time span the original never states (it only gives January and the current p95 figures)."
+    },
+    {
+      "text": "[LLM sonnet] no_new_tells",
+      "passed": true,
+      "evidence": "No em dash connectors, cliches, or staged reveals appear. \"The result?\" and the uplifting \"Wrapping Up\" paragraph are gone, and \"game changer\" shows up only in the quoted retro line."
+    },
+    {
+      "text": "[LLM sonnet] reads_human",
+      "passed": true,
+      "evidence": "The prose is plain and concrete, with sentences of varied length, e.g. \"Most of that time wasn't spent compiling. It was spent downloading the same dependencies on every run.\""
+    },
+    {
+      "text": "[LLM sonnet] tone_matches",
+      "passed": true,
+      "evidence": "It stays a straightforward engineering team post with sections, a code block, and a retro quote, and it is neither hype nor a bare bullet list (\"Three of the 11 services accounted for 70% of build time, so we started with those.\")."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "grader_model": "sonnet"
+}

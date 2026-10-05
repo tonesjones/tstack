@@ -1,11 +1,11 @@
 ---
 name: "unslop"
-description: "Remove AI writing tells from prose and add a human voice. Use when drafting, editing, or reviewing prose (docs, emails, posts, PR descriptions, commit messages) or when asked to tighten or de-AI text."
+description: "Remove AI writing tells from prose and add a human voice. Use when drafting, editing, or reviewing prose (docs, emails, posts, PR descriptions, commit messages), when asked to tighten or de-AI text, or when text sounds robotic, salesy, like marketing copy, or full of filler and buzzwords."
 ---
 
 # Unslop
 
-Version: 1.0.0 (2026-10-03)
+Version: 1.0.1 (2026-10-05)
 
 Edit text to remove AI patterns and add human voice.
 

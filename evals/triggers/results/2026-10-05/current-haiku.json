@@ -65,6 +65,36 @@
    "rep": 2
   },
   {
+   "id": "d2",
+   "prompt": "Remove the pointless comments and try/excepts the agent added in my last two commits.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.3,
+   "said": "I'll check the last two commits and clean them up using the deslop skill.",
+   "rep": 3
+  },
+  {
+   "id": "d2",
+   "prompt": "Remove the pointless comments and try/excepts the agent added in my last two commits.",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.8,
+   "said": "I'll check your recent commits to identify and remove the unnecessary comments and try/excepts.",
+   "rep": 4
+  },
+  {
    "id": "d3",
    "prompt": "/deslop",
    "ok": [
@@ -155,6 +185,36 @@
    "rep": 2
   },
   {
+   "id": "d5",
+   "prompt": "Clean up this Python function an LLM generated, it's overly defensive:\n\n```python\ndef total(items):\n    # Initialize the total to zero\n    result = 0\n    if items is not None:\n        if isinstance(items, list):\n            for item in items:\n                try:\n                    if item is not None:\n                        result = result + int(item.price)\n                except Exception:\n                    pass\n    return result\n```",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "deslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 6.5,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "d5",
+   "prompt": "Clean up this Python function an LLM generated, it's overly defensive:\n\n```python\ndef total(items):\n    # Initialize the total to zero\n    result = 0\n    if items is not None:\n        if isinstance(items, list):\n            for item in items:\n                try:\n                    if item is not None:\n                        result = result + int(item.price)\n                except Exception:\n                    pass\n    return result\n```",
+   "ok": [
+    "deslop"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 10.6,
+   "said": "Here's the cleaned-up version:\n\n```python\ndef total(items):\n    return sum(item.price for item in items)\n```\n\nRemoved:\n- **Null checks** (`if items is not None`, `if item is not None`) \u2014 let errors surface naturally\n- **Type check** (`isins",
+   "rep": 4
+  },
+  {
    "id": "d6",
    "prompt": "Open a PR for this branch against main.",
    "ok": [
@@ -187,6 +247,38 @@
    "seconds": 3.8,
    "said": "I need to check the current state of the repository first.",
    "rep": 2
+  },
+  {
+   "id": "d6",
+   "prompt": "Open a PR for this branch against main.",
+   "ok": [
+    "none",
+    "deslop"
+   ],
+   "tag": "near-miss: description says 'before opening a PR'",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 8.5,
+   "said": "I notice the current working directory isn't a git repository. Could you confirm:\n\n1. Are you in the right directory, or should I navigate to your project's git repo?\n2. Do you have the GitHub CLI (`gh`) installed, or should I use git comma",
+   "rep": 3
+  },
+  {
+   "id": "d6",
+   "prompt": "Open a PR for this branch against main.",
+   "ok": [
+    "none",
+    "deslop"
+   ],
+   "tag": "near-miss: description says 'before opening a PR'",
+   "got": "none",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 6.6,
+   "said": "I'll need to check the current state of the repository first. Let me verify we're in a git repo and see what branch we're on.\n\nSince the system shows this isn't a git repository, I'll need to check if there's git initialized or if we need t",
+   "rep": 4
   },
   {
    "id": "d7",
@@ -353,6 +445,40 @@
    "seconds": 2.8,
    "said": "I'll update that error message to be more user-friendly.",
    "rep": 2
+  },
+  {
+   "id": "n3",
+   "prompt": "Change the error toast text in the checkout UI to something friendlier. Current string in src/checkout/messages.ts: `PAYMENT_ERR: 'Transaction failed. Error code 402.'`",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: UI copy, which technical-writing excludes",
+   "got": "none",
+   "other_skills": [
+    "artifact-design"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 2.6,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "n3",
+   "prompt": "Change the error toast text in the checkout UI to something friendlier. Current string in src/checkout/messages.ts: `PAYMENT_ERR: 'Transaction failed. Error code 402.'`",
+   "ok": [
+    "none"
+   ],
+   "tag": "near-miss: UI copy, which technical-writing excludes",
+   "got": "none",
+   "other_skills": [
+    "artifact-capabilities"
+   ],
+   "pass": true,
+   "error": null,
+   "seconds": 2.9,
+   "said": "I'll help you make that error message friendlier. Let me read the file first to see the current context.",
+   "rep": 4
   },
   {
    "id": "n4",
@@ -871,6 +997,36 @@
    "rep": 2
   },
   {
+   "id": "t5",
+   "prompt": "Our getting-started tutorial loses people at step 4. Rewrite it so every step shows what they should see:\n\n1. Install the CLI.\n2. Run `acme login`.\n3. Create a project with `acme init demo`.\n4. Configure the webhook and deploy.\n5. You're done!",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.6,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "t5",
+   "prompt": "Our getting-started tutorial loses people at step 4. Rewrite it so every step shows what they should see:\n\n1. Install the CLI.\n2. Run `acme login`.\n3. Create a project with `acme init demo`.\n4. Configure the webhook and deploy.\n5. You're done!",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.6,
+   "said": "",
+   "rep": 4
+  },
+  {
    "id": "t6",
    "prompt": "Write a commit message for the staged changes.",
    "ok": [
@@ -969,6 +1125,38 @@
    "rep": 2
   },
   {
+   "id": "t8",
+   "prompt": "Edit our CONTRIBUTING.md so the setup steps are numbered commands instead of a wall of text:\n\n\"To get set up you'll want to clone the repo and then install deps with pnpm (we use pnpm 9, not npm) and copy .env.example to .env and then run the db with docker compose up db and then pnpm dev should work, ping #dev if not.\"",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [
+    "Read"
+   ],
+   "pass": false,
+   "error": null,
+   "seconds": 2.8,
+   "said": "I'll find and edit the CONTRIBUTING.md file with numbered setup steps.",
+   "rep": 3
+  },
+  {
+   "id": "t8",
+   "prompt": "Edit our CONTRIBUTING.md so the setup steps are numbered commands instead of a wall of text:\n\n\"To get set up you'll want to clone the repo and then install deps with pnpm (we use pnpm 9, not npm) and copy .env.example to .env and then run the db with docker compose up db and then pnpm dev should work, ping #dev if not.\"",
+   "ok": [
+    "technical-writing"
+   ],
+   "tag": null,
+   "got": "technical-writing",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.0,
+   "said": "",
+   "rep": 4
+  },
+  {
    "id": "u1",
    "prompt": "This LinkedIn post reads like ChatGPT wrote it. Can you make it sound like me? 'In today's fast-paced landscape, I'm thrilled to announce...'",
    "ok": [
@@ -999,6 +1187,36 @@
    "rep": 2
   },
   {
+   "id": "u1",
+   "prompt": "This LinkedIn post reads like ChatGPT wrote it. Can you make it sound like me? 'In today's fast-paced landscape, I'm thrilled to announce...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.7,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "u1",
+   "prompt": "This LinkedIn post reads like ChatGPT wrote it. Can you make it sound like me? 'In today's fast-paced landscape, I'm thrilled to announce...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.2,
+   "said": "",
+   "rep": 4
+  },
+  {
    "id": "u2",
    "prompt": "De-AI this email before I send it to my landlord: 'I hope this message finds you well. I wanted to reach out regarding...'",
    "ok": [
@@ -1027,6 +1245,36 @@
    "seconds": 3.6,
    "said": "",
    "rep": 2
+  },
+  {
+   "id": "u2",
+   "prompt": "De-AI this email before I send it to my landlord: 'I hope this message finds you well. I wanted to reach out regarding...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 4.9,
+   "said": "I can help you de-AI that email. Could you paste the full email text? I only see the opening so far\u2014once you share the complete message, I'll remove the generic AI phrases and give it a more natural, human voice.",
+   "rep": 3
+  },
+  {
+   "id": "u2",
+   "prompt": "De-AI this email before I send it to my landlord: 'I hope this message finds you well. I wanted to reach out regarding...'",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "none",
+   "other_skills": [],
+   "pass": false,
+   "error": null,
+   "seconds": 4.7,
+   "said": "I'd be happy to help de-AI your email. I need to see the full message though \u2014 could you paste the complete email you want to send your landlord? That opening line is the classic AI tell, so we'll definitely replace it with something more n",
+   "rep": 4
   },
   {
    "id": "u3",
@@ -1089,6 +1337,36 @@
    "rep": 2
   },
   {
+   "id": "u4",
+   "prompt": "Rewrite the intro of my conference talk abstract so it doesn't sound robotic:\n\n\"In this talk, we will delve into the multifaceted landscape of observability. Attendees will gain valuable insights and actionable takeaways to elevate their monitoring journey.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.0,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "u4",
+   "prompt": "Rewrite the intro of my conference talk abstract so it doesn't sound robotic:\n\n\"In this talk, we will delve into the multifaceted landscape of observability. Attendees will gain valuable insights and actionable takeaways to elevate their monitoring journey.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 2.7,
+   "said": "",
+   "rep": 4
+  },
+  {
    "id": "u5",
    "prompt": "My manager says my status updates sound like marketing copy. Here's this week's, fix it:\n\n\"This week I spearheaded a robust overhaul of our alerting pipeline, seamlessly integrating PagerDuty and unlocking significant gains in on-call efficiency. Excited to keep driving impact!\"",
    "ok": [
@@ -1117,6 +1395,36 @@
    "seconds": 7.3,
    "said": "",
    "rep": 2
+  },
+  {
+   "id": "u5",
+   "prompt": "My manager says my status updates sound like marketing copy. Here's this week's, fix it:\n\n\"This week I spearheaded a robust overhaul of our alerting pipeline, seamlessly integrating PagerDuty and unlocking significant gains in on-call efficiency. Excited to keep driving impact!\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 3.8,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "u5",
+   "prompt": "My manager says my status updates sound like marketing copy. Here's this week's, fix it:\n\n\"This week I spearheaded a robust overhaul of our alerting pipeline, seamlessly integrating PagerDuty and unlocking significant gains in on-call efficiency. Excited to keep driving impact!\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.3,
+   "said": "",
+   "rep": 4
   },
   {
    "id": "u6",
@@ -1179,6 +1487,36 @@
    "seconds": 6.7,
    "said": "Here's a tighter version:\n\n\"Sync 2.0 helps teams collaborate across all your tools and platforms.\"\n\n**Cut:**\n- \"thrilled to unveil\" (unnecessary enthusiasm)\n- \"seamless, robust\" (buzzwords with no specifics)\n- \"empowers\" (corporate speak)\n-",
    "rep": 2
+  },
+  {
+   "id": "u7",
+   "prompt": "Cut the filler from this product announcement, it's full of 'seamless' and 'robust':\n\n\"We're thrilled to unveil Sync 2.0, a seamless, robust solution that empowers teams to effortlessly collaborate across every touchpoint.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 7.1,
+   "said": "",
+   "rep": 3
+  },
+  {
+   "id": "u7",
+   "prompt": "Cut the filler from this product announcement, it's full of 'seamless' and 'robust':\n\n\"We're thrilled to unveil Sync 2.0, a seamless, robust solution that empowers teams to effortlessly collaborate across every touchpoint.\"",
+   "ok": [
+    "unslop"
+   ],
+   "tag": null,
+   "got": "unslop",
+   "other_skills": [],
+   "pass": true,
+   "error": null,
+   "seconds": 4.3,
+   "said": "",
+   "rep": 4
   }
  ]
 }

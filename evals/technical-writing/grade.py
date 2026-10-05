@@ -56,9 +56,11 @@ def grade(work):
     missing_cmds = [c for c in COMMANDS if c not in flat]
     missing_facts = [f for f in FACTS if f.lower() not in low
                      and not (f == "2 minutes" and re.search(r"120 seconds|two minutes", low))]
-    banned = [w for w in ("basically", "so basically", "i forgot", "!!", "its mostly", "dont ", "you should",
+    # v3 (2026-10-05): "you should see <output>" is an expected-result line, which the skill asks for; only the
+    # hedged instruction form ("you should make sure", "you should copy") counts.
+    banned = [w for w in ("basically", "so basically", "i forgot", "!!", "its mostly", "dont ",
                           "should be saved", "it's important to note", "which is nice", "actually")
-              if w in low]
+              if w in low] + (["you should"] if re.search(r"you should (?!see\b|get\b)", low) else [])
     synonyms = [w for w in ("consumer", "job runner") if w in low]
     restore = re.search(r"previous\.pem", out[max(out.find(COMMANDS[4]), 0):]) is not None
     # 'consumer' and 'job runner' are reported in info, not scored: the fixture never states they are billing-worker,
