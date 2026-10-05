@@ -1,0 +1,79 @@
+{
+  "expectations": [
+    {
+      "text": "Wrote proposals.md",
+      "passed": true,
+      "evidence": "5922 chars"
+    },
+    {
+      "text": "Left the skill files unchanged (nothing applied before approval)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the version-source learning (__about__.py, dynamic, or hatch)",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Names the stale dist/ learning",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Flags --skip-existing as unsafe or to avoid",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes proposals to pypi-release",
+      "passed": true,
+      "evidence": "ok"
+    },
+    {
+      "text": "Routes nothing to docker-deploy (unused in the session)",
+      "passed": false,
+      "evidence": "failed"
+    },
+    {
+      "text": "Does not promote the 'pyhton' typo or the 429 feature to a learning",
+      "passed": false,
+      "evidence": "failed"
+    },
+    {
+      "text": "[LLM sonnet] version_source_routed",
+      "passed": true,
+      "evidence": "Proposal 1 rewrites pypi-release's \"Bump the version\" section to find where the version lives (dynamic, hatch path, __about__.py) before editing, and says not to alter build config."
+    },
+    {
+      "text": "[LLM sonnet] stale_dist_routed",
+      "passed": true,
+      "evidence": "Proposal 2 changes pypi-release's Build section to run rm -rf dist/ first and its Upload section to forbid --skip-existing."
+    },
+    {
+      "text": "[LLM sonnet] concrete",
+      "passed": true,
+      "evidence": "Both proposals give the exact replacement markdown for the sections, plus the full resulting file, so they can be applied without rereading the session."
+    },
+    {
+      "text": "[LLM sonnet] no_invented_learnings",
+      "passed": true,
+      "evidence": "Both proposals rest on events in the session (the dynamic-version build error and the stale dist/ with --skip-existing). Neither is routed to docker-deploy, and the pyhton typo is mentioned only as not proposed."
+    },
+    {
+      "text": "[LLM sonnet] no_edits_claimed",
+      "passed": true,
+      "evidence": "The document is titled \"Skill edit proposals\" and describes the changes as edits to \"Replace\". The \"Resulting\" file is labeled \"both proposals applied\" and never says the files were changed."
+    }
+  ],
+  "summary": {
+    "passed": 11,
+    "failed": 2,
+    "total": 13,
+    "pass_rate": 0.85
+  },
+  "info": {
+    "words": 922,
+    "has_accepted_table": false
+  }
+}
