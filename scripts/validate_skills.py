@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Validate skills/*/SKILL.md. Stdlib only. Exits non-zero on any failure."""
 import re
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION_RE = re.compile(r"^Version: \d+\.\d+\.\d+ \(\d{4}-\d{2}-\d{2}\)$")
+VERSION_RE = re.compile(r"^Version: (\d+\.\d+\.\d+) \(\d{4}-\d{2}-\d{2}\)$")
 CURSOR_RES = [
     (re.compile(r"cursor", re.I), "cursor"),
     (re.compile(r"\.mdc", re.I), ".mdc"),
@@ -36,7 +37,35 @@ def parse_frontmatter(lines):
     return None, "missing closing --- frontmatter delimiter", 0
 
 
-def check_skill(d):
+def git(*args):
+    r = subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True)
+    return r.stdout.split() if r.returncode == 0 else None
+
+
+def changed_skills():
+    """Skill folders changed since the last v* tag below HEAD, or None if git can't tell."""
+    at_head = set(git("tag", "--points-at", "HEAD") or [])
+    tags = git("tag", "--merged", "HEAD", "--sort=-v:refname", "v*")
+    if tags is None:
+        return None
+    prev = next((t for t in tags if t not in at_head), None)
+    if prev is None:
+        return None
+    files = git("diff", "--name-only", prev, "--", "skills")
+    if files is None:
+        return None
+    return {f.split("/")[1] for f in files if f.count("/") >= 2}
+
+
+def newest_changelog_entry():
+    f = ROOT / "CHANGELOG.md"
+    if not f.is_file():
+        return ""
+    sections = re.split(r"^## ", f.read_text(encoding="utf-8"), flags=re.M)
+    return sections[1] if len(sections) > 1 else ""
+
+
+def check_skill(d, changed=None, entry=""):
     errs = []
     f = d / "SKILL.md"
     if not f.is_file():
@@ -54,8 +83,12 @@ def check_skill(d):
             errs.append("name %r != folder %r" % (fm["name"], d.name))
         if "globs" in fm:
             errs.append("Cursor-specific frontmatter key 'globs'")
-        if not any(VERSION_RE.match(l) for l in lines[end + 1:]):
+        m = next(filter(None, (VERSION_RE.match(l) for l in lines[end + 1:])), None)
+        if not m:
             errs.append("no 'Version: X.Y.Z (YYYY-MM-DD)' line in body")
+        elif changed and d.name in changed and "%s %s" % (d.name, m.group(1)) not in entry:
+            errs.append("changed since last tag, but the newest CHANGELOG.md entry doesn't mention '%s %s'"
+                        % (d.name, m.group(1)))
     for p in sorted(d.rglob("*")):
         if not p.is_file():
             continue
@@ -78,9 +111,13 @@ def main():
     if not dirs:
         print("FAIL: no skill folders found in %s" % root)
         return 1
+    changed = changed_skills()
+    if changed is None:
+        print("note: no earlier v* tag in git history, skipping the CHANGELOG version check")
+    entry = newest_changelog_entry()
     bad = 0
     for d in dirs:
-        errs = check_skill(d)
+        errs = check_skill(d, changed, entry)
         if errs:
             bad += 1
             print("FAIL %s: %s" % (d.name, "; ".join(errs)))

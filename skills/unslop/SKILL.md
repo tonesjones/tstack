@@ -13,6 +13,8 @@ Edit text to remove AI patterns and add human voice.
 
 Apply when the user asks you to edit, tighten, or de-AI text, and to prose the user will publish (posts, emails, docs, PR descriptions). Don't run it on every reply or note you write.
 
+For technical docs, commit messages, and PR descriptions, the `technical-writing` skill applies and calls this skill's pattern catalog (patterns 1-31). Skip the Adding soul section there: reference docs stay dry, and commit messages don't need opinions or "I".
+
 Leave these alone:
 
 - Code, commands, config, and log output.
@@ -61,7 +63,7 @@ Removing patterns is half the job. Sterile, voiceless writing is just as obvious
 
 ### Style
 
-13. **Em dash overuse.** Avoid em dashes entirely. Use periods or commas only (no parentheses, no en dashes, no hyphen-as-dash substitutes). Em dashes are an AI tell, and reaching for parentheses instead just trades one tell for another. If a thought needs separation, end the sentence or use a comma.
+13. **Em dash overuse.** Avoid em dashes entirely. Don't swap in en dashes, hyphen-as-dash, or parentheses as a stand-in for the dash. If a thought needs separation, end the sentence or use a comma. Parentheses are fine around a full grammatical unit, such as an abbreviation's expansion or a complete aside sentence.
 14. **Colon overuse.** Colons are fine before a list or example. Not as mid-sentence connectors. "If you're coming from traditional automation: instead of registering event handlers, you describe conditions" adds nothing with the colon. Rewrite to let the point stand on its own without comparison framing. "Describing when the scheduler should fire works best as plain English." Same meaning, no crutch punctuation.
 15. **Boldface overuse.** Don't bold every proper noun or acronym.
 16. **Inline-header lists.** The tell is a bold label and colon that restates the line: "**Performance:** Performance improved...". Convert those to prose. A bold lead-in that ends in a period, names the item, and is followed by genuinely new detail ("**Schema in TypeScript.** Tables live in one file.") is fine, not a tell.

@@ -1,7 +1,13 @@
 # Changelog
 
-## Unreleased
+## 1.2.0 (2026-10-05)
 
+- Apply fixes 1, 3, and 5 from the 2026-10-04 skill audit. Fix 4 (tokenomics) is separate.
+  - reflect 1.1.0: runs only on "reflect" or "/reflect". After a task with dead ends or corrections it offers to run instead of starting. The description names skill-creator and skill-review for the cases they own. For a skill kept in a source repo such as tstack, edits go to the repo copy with a version bump and a CHANGELOG entry.
+  - unslop 1.1.0: parentheses are fine around a full grammatical unit, which matches technical-writing. Scope says technical docs, commit messages, and PR descriptions get the pattern catalog without the Adding soul section.
+  - technical-writing 1.1.0: applies unslop's patterns 1-31 and skips Adding soul for reference docs, commit messages, and PR descriptions. Points at unslop for the filler, plain-word, and active-voice swaps instead of repeating them. Refers to "rule 26" by its name, Abstract metaphor nouns. The description and body say to apply it alongside any doc-creation skill.
+  - teach 1.0.1: the description says it doesn't quiz and isn't for research reports, to separate it from learn and deep-research.
+- `validate_skills.py` fails when a skill changed since the last `v*` tag and the newest CHANGELOG entry doesn't name its `Version:`, as `<skill> X.Y.Z`. The release workflow fetches full history so the check can run.
 - Tighten three skill descriptions using trigger-routing evidence from `evals/triggers/` (2026-10-05). Skill bodies are unchanged.
   - deslop 1.0.1: also triggers on pasted code, not only a branch diff.
   - unslop: also triggers when text "sounds robotic, salesy, like marketing copy, or full of filler and buzzwords".

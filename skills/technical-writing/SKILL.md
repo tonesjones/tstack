@@ -1,6 +1,6 @@
 ---
 name: "technical-writing"
-description: "Layered technical-writing standard (Diataxis, Google developer style, STE, Global English). Use when writing or reviewing docs, READMEs, tutorials, how-to guides, runbooks, RFCs, API reference, CONTRIBUTING or setup docs, PR descriptions, or commit messages. Not for product UI strings."
+description: "Layered technical-writing standard (Diataxis, Google developer style, STE, Global English). Use when writing or reviewing docs, READMEs, tutorials, how-to guides, runbooks, RFCs, API reference, CONTRIBUTING or setup docs, PR descriptions, or commit messages. Use alongside any doc-creation skill, since this one sets the writing standard for the text. Not for product UI strings."
 ---
 
 # Technical writing
@@ -11,13 +11,13 @@ The goal is writing a tired engineer understands on the first read. Four layers 
 
 Three rules sit above the layers:
 
-- **Cut every word that does no work.** If the sentence survives without a word, the word goes. "In order to" is "to". "It is important to note that" is nothing.
-- **Use the short, everyday word.** "Use", not "utilize". "Help", not "facilitate". "Do", not "perform". A long word has to buy its length with precision.
+- **Cut every word that does no work.** If the sentence survives without a word, the word goes. The swaps are in unslop's Filler phrases pattern.
+- **Use the short, everyday word.** A long word has to buy its length with precision. The swaps are in unslop's Prefer the plain word pattern.
 - **When a rule makes a sentence worse, fix the sentence another way or leave it alone.** The rules serve the reader. A sentence that follows every rule and sounds like a machine wrote it has failed.
 
 The codebase is the word list. Write the real symbol, file, flag, or command name, not a synonym or a description of it. If you have access to the code, look the name up instead of guessing it.
 
-Don't invent jargon. Use the words a developer would say out loud: "move", "delete", "a budget that only decreases", not "evacuate", "ratchet", or "endgame". A named pattern is fine when the doc says what it means the first time. When you find a new offender, tell the user so it can be added, with its replacement, to rule 26 (abstract metaphor nouns) in the `unslop` skill.
+Don't invent jargon. Use the words a developer would say out loud: "move", "delete", "a budget that only decreases", not "evacuate", "ratchet", or "endgame". A named pattern is fine when the doc says what it means the first time. When you find a new offender, tell the user so it can be added, with its replacement, to the Abstract metaphor nouns pattern in the `unslop` skill.
 
 ## Vary the rhythm
 
@@ -54,7 +54,7 @@ Source: diataxis.fr.
 ## Write sentences to the reader (Google developer style)
 
 - Talk to the reader as "you", in the present tense. "Will" only for things that genuinely happen later.
-- Say who does what: "the compiler checks", not "is checked". Passive is fine only when the actor is unknown or beside the point.
+- Say who does what: "the compiler checks", not "is checked". unslop's Active voice pattern covers the exceptions.
 - Write instructions as commands: "Click Submit." State facts plainly. Never "should be done".
 - Put the condition before the instruction: "To delete the document, click Delete." The reader skips what does not apply.
 - Put the common case first. Exceptions after.
@@ -100,7 +100,8 @@ Source: Kohl, The Global English Style Guide (SAS Press).
 
 ## Voice and repo specifics
 
-- Apply the `unslop` skill to every doc this skill touches. Load it with the Skill tool if it isn't already loaded. That skill owns the slop-pattern catalog: AI vocabulary, filler, hedging, formatting tells.
+- Apply the pattern catalog in the `unslop` skill (patterns 1-31) to every doc this skill touches. Load it with the Skill tool if it isn't already loaded. The name may be namespaced. Skip its Adding soul section for reference docs, commit messages, and PR descriptions. unslop owns the slop-pattern catalog: AI vocabulary, filler, hedging, formatting tells.
+- If a docs or document-creation skill is making the file, still apply these rules to the text.
 - PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them. Follow the repo's existing commit convention (Conventional Commits, ticket prefixes, line length) when it has one. Check `git log` if you can.
 - Product UI strings are not documentation. Use your product's copy guidelines for those.
 - Match the repo's indentation in code snippets. Write real paths and real symbols. Make every count or tree claim true at the commit that lands it, and include the command that regenerates it.
