@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0 (unreleased)
+## 1.1.0 (2026-10-04)
 
 - Add the `worker` and `grunt` subagents from claude-tokenomics-skill, which is now archived.
 - Add `teach`, merged from the pstack plugin's (cursor/plugins) `teach`, `how`, and `why` skills into one skill. Rewritten for Claude: subagent spawns use the Agent tool (`Explore`, Sonnet) in place of Cursor Task slugs and model rules, MCP discovery uses session tool names, the final explanation is written by the main session, and the per-MCP playbooks are condensed into `reference/sources.md`. Behavior changes from the originals: there are no standalone `/how` or `/why` entry points, the structured Why report (What We Found, Competing Hypotheses, Confidence Summary) is replaced by the same confidence tiers worked into the explanation, Why defaults to a narrow git-first pass and widens on demand, and the image-generation step is replaced by an artifact or widget, or an ASCII sketch.
