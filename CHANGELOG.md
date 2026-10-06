@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0 (2026-10-06)
+
+- Add scope-audit 1.0.0: audits a drifting project against its goal in ten sections (North Star and conflicting goals, what works, feature audit, AI-generated scope creep, lessons, deletion candidates, current state, shortest path to done, Definition of Done, recommendation A to E). It starts with an inventory of open PRs, branches, and stashes, recommends but never closes or deletes without approval, and says when to re-audit: a new direction, all Definition of Done checks passing, or about every 10 merged PRs. Built from a real project audit; the skill keeps the method, not that project's content.
+- Add codex-delegate 1.1.0, imported from the uploaded skill with two changes from a reflect pass:
+  - Write tasks list the files the worker may change, and keep plan, status, and instruction files (`PLAN.md`, `STATUS.md`, `CLAUDE.md`) off-limits unless editing them is the task.
+  - New Gotchas section: an older `codex` on PATH can shadow the one you installed; set `CODEX_BIN` to pick the right binary.
+
 ## 1.2.0 (2026-10-05)
 
 - Apply fixes 1, 3, and 5 from the 2026-10-04 skill audit. Fix 4 (tokenomics) is separate.
