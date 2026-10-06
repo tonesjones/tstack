@@ -10,6 +10,8 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 | [reflect](skills/reflect/SKILL.md) | Turn a finished task's lessons into skill edits. Runs only when you ask. |
 | [teach](skills/teach/SKILL.md) | Explain what a body of work is, how it works, and why, in plain terms. Folds in pstack's `how` and `why`. |
 | [tokenomics](skills/tokenomics/SKILL.md) | Route a plan's tasks to the main session's model or a cheaper tier. |
+| [scope-audit](skills/scope-audit/SKILL.md) | Audit a drifting project against its goal and recommend what to keep, cut, or park. |
+| [codex-delegate](skills/codex-delegate/SKILL.md) | Hand bounded tasks to the Codex CLI (Luna or Sol tier) and review the results. |
 
 ## Evidence
 
@@ -43,13 +45,15 @@ ln -s "$PWD/agents/explore.md" ~/.claude/agents/explore.md
 
 Each uploaded skill updates separately. After a release, upload every changed skill's zip from the same tag, so the installed set matches one version of this repo.
 
+`codex-delegate` needs Python 3.9+ and the Codex CLI with a ChatGPT login. Its `scripts/codex_bridge.py` installs the CLI if it is missing; run `python3 scripts/codex_bridge.py status` to check.
+
 `teach` works best in Claude Code (CLI or the desktop Code tab), where it can read the repo, run git, and spawn subagents. Its `disable-model-invocation` frontmatter means it only runs when you invoke it. Check that the skill upload accepts that key.
 
 ## Release
 
 1. Bump the `Version:` line in each changed `SKILL.md` and add an entry to [CHANGELOG.md](CHANGELOG.md) that names each one as `<skill> X.Y.Z`.
 2. Run `python scripts/validate_skills.py`.
-3. Push a tag such as `v1.2.0`. The release workflow validates the skills, zips each one, and attaches the zips to a GitHub release.
+3. Push a tag such as `v1.3.0`. The release workflow validates the skills, zips each one, and attaches the zips to a GitHub release.
 
 ## Scripts
 
