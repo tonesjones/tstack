@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.0 (2026-10-07)
+
+- codex-delegate 1.1.1: two Gotchas from using the skill in another project. `resume` runs in the current directory, not the original `--cd` worktree, so `cd` into the worktree first. Codex may use a Python without pytest, so run the tests yourself. A third Gotcha points to the worktree and pytest-folder problems in tokenomics `reference/gotchas.md`. Step 2 no longer names a project-specific command.
+
 ## 1.4.0 (2026-10-07)
 
 - tokenomics 1.3.0: Haiku 5.5 replaces Haiku 4.5 as the cheapest tier.

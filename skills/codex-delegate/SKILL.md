@@ -5,7 +5,7 @@ description: Delegate bounded work to OpenAI Codex (the person's ChatGPT/Codex s
 
 # Codex delegate
 
-Version: 1.1.0 (2026-10-06)
+Version: 1.1.1 (2026-10-07)
 
 You orchestrate; Codex does delegated work; you own the result. Everything goes through
 `scripts/codex_bridge.py` in this skill's directory (call it `$BRIDGE` below; run it with
@@ -38,7 +38,7 @@ Keep it yourself when it is small, when the context needed is mostly already in 
 conversation, when it needs tools only you have (connectors, MCP, GitHub), or when it touches
 secrets. Never send credentials, `.env` files, tokens, or data the project marks as private or
 not-for-models. Follow the project's own rules first: if a repo has its own model pipeline (for
-example the finding-validation-agent's `fva assess`), use that instead of this bridge for its data.
+example a project-specific assessment command), use that instead of this bridge for its data.
 
 ## 3. Route
 
@@ -103,3 +103,11 @@ Codex output is a draft from a junior colleague, not a fact.
 - **An old `codex` on PATH.** The bridge uses the first `codex` it finds on PATH. If `status` shows
   an older version than the one you installed (for example a global install that shadows the npm
   one), set `CODEX_BIN` to the full path of the binary you want and run `status` again.
+- **`resume` runs in the current directory.** It does not reuse the original `--cd` worktree. `cd`
+  into the worktree before resuming a write task, or Codex edits your main checkout. Check
+  `files_changed` in the receipt.
+- **Codex may lack the test runner.** Codex can use a different Python than the project (on Windows,
+  for example, a system `C:\Python3xx` with no pytest), so it may not run the tests. Run them
+  yourself in the worktree before merging anything.
+- **Worktree and pytest problems.** Codex can't commit in a worktree, and on Windows it can leave
+  pytest folders that block `git worktree remove`. See tokenomics `reference/gotchas.md`.
