@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.4.0 (2026-10-07)
+
+- tokenomics 1.3.0: Haiku 5.5 replaces Haiku 4.5 as the cheapest tier.
+  - Haiku runs at two effort levels: medium (the new `scout` agent and `Explore`) and low (`grunt`). The routing table splits Haiku work between them.
+  - Planning and ambiguous tasks stay with Main. Debugging goes to `scout` only with a failing test or reproducer.
+  - The delegation gate is per tier. Sonnet keeps about 3K written or 6K read. Haiku delegates when the brief is shorter than doing the work, because Haiku 5.5 reads fresh input for half what Main pays to re-read its cache.
+  - Haiku packages are capped at about 60K tokens of reading, to stay under Haiku 5.5's 100K-token price band. This replaces the 200K-context rule.
+  - A Haiku safety refusal re-runs on Sonnet and doesn't count as the task's escalation.
+  - Briefs name any skill the work needs. In the 2026-10-07 trigger eval, Haiku 5.5 loaded the right skill on 37 of 76 prompts, against 69 for Haiku 4.5.
+  - The routing log's `tier` takes `haiku-med` and `haiku-low`.
+  - `reference/economics.md` has Haiku 5.5 prices for both bands, the 512-token cache minimum, the tokenizer difference, and reworked examples. `reference/gotchas.md` has a Haiku 5.5 section.
+- Add the `scout` agent (Haiku, medium effort, with Bash). `grunt` gets `effort: low` and `Explore` gets `effort: medium`.
+- `evals/triggers/run_triggers.py` reads the child's output as UTF-8. It crashed on the Windows cp1252 default.
+- `evals/aggregate.py` labels `haiku` results as Haiku 5.5 from 2026-10-07 and as Haiku 4.5 before.
+
 ## 1.3.0 (2026-10-06)
 
 - Add scope-audit 1.0.0: audits a drifting project against its goal in ten sections (North Star and conflicting goals, what works, feature audit, AI-generated scope creep, lessons, deletion candidates, current state, shortest path to done, Definition of Done, recommendation A to E). It starts with an inventory of open PRs, branches, and stashes, recommends but never closes or deletes without approval, and says when to re-audit: a new direction, all Definition of Done checks passing, or about every 10 merged PRs. Built from a real project audit; the skill keeps the method, not that project's content.

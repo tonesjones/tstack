@@ -8,7 +8,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 ORDER = {"haiku": 0, "sonnet": 1, "opus": 2}
-NAMES = {"haiku": "Haiku 4.5", "sonnet": "Sonnet 5.5", "opus": "Opus 5.5"}
+NAMES = {"haiku": "Haiku 5.5", "sonnet": "Sonnet 5.5", "opus": "Opus 5.5"}
+HAIKU_5_5_FROM = "2026-10-07"  # results dated earlier ran on Haiku 4.5
+
+
+def name(model, date):
+    if model == "haiku" and date < HAIKU_5_5_FROM:
+        return "Haiku 4.5"
+    return NAMES.get(model, model)
 
 
 def pct(x):
@@ -46,7 +53,7 @@ def main():
             l = [load(r / "llm_grading.json") for r in runs]
             t = [load(r / "timing.json") for r in runs]
             det = [rate([e for e in x["expectations"] if not e["text"].startswith("[LLM")]) for x in g]
-            row = "| %s | %s | %s | %s |" % (NAMES.get(model, model), "skill" if arm == "skill" else "no skill",
+            row = "| %s | %s | %s | %s |" % (name(model, date), "skill" if arm == "skill" else "no skill",
                                            pct(sum(det) / len(det)), ", ".join(pct(x) for x in det))
             if has_llm:
                 lv = [rate([e for e in x["expectations"] if e["text"].startswith("[LLM")]
@@ -67,7 +74,7 @@ def main():
         print("\nMisses (count of runs):\n")
         for (model, arm), f in sorted(misses.items(), key=lambda k: (ORDER.get(k[0][0], 9), k[0][1])):
             if f:
-                print("- %s %s: %s" % (NAMES.get(model, model), "skill" if arm == "skill" else "no skill",
+                print("- %s %s: %s" % (name(model, date), "skill" if arm == "skill" else "no skill",
                                        "; ".join("%s (%d)" % (k, v) for k, v in sorted(f.items(), key=lambda kv: -kv[1]))))
         print()
 

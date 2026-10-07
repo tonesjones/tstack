@@ -15,7 +15,7 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 
 ## Evidence
 
-`evals/` holds A/B tests that compare each skill against the same model without it; see [evals/README.md](evals/README.md). Latest results: [evals/results-2026-10-05.md](evals/results-2026-10-05.md), with one fixture per skill, Haiku 4.5 and Sonnet 5.5 for every skill, Opus 5.5 for some, 3 runs per cell, and a blind LLM rubric where judgment is needed.
+`evals/` holds A/B tests that compare each skill against the same model without it; see [evals/README.md](evals/README.md). Latest results: [evals/results-2026-10-05.md](evals/results-2026-10-05.md), with one fixture per skill, Haiku 4.5 and Sonnet 5.5 for every skill, Opus 5.5 for some, 3 runs per cell, and a blind LLM rubric where judgment is needed. Every Haiku figure below comes from Haiku 4.5. The A/B tests haven't been re-run on Haiku 5.5.
 
 - **unslop:** keep. There's a small gain for Sonnet (blind rubric 67% to 83%), none for Opus, and Haiku still adds new tells.
 - **technical-writing:** keep. Structure improves (Sonnet 90% to 100% deterministic, Haiku rubric 67% to 83%). Every arm still invents some steps.
@@ -24,16 +24,28 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 
 A trigger-routing test led to tighter descriptions for unslop, technical-writing, and deslop (Haiku routing 84/98 to 90/98, Sonnet 79/98 to 84/98).
 
+A 2026-10-07 re-run of the trigger test on Haiku 5.5, with the current descriptions and 2 runs per prompt, loaded the right skill on 37 of 76 prompts. Haiku 4.5 managed 69 of the same 76. Haiku 5.5 mostly did the task itself instead of loading a skill. It hit deslop on 9/16, reflect 7/18, technical-writing 4/16, and unslop 6/14, and it correctly loaded nothing on 11/12 negatives. Results: `evals/triggers/results/2026-10-07/`.
+
 ## Layout
 
 Each skill lives in `skills/<name>/` with a `SKILL.md` and any `reference/`, `references/`, or `scripts/` it needs. The folder name must match the `name` in the frontmatter.
 
 ## Agents
 
-`agents/` holds the `worker` (Sonnet), `grunt` (Haiku), and `Explore` (Haiku) subagents that tokenomics delegates to. `Explore` replaces the built-in Explore agent, which runs on the main session's model. Claude Code loads them from `~/.claude/agents/`, so link or copy them there:
+`agents/` holds the subagents that tokenomics delegates to:
+
+| Agent | Model | Effort | Work |
+|---|---|---|---|
+| `worker` | Sonnet | medium | Implementation to a spec, multi-file refactors |
+| `scout` | Haiku 5.5 | medium | Small changes a test or command proves |
+| `Explore` | Haiku 5.5 | medium | Read-only searches |
+| `grunt` | Haiku 5.5 | low | Mechanical work that follows a pattern from the brief |
+
+`Explore` replaces the built-in Explore agent, which runs on the main session's model. Claude Code loads agents from `~/.claude/agents/` when a session starts. Link or copy them there, then start a new session:
 
 ```bash
 ln -s "$PWD/agents/worker.md" ~/.claude/agents/worker.md
+ln -s "$PWD/agents/scout.md" ~/.claude/agents/scout.md
 ln -s "$PWD/agents/grunt.md" ~/.claude/agents/grunt.md
 ln -s "$PWD/agents/explore.md" ~/.claude/agents/explore.md
 ```
