@@ -41,7 +41,7 @@ def one(p, model, skills_dir):
                              "--verbose", "--tools", "Skill", "--permission-mode", "bypassPermissions",
                              "--no-session-persistence"],
                             cwd=work, env=env_for(home), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-                            stdin=subprocess.DEVNULL, text=True)
+                            stdin=subprocess.DEVNULL, text=True, encoding="utf-8")
     called, err, said = [], None, ""
     try:
         for line in proc.stdout:
