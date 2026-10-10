@@ -5,7 +5,7 @@ description: After a plan is drafted, decide whether delegation pays, map each t
 
 # Tokenomics
 
-Version: 1.3.0 (2026-10-07)
+Version: 1.4.0 (2026-10-10)
 
 Turn a finished plan into routed, delegated work, then review it. Routing is
 relative to whatever model the main session runs (call it **Main**): Main keeps
@@ -114,8 +114,9 @@ confirmation. Otherwise continue straight to delegation.
 ## 6. Review (Main), proportionate
 For each completed task:
 - Objective "done when" (tests, lint, build, file exists): run the check yourself and accept on pass. Don't re-read the diff.
-- Read the diff only for flagged tasks (auth, crypto, deletion, migrations), spot-checks of Haiku output, and integration points between tasks.
+- Read the diff only for flagged tasks (auth, crypto, deletion, migrations), spot-checks of Haiku output, and integration points between tasks. When you read one, review adversarially: assume it is wrong and look for the failure, and write one line per finding (`file:line — problem`). No praise, no summary.
 - Mark it **pass**, **fix** (small correction done by Main), or **escalate** (redo one tier up, with the original brief plus the failure reason). The order is Haiku low, Haiku medium, Sonnet, Main.
+- Subagents stop and report back to Main, rather than guessing, at three decision points: choosing between approaches the brief didn't settle, the same error twice, or "done when" can't be met as written. Put this rule in every brief. Main answers with a short brief, never by handing over its transcript.
 - A task escalates at most once. If it fails again, Main does it inline.
 - A Haiku run that ends in a safety refusal is re-run on Sonnet with the same brief. Haiku 5.5 has no server-side fallback, and a refusal says nothing about the task's difficulty, so it doesn't count as the task's escalation. Log it as `refusal` in notes.
 

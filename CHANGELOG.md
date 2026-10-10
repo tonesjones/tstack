@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.0 (2026-10-10)
+
+- tokenomics 1.4.0: two review ideas borrowed from an Opus/Sonnet/Haiku routing diagram.
+  - Step 6: when Main reads a diff, it reviews adversarially, assuming the change is wrong, and writes one line per finding.
+  - Step 6: subagents stop and report back at three decision points (an approach the brief didn't settle, the same error twice, a "done when" that can't be met). Main answers with a short brief, not its transcript.
+
 ## 1.5.0 (2026-10-07)
 
 - codex-delegate 1.1.1: two Gotchas from using the skill in another project. `resume` runs in the current directory, not the original `--cd` worktree, so `cd` into the worktree first. Codex may use a Python without pytest, so run the tests yourself. A third Gotcha points to the worktree and pytest-folder problems in tokenomics `reference/gotchas.md`. Step 2 no longer names a project-specific command.
