@@ -1,0 +1,1 @@
+{ "name": "usage-meter", "version": "0.1.0", "description": "Live pane of models, tokens, cache and cost for the session and each subagent", "types": "./types/index.d.ts" }

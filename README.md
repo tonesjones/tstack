@@ -13,6 +13,14 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 | [scope-audit](skills/scope-audit/SKILL.md) | Audit a drifting project against its goal and recommend what to keep, cut, or park. |
 | [codex-delegate](skills/codex-delegate/SKILL.md) | Hand bounded tasks to the Codex CLI (Luna or Sol tier) and review the results. |
 
+## Mods
+
+`mods/` holds Claude Code mods, which change the app itself rather than teach Claude a task.
+
+| Mod | Purpose |
+|---|---|
+| [usage-meter](mods/usage-meter/README.md) | Show session and subagent costs, cache hits, context use, and a cache countdown. Auto-compacts idle sessions and reports plan-limit use when a session ends. Defaults match a Pro subscription, and its README covers API pricing. |
+
 ## Evidence
 
 `evals/` holds A/B tests that compare each skill against the same model without it; see [evals/README.md](evals/README.md). Latest results: [evals/results-2026-10-05.md](evals/results-2026-10-05.md), with one fixture per skill, Haiku 4.5 and Sonnet 5.5 for every skill, Opus 5.5 for some, 3 runs per cell, and a blind LLM rubric where judgment is needed. Every Haiku figure below comes from Haiku 4.5. The A/B tests haven't been re-run on Haiku 5.5.

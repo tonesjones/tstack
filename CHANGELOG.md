@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.0 (2026-10-11)
+
+- New `mods/` folder for Claude Code mods, starting with usage-meter 0.1.0.
+  - A Usage pane and a band above the prompt show the session cost, the cost of each subagent, cache hits, context use, and a countdown to when the cache expires.
+  - A Compact dot says when `/compact` is cheap. Auto-compact runs it once after 55 idle minutes on a context of 150k tokens or more. `/usage-meter auto-compact off` turns that off.
+  - **End session and show summary** reports how much of the 5-hour and weekly plan windows the session used.
+  - The defaults match a Pro subscription. The README lists the values to change for API pricing.
+
 ## 1.7.0 (2026-10-11)
 
 - tokenomics 1.4.1: two Codex and git worktree gotchas in `reference/gotchas.md`.
