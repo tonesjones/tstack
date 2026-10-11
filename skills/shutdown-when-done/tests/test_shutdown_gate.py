@@ -10,6 +10,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 import arm  # noqa: E402
 import shutdown_gate as gate  # noqa: E402
 
+REAL_RUN = subprocess.run
+REAL_POPEN = subprocess.Popen
+GATE = Path(__file__).resolve().parent.parent / "scripts" / "shutdown_gate.py"
 SID = "session-abc"
 ALLOWED = 'shutdown /s /t 600 /c "Claude Code finished."'
 
@@ -17,12 +20,19 @@ ALLOWED = 'shutdown /s /t 600 /c "Claude Code finished."'
 @pytest.fixture(autouse=True)
 def isolate(tmp_path, monkeypatch):
     monkeypatch.setenv("SHUTDOWN_WHEN_DONE_ARM", str(tmp_path / "arm.json"))
+    monkeypatch.delenv("SHUTDOWN_WHEN_DONE_DRYRUN", raising=False)
 
     def refuse(*a, **k):
         raise AssertionError("a test tried to run a process: %r" % (a,))
 
+    def only_the_hook(args, *a, **k):
+        # The one process tests may start: this Python running the hook script.
+        if list(args) != [sys.executable, str(GATE)]:
+            refuse(args)
+        return REAL_POPEN(args, *a, **k)
+
     monkeypatch.setattr(subprocess, "run", refuse)
-    monkeypatch.setattr(subprocess, "Popen", refuse)
+    monkeypatch.setattr(subprocess, "Popen", only_the_hook)
     monkeypatch.setattr(gate.os, "system", refuse)
 
 
@@ -240,3 +250,115 @@ def test_main_fails_closed_on_bad_json(monkeypatch, capsys):
 def test_main_ignores_bad_json_without_power_words(monkeypatch, capsys):
     code, out = run_main(monkeypatch, capsys, "{oops")
     assert code == 0 and out.out == ""
+
+
+# Bypass attempts
+
+BYPASSES = [
+    "shut^down /s /t 0",
+    'cmd /c "shut^down /s /t 0"',
+    "$c='shut'+'down'; & $c /s /t 0",
+    '& ("shut" + "down") /s /t 0',
+    "s`hutdown /s /t 0",
+    "Stop-Comp`uter",
+    "wmic os where primary=true call Win32Shutdown 1",
+    "(Get-WmiObject Win32_OperatingSystem).Win32Shutdown(1)",
+    'schtasks /create /tn x /tr "shutdown /s /t 0" /sc once /st 03:00',
+    "python -c \"import os; os.system('shut'+'down /s /t 0')\"",
+    "powershell -EncodedCommand UwB0AG8AcAAtAEMAbwBtAHAAdQB0AGUAcgA=",
+    "pwsh -enc UwB0AG8AcAAtAEMAbwBtAHAAdQB0AGUAcgA=",
+    "powershell -e UwB0AG8AcAAtAEMAbwBtAHAAdQB0AGUAcgA=",
+    'MSYS_NO_PATHCONV=1 shutdown /s /t 0',
+]
+
+
+@pytest.mark.parametrize("command", BYPASSES)
+def test_bypasses_blocked_unarmed(command):
+    assert denied(gate.pre_tool_use(bash(command)))
+
+
+@pytest.mark.parametrize("command", BYPASSES)
+def test_bypasses_blocked_armed(command):
+    arm.arm(SID, "4h")
+    assert denied(gate.pre_tool_use(bash(command)))
+
+
+@pytest.mark.parametrize("command", ['MSYS_NO_PATHCONV=1 shutdown /s /t 600 /c "done"', "MSYS_NO_PATHCONV=1 shutdown /a"])
+def test_git_bash_prefix_allowed(command):
+    arm.arm(SID, "4h")
+    assert gate.pre_tool_use(bash(command)) is None
+
+
+@pytest.mark.parametrize("name,content", [
+    ("off.bat", "shutdown /s /t 0"),
+    ("off.cmd", "shut^down /s /t 0"),
+    ("off.ps1", "Stop-Computer -Force"),
+    ("off.ps1", "powershell -enc AAAA"),
+    ("off.vbs", 'CreateObject("WScript.Shell").Run "shutdown /s"'),
+])
+def test_script_files_with_power_commands_blocked(tmp_path, name, content):
+    arm.arm(SID, "4h")
+    ev = {"hook_event_name": "PreToolUse", "session_id": SID, "tool_name": "Write",
+          "tool_input": {"file_path": str(tmp_path / name), "content": content}}
+    assert denied(gate.pre_tool_use(ev))
+
+
+def test_edit_into_script_blocked(tmp_path):
+    ev = {"hook_event_name": "PreToolUse", "session_id": SID, "tool_name": "Edit",
+          "tool_input": {"file_path": str(tmp_path / "run.ps1"), "old_string": "x", "new_string": "Restart-Computer"}}
+    assert denied(gate.pre_tool_use(ev))
+
+
+def test_ordinary_script_file_passes(tmp_path):
+    ev = {"hook_event_name": "PreToolUse", "session_id": SID, "tool_name": "Write",
+          "tool_input": {"file_path": str(tmp_path / "build.ps1"), "content": "npm run build"}}
+    assert gate.pre_tool_use(ev) is None
+
+
+# Dry run
+
+def test_dry_run_denies_and_logs(monkeypatch):
+    monkeypatch.setenv("SHUTDOWN_WHEN_DONE_DRYRUN", "1")
+    arm.arm(SID, "4h")
+    out = gate.pre_tool_use(bash(ALLOWED))
+    assert denied(out) and "dry run" in out["hookSpecificOutput"]["permissionDecisionReason"]
+    assert ALLOWED in arm.arm_path().with_name("dryrun.log").read_text(encoding="utf-8")
+
+
+def test_dry_run_still_allows_abort(monkeypatch):
+    monkeypatch.setenv("SHUTDOWN_WHEN_DONE_DRYRUN", "1")
+    assert gate.pre_tool_use(bash("shutdown /a")) is None
+
+
+# End to end: run the hook script as Claude Code does, in a child Python.
+# The child only reads JSON and writes JSON. The commands are strings it judges, never runs.
+
+def run_hook(event, env_extra=None):
+    import os
+    env = dict(os.environ)
+    env.update(env_extra or {})
+    r = REAL_RUN([sys.executable, str(GATE)], input=json.dumps(event), capture_output=True,
+                 text=True, env=env, timeout=30)
+    return r.returncode, (json.loads(r.stdout) if r.stdout.strip() else None)
+
+
+def test_e2e_unarmed_denies():
+    code, out = run_hook(bash(ALLOWED))
+    assert code == 0 and denied(out)
+
+
+def test_e2e_arm_then_allow_then_dry_run():
+    code, out = run_hook(prompt("/shutdown-when-done 2h"))
+    assert code == 0 and "Armed" in out["hookSpecificOutput"]["additionalContext"]
+    code, out = run_hook(bash(ALLOWED))
+    assert code == 0 and out is None
+    code, out = run_hook(bash(ALLOWED), {"SHUTDOWN_WHEN_DONE_DRYRUN": "1"})
+    assert denied(out)
+    code, out = run_hook(bash("shutdown /s /t 0"))
+    assert denied(out)
+
+
+def test_e2e_bad_json_fails_closed():
+    r = REAL_RUN([sys.executable, str(GATE)], input='{"command":"shut^down /s', capture_output=True,
+                 text=True, timeout=30)
+    assert r.returncode == 2

@@ -17,6 +17,7 @@ import json
 import os
 import re
 import subprocess
+import time
 import sys
 from pathlib import Path
 
@@ -29,12 +30,41 @@ POWER_RE = re.compile(
     r"|initiatesystemshutdown|exitwindowsex",
     re.I,
 )
-ABORT_RE = re.compile(r'^\s*shutdown(?:\.exe)?\s+[/-]a\s*$', re.I)
-ALLOWED_RE = re.compile(r'^\s*shutdown(?:\.exe)?\s+/s\s+/t\s+600\s+/c\s+"[^"\r\n`$]*"\s*$', re.I)
+# Squashed form: drop the skill's own names, then every non-letter, so escapes
+# (shut^down), quotes, backticks and concatenation ('shut'+'down') can't hide a word.
+SAFE_NAMES_RE = re.compile(r"shutdown[-_]when[-_]done|shutdown_gate", re.I)
+POWER_WORDS = ("shutdown", "stopcomputer", "restartcomputer", "powrprof", "setsuspendstate",
+               "initiatesystemshutdown", "exitwindowsex")
+ENCODED_RE = re.compile(r"(?<![\w-])-(?:e|ec|en|enc|enco|encod|encode|encoded|encodedc\w*)(?![\w-])", re.I)
+SCRIPT_SUFFIXES = {".bat", ".cmd", ".ps1", ".psm1", ".vbs"}
+PREFIX = r"^\s*(?:MSYS_NO_PATHCONV=1\s+)?"
+ABORT_RE = re.compile(PREFIX + r'shutdown(?:\.exe)?\s+[/-]a\s*$', re.I)
+ALLOWED_RE = re.compile(PREFIX + r'shutdown(?:\.exe)?\s+/s\s+/t\s+600\s+/c\s+"[^"\r\n`$]*"\s*$', re.I)
 ARM_CMD_RE = re.compile(r"arm\.py['\"]?\s+arm\b|arm\.json|SHUTDOWN_WHEN_DONE_ARM", re.I)
 ARM_PROMPT_RE = re.compile(r"^\s*/shutdown-when-done(?:\s+(\S+))?\s*$", re.I)
 IS_WINDOWS = os.name == "nt"
 EDIT_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
+
+
+def squash(text: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", SAFE_NAMES_RE.sub(" ", text).lower())
+
+
+def has_power_word(text: str) -> bool:
+    flat = squash(text)
+    return bool(POWER_RE.search(SAFE_NAMES_RE.sub(" ", text))) or any(w in flat for w in POWER_WORDS)
+
+
+def dry_run() -> bool:
+    return os.environ.get("SHUTDOWN_WHEN_DONE_DRYRUN", "") not in ("", "0")
+
+
+def log_dry_run(command: str) -> None:
+    try:
+        with open(armfile.arm_path().with_name("dryrun.log"), "a", encoding="utf-8") as f:
+            f.write("%s would have allowed: %s\n" % (time.strftime("%Y-%m-%d %H:%M:%S"), command))
+    except OSError:
+        pass
 
 
 def deny(reason: str) -> dict:
@@ -62,6 +92,10 @@ def pre_tool_use(event: dict) -> dict | None:
         target = tin.get("file_path") or tin.get("notebook_path") or ""
         if target and _same_file(target, arm_path):
             return deny("the arm file can't be edited by a tool. Only the user arms it.")
+        if Path(target).suffix.lower() in SCRIPT_SUFFIXES:
+            text = json.dumps(tin)
+            if has_power_word(text) or ENCODED_RE.search(text):
+                return deny("script files that contain power commands are blocked.")
         return None
 
     command = tin.get("command")
@@ -69,13 +103,18 @@ def pre_tool_use(event: dict) -> dict | None:
         return None
     if ARM_CMD_RE.search(command):
         return deny("only the user's typed /shutdown-when-done arms it. Use `arm.py status` or `arm.py disarm`.")
-    if not POWER_RE.search(command):
+    if re.search(r"powershell|pwsh", command, re.I) and ENCODED_RE.search(command):
+        return deny("encoded PowerShell commands are blocked while this skill is installed.")
+    if not has_power_word(command):
         return None
     if ABORT_RE.match(command):
         return None
     if not armfile.is_armed(session):
         return deny("not armed for this session. Power commands are blocked.")
     if ALLOWED_RE.match(command):
+        if dry_run():
+            log_dry_run(command)
+            return deny("dry run: the shutdown would have been allowed. Nothing was run. Stop here.")
         return None
     return deny('armed, but only `shutdown /s /t 600 /c "<message>"` and `shutdown /a` are allowed, alone on the line.')
 
@@ -125,7 +164,7 @@ def main() -> int:
         event = json.loads(raw)
         out = handle(event)
     except Exception as e:  # fail closed on anything that looks like a power command
-        if POWER_RE.search(raw) or ARM_CMD_RE.search(raw):
+        if has_power_word(raw) or ARM_CMD_RE.search(raw):
             print("shutdown-when-done gate error, blocking: %s" % e, file=sys.stderr)
             return 2
         return 0

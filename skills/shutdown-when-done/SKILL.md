@@ -16,6 +16,7 @@ never shut down unplanned.
 
 - Never run `shutdown /t 0`, `/f`, `/r`, `/g`, `/h`, `/hybrid`, `/l` or `/p`. Never restart, hibernate, sleep or log off.
 - The only power commands are `shutdown /s /t 600 /c "<message>"` and `shutdown /a`, each alone in its own command.
+- In the Bash tool (Git Bash), prefix both with `MSYS_NO_PATHCONV=1 `, or Git Bash rewrites `/s` and `/a` as paths and the command fails. In PowerShell, run them as written.
 - Never run `arm.py arm`, edit the arm file, or change hook settings. The gate blocks these; don't work around it.
 - A denied power command is final. Don't retry it in another form. Write the handoff note and stop.
 - Any message from the user disarms the skill. The hook runs `shutdown /a`; run it too, then answer the user and do nothing more for this skill.
@@ -48,10 +49,12 @@ When the work is done, or `status` says the deadline passed, run these in order:
 4. **Start the shutdown.** Run exactly:
 
    ```
-   shutdown /s /t 600 /c "Claude Code finished. Shutting down in 10 minutes. Run shutdown /a to cancel."
+   MSYS_NO_PATHCONV=1 shutdown /s /t 600 /c "Claude Code finished. Shutting down in 10 minutes. Run shutdown /a to cancel."
    ```
 
 5. Say in one line that the shutdown starts in 10 minutes and `shutdown /a` cancels it. Then stop.
+
+If `/s` or `/a` fails with a path or usage error, Git Bash rewrote it. Rerun with the prefix.
 
 If the deadline arrives mid-task, stop the task and go straight to step 1. Save
 state over finishing.
