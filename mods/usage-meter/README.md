@@ -91,7 +91,8 @@ The setting lasts for the current session, and the pane shows whether auto-compa
 
 When you're done with a session, press **End session and show summary** at the bottom of the pane. A summary appears at the top of the pane:
 
-- How long the session ran, what it cost, how many model requests it made, and which models it used.
+- How long the session ran, what it cost, and how many model requests it made.
+- Each model's share of the cost and of the requests, for example "Opus 5.5: 84% of cost, 120 requests (62%)". The cost shares come from the estimates at the prices in `PRICES`.
 - How much of your **5-hour window** and **Weekly window** the session used, where each window stands now, and when it resets.
 
 Auto-compact stops after you press the button. To return to the normal pane, press **Back to live view**.
