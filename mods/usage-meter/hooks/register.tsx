@@ -4,7 +4,8 @@ import type { EngineInterface, Register } from 'claude-code'
 import type { AgentRow, Drain, Progress, Tally } from '../types'
 import { advise, AUTO_COMPACT_INSTRUCTIONS, cacheCountdown, EXPIRY_WARNING_MS, shouldAutoCompact } from './compact'
 import type { Advice } from './compact'
-import { drainLine, drainStep } from './limits'
+import { drainLine, drainStep, modelSplit } from './limits'
+import type { ModelUse } from './limits'
 import { agentCard, summaryCard } from './svg'
 import { friendlyName, windowOf } from './models'
 import { costOf, priceOf } from './pricing'
@@ -55,11 +56,15 @@ function summarize(list: AgentRow[]) {
   let estimate = 0
   const all: Tally = { ...EMPTY }
   const costs: Record<string, number> = {}
+  const byModel: Record<string, ModelUse> = {}
   for (const row of list) {
     costs[row.id] = 0
     for (const [model, t] of Object.entries(row.models)) {
       const c = costOf(model, t, writeMultiplierFor(row.id)) ?? 0
       costs[row.id] += c
+      const use = (byModel[friendlyName(model)] ??= { cost: 0, requests: 0 })
+      use.cost += c
+      use.requests += t.requests
       estimate += c
       all.input += t.input
       all.output += t.output
@@ -68,7 +73,7 @@ function summarize(list: AgentRow[]) {
       all.requests += t.requests
     }
   }
-  return { estimate, all, costs }
+  return { estimate, all, costs, byModel }
 }
 
 const modelName = (row: AgentRow, model: string) =>
@@ -281,7 +286,7 @@ export const register: Register = on => {
     const now = await $.clock.now()
     const usage = await $.session.usage()
     const advice = await adviceNow($)
-    const { estimate, all, costs } = summarize(list)
+    const { estimate, all, costs, byModel } = summarize(list)
     const cost = usage.cost?.usd !== undefined ? usd(usage.cost.usd) : `about ${usd(estimate)}`
 
     const main = list.filter(r => r.id === 'main')
@@ -342,7 +347,6 @@ export const register: Register = on => {
 
     const ended = await read($, endedAt)
     const drains = Object.entries(await read($, drain))
-    const models = [...new Set(list.flatMap(r => Object.keys(r.models)).map(friendlyName))]
     const requests = list.reduce((n, r) => n + Object.values(r.models).reduce((m, t) => m + t.requests, 0), 0)
     const resetIn = (iso?: string) => {
       const ms = iso ? Date.parse(iso) - now : NaN
@@ -354,8 +358,11 @@ export const register: Register = on => {
       <Box flexDirection="column" gap={1}>
         <Text bold>Session summary</Text>
         <Text>
-          Ran {Math.round((ended - usage.startedAt) / 60_000)} min, cost {cost}, {requests} model requests on {models.join(', ') || 'no models'}.
+          Ran {Math.round((ended - usage.startedAt) / 60_000)} min, cost {cost}, {requests} model requests.
         </Text>
+        {modelSplit(byModel).map(line => (
+          <Text key={line}>{line}</Text>
+        ))}
         {drains.length > 0 ? (
           drains.map(([kind, d]) => <Text key={kind}>{drainLine(kind, d, resetIn(d.resetsAt))}</Text>)
         ) : (

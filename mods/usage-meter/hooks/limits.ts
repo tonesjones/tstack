@@ -18,3 +18,16 @@ export function drainLine(kind: string, d: Drain, resetText?: string): string {
   const name = WINDOW_NAME[kind] ?? kind
   return `${name}: this session used ${pct(d.used)}. Now at ${pct(d.last)}${resetText ? `, resets ${resetText}` : ''}.`
 }
+
+export type ModelUse = { cost: number; requests: number }
+
+// "Opus 5.5: 84% of cost, 120 requests (62%)", largest cost first.
+export function modelSplit(byModel: Record<string, ModelUse>): string[] {
+  const entries = Object.entries(byModel)
+  const cost = entries.reduce((n, [, u]) => n + u.cost, 0)
+  const requests = entries.reduce((n, [, u]) => n + u.requests, 0)
+  const share = (part: number, whole: number) => (whole > 0 ? Math.round((part / whole) * 100) : 0)
+  return entries
+    .sort(([, a], [, b]) => b.cost - a.cost)
+    .map(([name, u]) => `${name}: ${share(u.cost, cost)}% of cost, ${u.requests} requests (${share(u.requests, requests)}%)`)
+}
