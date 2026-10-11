@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.0 (2026-10-11)
+
+- tokenomics 1.4.1: two Codex and git worktree gotchas in `reference/gotchas.md`.
+  - New: never link an ignored data folder into a worktree. On Windows, `git worktree remove` follows the junction and empties the real folder.
+  - Reworded: add `< /dev/null` only to a bare `codex exec`, never to a command that already reads a heredoc or a pipe.
+
 ## 1.6.0 (2026-10-10)
 
 - tokenomics 1.4.0: two review ideas borrowed from an Opus/Sonnet/Haiku routing diagram.
