@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.7.0 (2026-10-11)
+
+- Add shutdown-when-done 1.0.0: on Windows, a Claude Code desktop session keeps working after the user goes to sleep, then starts a 10-minute cancellable shutdown.
+  - `disable-model-invocation: true`. Only the user's typed `/shutdown-when-done <duration>` arms it. The duration is required and capped at 12h.
+  - `scripts/shutdown_gate.py` is a PreToolUse and UserPromptSubmit hook. It blocks shutdown, Stop-Computer, Restart-Computer and powrprof unless the arm matches the session, then allows only `shutdown /s /t 600 /c "..."` and `shutdown /a`. It blocks tool edits to the arm file. Any user message disarms and runs `shutdown /a`.
+  - `scripts/arm.py` writes, removes and reports the session-bound arm file.
+  - Finish sequence: push or bundle, handoff note, no background work, then the shutdown. The skill warns that Windows force-closes other apps.
+  - `reference/install.md` has the hook settings. `tests/` has pytest tests with synthetic hook JSON; none runs a shutdown.
+
 ## 1.6.0 (2026-10-10)
 
 - tokenomics 1.4.0: two review ideas borrowed from an Opus/Sonnet/Haiku routing diagram.
