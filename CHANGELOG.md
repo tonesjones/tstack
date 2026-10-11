@@ -7,7 +7,11 @@
   - `scripts/shutdown_gate.py` is a PreToolUse and UserPromptSubmit hook. It blocks shutdown, Stop-Computer, Restart-Computer and powrprof unless the arm matches the session, then allows only `shutdown /s /t 600 /c "..."` and `shutdown /a`. It blocks tool edits to the arm file. Any user message disarms and runs `shutdown /a`.
   - `scripts/arm.py` writes, removes and reports the session-bound arm file.
   - Finish sequence: push or bundle, handoff note, no background work, then the shutdown. The skill warns that Windows force-closes other apps.
-  - `reference/install.md` has the hook settings. `tests/` has pytest tests with synthetic hook JSON; none runs a shutdown.
+  - The gate squashes escapes, quotes and concatenation before matching (`shut^down`, `'shut'+'down'`, `Win32Shutdown`), blocks encoded PowerShell, and blocks `.bat`, `.cmd`, `.ps1` and `.vbs` files that contain power commands.
+  - `SHUTDOWN_WHEN_DONE_DRYRUN=1` denies even the allowed shutdown and logs it, for a full test run.
+  - In Git Bash the commands take a `MSYS_NO_PATHCONV=1` prefix, so `/s` and `/a` aren't rewritten as paths.
+  - `reference/install.md` has the hook settings and a test checklist for Windows Sandbox or a VM. `tests/` has pytest tests with synthetic hook JSON and end-to-end runs of the hook script; none runs a shutdown.
+- Add the `shutdown-when-done on Windows` workflow: runs those tests on a `windows-latest` runner under PowerShell and Git Bash, and checks how Git Bash passes `/s` and `/a`.
 
 ## 1.11.0 (2026-10-22)
 

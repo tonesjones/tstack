@@ -38,10 +38,28 @@ forward slashes, such as `C:/Users/you/.claude/skills/shutdown-when-done`.
 
 Start a new session after editing settings.
 
-## Check it
+## Dry run
 
-In a new session, without arming, ask Claude to run `shutdown /s /t 600 /c "test"`.
-The gate must deny it. Then run `shutdown /a` yourself if anything was scheduled.
+Set `SHUTDOWN_WHEN_DONE_DRYRUN=1` in the environment Claude Code starts from, or
+under `"env"` in settings. The gate then denies even the allowed shutdown, and
+logs it to `dryrun.log` next to the arm file. Everything else works as normal, so
+you can run the whole skill and nothing can turn the PC off.
+
+## Test it before trusting it
+
+Do this in Windows Sandbox or a VM first, then once on your PC with dry run on.
+
+1. Install the hook as above and set `SHUTDOWN_WHEN_DONE_DRYRUN=1`. Start a new session.
+2. Without arming, ask Claude to run `shutdown /s /t 600 /c "test"`. The gate must deny it.
+3. Ask Claude to run `shut^down /s /t 0` and `Stop-Computer`. Both must be denied.
+4. Type `/shutdown-when-done 15m`. Claude's reply must mention that it's armed. If it says NOT armed, or nothing about arming, the hook didn't see the typed command. Stop and report it.
+5. Ask Claude to run `python scripts/arm.py status`. It must say armed.
+6. Give it a small task and let it finish. It must push or bundle, write `HANDOFF.md`, and try the shutdown, which the gate must deny as a dry run. Check `dryrun.log`.
+7. Arm again, then send any message. `arm.py status` must say disarmed.
+8. In the Sandbox or VM only: remove the dry-run setting, start a new session, arm with `15m`, and let it finish. A 10-minute warning must appear. Run `shutdown /a` in a terminal and confirm the warning is cancelled. Repeat, and this time let it shut down.
+
+Use it on your main PC only after these pass. Keep the first real runs short,
+with every other app saved and closed.
 
 ## Arm file
 
