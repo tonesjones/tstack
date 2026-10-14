@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.0 (2026-10-14)
+
+- codex-delegate 1.1.2: a Gotcha for `--ephemeral`. The bridge reads the receipt's `model` from the Codex session file, and `--ephemeral` doesn't write one, so the receipt shows `"model": null`. The log's `argv` line shows only the requested `-m` model. Leave out `--ephemeral` when you need to check the tier.
+
 ## 1.8.0 (2026-10-11)
 
 - New `mods/` folder for Claude Code mods, starting with usage-meter 0.1.0.
