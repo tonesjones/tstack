@@ -1,12 +1,12 @@
 ---
 name: "create-verification-skill"
-description: "Run with /create-verification-skill. Generates a project-local verification skill (.claude/skills/verify-<app>/) that launches the app, drives it the way a user does, and captures evidence, for any language, framework, or platform. Use for 'make a verify skill for this repo' or when a project has no scripted way to prove UI, CLI, or service behavior. Keep it current with /maintain-verification-skill."
+description: "Run with /create-verification-skill. Generates a project-local verify skill under .claude/skills/ that launches the app, drives it the way a user does, and captures evidence, for any language, framework, or platform. Use for 'make a verify skill for this repo' or when a project has no scripted way to prove UI, CLI, or service behavior. Keep it current with /maintain-verification-skill."
 disable-model-invocation: true
 ---
 
 # Create a verification skill
 
-Version: 1.0.0 (2026-10-12)
+Version: 1.0.1 (2026-10-14)
 
 Every serious project needs a scripted way to drive the real app and prove behavior: launch it, use a feature the way a user would, and capture evidence. This skill writes that as a project-local skill at `.claude/skills/verify-<app>/`, tailored to the repo. The reader is the next agent, not a human. It will read the skill cold, mid-task, having never seen the app.
 
