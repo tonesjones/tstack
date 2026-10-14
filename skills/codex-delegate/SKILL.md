@@ -5,7 +5,7 @@ description: Delegate bounded work to OpenAI Codex (the person's ChatGPT/Codex s
 
 # Codex delegate
 
-Version: 1.1.1 (2026-10-07)
+Version: 1.1.2 (2026-10-14)
 
 You orchestrate; Codex does delegated work; you own the result. Everything goes through
 `scripts/codex_bridge.py` in this skill's directory (call it `$BRIDGE` below; run it with
@@ -111,3 +111,8 @@ Codex output is a draft from a junior colleague, not a fact.
   yourself in the worktree before merging anything.
 - **Worktree and pytest problems.** Codex can't commit in a worktree, and on Windows it can leave
   pytest folders that block `git worktree remove`. See tokenomics `reference/gotchas.md`.
+- **`--ephemeral` leaves `model` null.** The bridge reads the receipt's `model` from the Codex
+  session file, and `--ephemeral` doesn't write that file. The receipt then shows `"model": null`,
+  so you can't check which tier ran. The `argv` line in the receipt's `log` file shows the `-m`
+  model the bridge requested, not the model that ran. Leave out `--ephemeral` when you need the
+  tier check.
