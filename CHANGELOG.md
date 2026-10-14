@@ -3,6 +3,10 @@
 ## 1.9.0 (2026-10-14)
 
 - codex-delegate 1.1.2: a Gotcha for `--ephemeral`. The bridge reads the receipt's `model` from the Codex session file, and `--ephemeral` doesn't write one, so the receipt shows `"model": null`. The log's `argv` line shows only the requested `-m` model. Leave out `--ephemeral` when you need to check the tier.
+- Add create-verification-skill 1.0.0 and maintain-verification-skill 1.0.0, adapted from the pstack plugin's (cursor/plugins, MIT) skills of the same names. Each skill folder includes pstack's MIT `LICENSE`.
+  - create-verification-skill writes `.claude/skills/verify-<app>/` with Launch, Doctor, Drive, Evidence, Cleanup, and Helpers sections plus a feature map, then proves it once end to end. The worked feature-map example is unchanged.
+  - maintain-verification-skill spawns one `Explore` subagent on Sonnet per feature file, drives every feature live itself, and ends `clean`, `changed` (one PR), or `blocked`.
+  - Changes for Claude: the drive recipe must be a rerunnable script, not a browser MCP tool. Servers start with Bash `run_in_background` and a readiness poll. Screenshots are opened with Read before they count as proof. The evidence folder stays out of commits. A new skill folder lists in the next session. The PR step uses `gh` or the GitHub MCP tools. A Reply section and a note on scheduling with a Routine or `/loop` were added.
 
 ## 1.8.0 (2026-10-11)
 
