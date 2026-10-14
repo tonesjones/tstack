@@ -79,6 +79,8 @@ def check_skill(d, changed=None, entry=""):
         for key in ("name", "description"):
             if not fm.get(key):
                 errs.append("frontmatter %r missing or empty" % key)
+        if re.search(r"[<>]", fm.get("description", "")):
+            errs.append("description contains '<' or '>' (the skill upload rejects XML tags)")
         if fm.get("name") and fm["name"] != d.name:
             errs.append("name %r != folder %r" % (fm["name"], d.name))
         if "globs" in fm:

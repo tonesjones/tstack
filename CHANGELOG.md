@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.1 (2026-10-14)
+
+- create-verification-skill 1.0.1: the description no longer contains `<app>`. The skill upload rejected the 1.9.0 zip with "SKILL.md description cannot contain XML tags".
+- `scripts/validate_skills.py` now fails a skill whose description contains `<` or `>`.
+
 ## 1.9.0 (2026-10-14)
 
 - codex-delegate 1.1.2: a Gotcha for `--ephemeral`. The bridge reads the receipt's `model` from the Codex session file, and `--ephemeral` doesn't write one, so the receipt shows `"model": null`. The log's `argv` line shows only the requested `-m` model. Leave out `--ephemeral` when you need to check the tier.
