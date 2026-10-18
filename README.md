@@ -71,7 +71,7 @@ Each uploaded skill updates separately. After a release, upload every changed sk
 
 `create-verification-skill` and `maintain-verification-skill` need Claude Code, since they launch and drive the app from a shell. Both run only when you invoke them.
 
-`teach` works best in Claude Code (CLI or the desktop Code tab), where it can read the repo, run git, and spawn subagents. Its `disable-model-invocation` frontmatter means it only runs when you invoke it. Check that the skill upload accepts that key.
+`teach` works best in Claude Code (CLI or the desktop Code tab), where it can read the repo, run git, and spawn subagents. Its `disable-model-invocation` frontmatter means it only runs when you invoke it.
 
 ## Release
 
