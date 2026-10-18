@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.2 (2026-10-17)
+
+- tokenomics 1.4.2: the stacked-PRs Gotcha in `reference/gotchas.md` now squash-merges the base and moves each stacked branch with `git rebase --onto origin/main <old-base-branch> <branch>`. The old advice, a plain merge of `main`, replays the base's commits after a squash and conflicts.
+
 ## 1.9.1 (2026-10-14)
 
 - create-verification-skill 1.0.1: the description no longer contains `<app>`. The skill upload rejected the 1.9.0 zip with "SKILL.md description cannot contain XML tags".
