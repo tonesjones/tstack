@@ -15,12 +15,13 @@ A review of every skill, with tokenomics and codex-delegate first, and a compari
   - `reference/economics.md` adds Fable 5.1 prices (cache read $0.25, 0.025x input), the effort, fork, and Codex cost facts, and Fable and Codex worked examples. `reference/gotchas.md` adds a section on agent overrides, skill `model:` frontmatter, the 5-minute subagent cache, and fork costs.
 - codex-delegate 1.2.0, and `scripts/codex_bridge.py`:
   - The bridge prints at most 8,000 characters of Codex's final message (`--max-output`) and saves the full text to the receipt's `final` path.
-  - `resume` runs in the directory and sandbox its thread started with, read from `~/.codex-bridge/threads/`. `codex exec resume` has no `--cd` or `--sandbox`. It refuses a directory that no longer exists. This replaces the "resume runs in the current directory" Gotcha.
-  - New `review` command: Codex's built-in `codex exec review` against `--base`, `--commit`, or `--uncommitted`, forced read-only.
-  - `run --write` (or `--sandbox workspace-write`) refuses a directory that isn't a linked git worktree, unless you pass `--no-worktree-check`.
-  - The receipt adds `requested_model`, `cwd`, and `final`. A timed-out run still prints a receipt with its thread id.
-  - The skill explains the Claude-side cost, asks for compact final messages, and hands bulk claim checks to a Haiku subagent. It also describes second opinions across two model families and logs runs to the tokenomics routing log.
-  - New tests: `tests/codex_bridge/`, which runs the bridge against a fake Codex CLI.
+  - `resume` runs in the directory and sandbox its thread started with, read from `~/.codex-bridge/threads/`, because `codex exec resume` has no `--cd` or `--sandbox`. It refuses a directory that no longer exists. A thread with no record resumes read-only unless you pass `--write`. This replaces the "resume runs in the current directory" Gotcha.
+  - New `review` command: Codex's built-in `codex exec review`, forced read-only, with one of `--base`, `--commit`, `--uncommitted`, or custom instructions. Codex rejects instructions combined with a target (checked on codex-cli 0.163.0).
+  - Writes (`run --write`, `--sandbox workspace-write`, `--add-dir`, and `resume` into a new `--cd`) refuse a main working tree, a directory outside git, and the checkout the bridge runs from, unless you pass `--no-worktree-check`.
+  - The receipt adds `requested_model` (the recorded one on `resume`), `cwd`, and `final`. `model` is the latest turn's.
+  - A timeout kills Codex's whole process group, since the npm `codex` is a launcher that spawns the native binary. The receipt still prints with the thread id.
+  - The skill explains the Claude-side cost, asks for compact final messages, and hands bulk claim checks to a Haiku `scout`. It also describes second opinions across two model families and logs runs to the tokenomics routing log.
+  - New tests: `tests/codex_bridge/`, which runs the bridge against a fake Codex CLI that enforces the real CLI's argument rules.
 - Agents: `worker`, `scout`, and `grunt` stop and report on an unsettled approach, the same error twice, or an unmeetable "done when". Their reports start with DONE, PARTIAL, or BLOCKED.
 - teach 1.1.0 and maintain-verification-skill 1.0.1: subagents are `general-purpose` on Sonnet, not `Explore`. The tstack `Explore` override keeps its 10-line report, its stop-on-judgment rule, and its tools (no Bash, no MCP) even under a `model` override. So the Why investigators couldn't reach MCP, and the How explorers were told to stop early. teach also gets pstack's longer list of framing labels to avoid.
 - create-verification-skill 1.1.0: ported from current pstack. Launch must reach a usable state from an empty data dir. A journey whose seed data lacks a precondition fails and isn't weakened. A proof run in a stand-in target lists the setup steps it didn't verify.

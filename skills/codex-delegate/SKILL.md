@@ -89,7 +89,8 @@ python3 $BRIDGE run --tier sol --write --cd ../wt-codex-<task> --prompt-file tas
 python3 $BRIDGE resume <thread> --prompt "Now add tests for the two cases you found."
 
 # second opinion on a diff with Codex's built-in reviewer (read-only)
-python3 $BRIDGE review --tier sol --cd <repo> --base main --prompt "Focus on the auth changes."
+python3 $BRIDGE review --tier sol --cd <repo> --base main
+python3 $BRIDGE review --tier sol --cd <repo> --prompt "Review the diff against main. Focus on auth."
 ```
 
 Stdout is Codex's final message, then a single `--- codex receipt:` JSON line with `exit`,
@@ -98,14 +99,17 @@ the `final` message path, and the `log` path.
 
 - Tasks over a minute or two: run with Bash `run_in_background` and keep working; you are
   notified when they finish. Independent tasks can run in parallel (keep it to about 4 at once).
-- `--write` refuses any directory that isn't a linked git worktree. For a scratch directory
-  outside git, pass `--no-worktree-check`.
+- Run the bridge from your own checkout and point `--cd` at the scratch worktree. `--write`
+  refuses `--cd` or `--add-dir` directories that are a main working tree, outside git, or the
+  checkout the bridge runs from. For a scratch directory outside git, pass `--no-worktree-check`.
 - `resume` runs in the directory and sandbox its thread started with, so a write task resumes in
-  its worktree. It refuses if that directory is gone. Pass `--cd` to choose one.
-- `review` takes `--base <branch>`, `--commit <sha>`, or `--uncommitted`. `--prompt` adds custom
-  instructions.
-- The default timeout is 1800 s (`--timeout`). A timed-out run still prints its receipt, so you
-  can `resume` the thread.
+  its worktree. It refuses if that directory is gone. `--cd` picks another directory, and the
+  write check applies to it.
+- `review` takes one of `--base <branch>`, `--commit <sha>`, `--uncommitted`, or custom
+  instructions in `--prompt`. Codex rejects instructions combined with a target, so name the diff
+  in the instructions instead.
+- The default timeout is 1800 s (`--timeout`). On timeout the bridge kills Codex and its child
+  processes, then prints the receipt, so you can `resume` the thread.
 - `--max-output 0` prints the whole final message.
 - `--ephemeral` skips saving the Codex session, which also disables `resume`.
 
@@ -115,13 +119,14 @@ Codex output is a draft from a junior colleague, not a fact.
 
 - Before you repeat a claim to the person or act on it, open its file:line and confirm it. Drop
   what doesn't hold. For bulk triage with many findings, check every high-severity one yourself.
-  Hand the rest to a Haiku `Explore` or `scout` subagent as a list of claims to confirm or
-  refute (mechanical and objective), and read only its verdicts.
+  Hand the rest to a Haiku `scout` subagent as a list of claims, each to mark holds or doesn't
+  hold with its file:line, and read only the verdicts. Not `Explore`: it stops on questions that
+  need judgment.
 - For write runs, read `git -C <worktree> diff` in full, run the project's tests and linters in
   the worktree, then merge or cherry-pick only what you have verified. Remove the worktree when
   done.
-- Check the receipt: a `model` different from `requested_model`, non-empty `errors`, or
-  unexpected `files_changed` means stop and look at the log.
+- Check the receipt: a `model` different from a non-null `requested_model`, non-empty `errors`,
+  or unexpected `files_changed` means stop and look at the log. `model` is the latest turn's.
 - A second opinion is the same brief on a second model family. Findings that Codex and Claude
   raise independently are the strongest signal. A finding only one of them raises still needs
   your check.
@@ -134,8 +139,8 @@ Codex output is a draft from a junior colleague, not a fact.
 - **An old `codex` on PATH.** The bridge uses the first `codex` it finds on PATH. If `status` shows
   an older version than the one you installed (for example a global install that shadows the npm
   one), set `CODEX_BIN` to the full path of the binary you want and run `status` again.
-- **Threads from before bridge 1.2.0 have no recorded directory.** `resume` warns and runs in the
-  current directory. Pass `--cd <worktree>` for those, or Codex edits your main checkout. Check
+- **Threads from before bridge 1.2.0 have no record.** `resume` warns and runs read-only in the
+  current directory. Pass `--cd <worktree>`, and `--write` if the follow-up must edit files. Check
   `files_changed` in the receipt.
 - **Codex may lack the test runner.** Codex can use a different Python than the project (on Windows,
   for example, a system `C:\Python3xx` with no pytest), so it may not run the tests. Run them
