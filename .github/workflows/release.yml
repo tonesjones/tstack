@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to create at this commit and release, such as v1.10.0"
+        required: true
 
 permissions:
   contents: write
@@ -11,13 +16,22 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
+      - name: Check tag
+        run: |
+          [[ "$TAG" == v* ]] || { echo "tag must start with v: $TAG"; exit 1; }
+
       - name: Validate skills
         run: python3 scripts/validate_skills.py
+
+      - name: Test the Codex bridge
+        run: python3 -m unittest discover -s tests/codex_bridge
 
       - name: Package skills
         run: |
@@ -35,6 +49,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/*.zip \
-            --title "$GITHUB_REF_NAME" \
+          # A manual run creates the tag at this commit; a tag push already has it.
+          gh release create "$TAG" dist/*.zip \
+            --target "$GITHUB_SHA" \
+            --title "$TAG" \
             --generate-notes

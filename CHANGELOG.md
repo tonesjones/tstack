@@ -31,6 +31,7 @@ A review of every skill, with tokenomics and codex-delegate first, and a compari
 - deslop 1.0.2: never inline, rename, or remove a function, class, or constant other modules may import (2026-10-05 eval recommendation).
 - scope-audit 1.0.1: drives the main workflow with the project's `verify-*` skill when one exists.
 - `scripts/validate_skills.py` fails a skill whose frontmatter sets `model`, which would switch the main session's model and re-read the whole conversation uncached.
+- The release workflow also runs the bridge tests, and can be started from the Actions tab (`workflow_dispatch`) with a tag to create and release.
 
 ## 1.9.2 (2026-10-17)
 
