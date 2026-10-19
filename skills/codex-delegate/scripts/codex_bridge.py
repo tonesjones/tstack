@@ -242,9 +242,9 @@ def guard_writes(dirs: list[Path], allow_outside_git: bool) -> None:
     for d in dirs:
         problem = write_problem(require_dir(d), allow_outside_git)
         if problem:
+            hint = ", or pass --no-worktree-check for it" if "not inside a git repository" in problem else ""
             sys.exit(f"refusing to let Codex write in {d}: {problem}. Run the bridge from your own checkout with "
-                     "--cd on a scratch worktree from `git worktree add`, or pass --no-worktree-check for a "
-                     "directory outside git.")
+                     f"--cd on a scratch worktree from `git worktree add`{hint}.")
 
 
 def clip(text: str, limit: int, full_path: Path) -> str:
@@ -282,12 +282,19 @@ def session_models(thread: str | None) -> list[str | None]:
 
 def configured_roots() -> list[str]:
     """writable_roots from config.toml, which a -c override would otherwise replace. Needs Python 3.11+."""
+    path = CODEX_HOME / "config.toml"
     try:
         import tomllib
-        config = tomllib.loads((CODEX_HOME / "config.toml").read_text(encoding="utf-8"))
-    except (ImportError, OSError, ValueError):
+    except ImportError:
+        if path.exists():
+            print("Python 3.11+ is needed to keep config.toml's writable_roots on this resume", file=sys.stderr)
         return []
-    return [str(r) for r in config.get("sandbox_workspace_write", {}).get("writable_roots", [])]
+    try:
+        section = tomllib.loads(path.read_text(encoding="utf-8")).get("sandbox_workspace_write", {})
+    except (OSError, ValueError):
+        return []
+    roots = section.get("writable_roots", []) if isinstance(section, dict) else []
+    return [r for r in roots if isinstance(r, str)] if isinstance(roots, list) else []
 
 
 def kill_group(proc: subprocess.Popen) -> None:
@@ -333,10 +340,14 @@ def run_codex(argv: list[str], prompt: str, timeout: int, cwd: Path) -> tuple[in
     except BaseException:
         kill_group(proc)
         raise
-    deadline = time.time() + 5
+    deadline = time.monotonic() + 5
     for t in readers:
-        t.join(timeout=max(0.0, deadline - time.time()))
+        t.join(timeout=max(0.0, deadline - time.monotonic()))
     return code, "".join(list(out)), "".join(list(err))
+
+
+def same_thread(a: str | None, b: str | None) -> bool:
+    return bool(a and b) and a.lower() == b.lower()
 
 
 def execute(make_argv, prompt: str, args: argparse.Namespace, label: str, cwd: Path, record: dict,
@@ -389,7 +400,7 @@ def execute(make_argv, prompt: str, args: argparse.Namespace, label: str, cwd: P
         "requested_model": record.get("model"),
         # Only turns this run added: a resume that wrote none (--ephemeral, a timeout) reports null.
         # A resume by thread name or prefix can't count its earlier turns, so it reports the latest.
-        "model": (session_models(thread)[earlier_turns if thread == resumed else 0:] or [None])[-1],
+        "model": (session_models(thread)[earlier_turns if same_thread(thread, resumed) else 0:] or [None])[-1],
         "seconds": round(elapsed),
         "usage": usage,
         "commands_run": len(commands),
@@ -540,7 +551,8 @@ def main() -> int:
         # A stopped background task (SIGTERM) or a closed terminal (SIGHUP) becomes SystemExit, so
         # run_codex kills Codex first.
         signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))
-        signal.signal(signal.SIGHUP, lambda *_: sys.exit(129))
+        if signal.getsignal(signal.SIGHUP) is not signal.SIG_IGN:  # keep nohup's choice
+            signal.signal(signal.SIGHUP, lambda *_: sys.exit(129))
     return args.fn(args)
 
 

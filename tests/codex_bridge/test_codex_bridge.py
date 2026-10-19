@@ -287,6 +287,33 @@ class BridgeTest(unittest.TestCase):
         self.assertFalse(done.exists(), "the Codex process outlived the timeout")
 
 
+    @unittest.skipIf(sys.version_info < (3, 11), "tomllib")
+    def test_a_malformed_writable_roots_value_is_ignored(self):
+        home = Path(self.env["CODEX_HOME"])
+        home.mkdir(parents=True, exist_ok=True)
+        (home / "config.toml").write_text('[sandbox_workspace_write]\nwritable_roots = "/cache"\n')
+        wt, docs = self.worktree("wt-bad"), self.worktree("wt-bad-docs")
+        _, receipt = self.bridge("run", "--write", "--cd", str(wt), "--add-dir", str(docs), "--prompt", "edit")
+        self.bridge("resume", receipt["thread"], "--prompt", "more")
+        roots = json.dumps([str(docs.resolve())])
+        self.assertIn("sandbox_workspace_write.writable_roots=" + roots, self.last_call()["argv"])
+
+    @unittest.skipIf(os.name == "nt", "POSIX signals")
+    def test_nohup_keeps_the_bridge_and_codex_running(self):
+        launcher = write_launcher(self.tmp / "codex-wrapped", use_exec=False)
+        done = self.tmp / "done-nohup"
+        proc = subprocess.Popen([sys.executable, str(BRIDGE), "run", "--cd", str(self.repo), "--prompt", "x"],
+                                env=dict(self.env, CODEX_BIN=str(launcher), FAKE_CODEX_SLEEP="2",
+                                         FAKE_CODEX_DONE=str(done)),
+                                cwd=self.tmp, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                preexec_fn=lambda: signal.signal(signal.SIGHUP, signal.SIG_IGN))
+        deadline = time.time() + 10
+        while self.call_count() == 0 and time.time() < deadline:
+            time.sleep(0.1)
+        proc.send_signal(signal.SIGHUP)
+        self.assertEqual(proc.wait(timeout=15), 0)
+        self.assertTrue(done.exists())
+
     @unittest.skipIf(os.name == "nt", "POSIX sessions")
     def test_a_daemon_holding_the_pipes_does_not_hang_the_bridge(self):
         started = time.time()
