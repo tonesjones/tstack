@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Create a verification skill
 
-Version: 1.0.1 (2026-10-14)
+Version: 1.1.0 (2026-10-19)
 
 Every serious project needs a scripted way to drive the real app and prove behavior: launch it, use a feature the way a user would, and capture evidence. This skill writes that as a project-local skill at `.claude/skills/verify-<app>/`, tailored to the repo. The reader is the next agent, not a human. It will read the skill cold, mid-task, having never seen the app.
 
@@ -28,7 +28,7 @@ The drive recipe must be something any session can rerun from a shell. A browser
 
 Write `.claude/skills/verify-<app>/SKILL.md`. It needs YAML frontmatter with `name: verify-<app>` and a `description` that names the app, the surface, and when to reach for it. Without frontmatter the skill never registers. Fill each section below from what the interview found. Leave no placeholders.
 
-- **Launch.** The exact command that starts the app for verification, and how to tell it's ready: a log line, a port answering, a prompt. Include teardown. For a long-lived server, say to start it in the background (Bash `run_in_background`, or `nohup` with a log file) and poll for readiness instead of sleeping. A short-lived CLI or TUI has no server to keep alive. Launch means build the binary or install deps once, then start each drive in its own isolated PTY or tmux session.
+- **Launch.** The exact command that starts the app for verification, and how to tell it's ready: a log line, a port answering, a prompt. Launch must reach a usable state from an empty data dir, including migrations and seed data. Ready means usable, not only that a process answers: a database health check can pass while its init scripts are still running. Include teardown. For a long-lived server, say to start it in the background (Bash `run_in_background`, or `nohup` with a log file) and poll for readiness instead of sleeping. A short-lived CLI or TUI has no server to keep alive. Launch means build the binary or install deps once, then start each drive in its own isolated PTY or tmux session.
 - **Doctor.** One read-only check that answers "is this instance worth driving?": process up, right version or build, port owned by us, auth valid. An agent runs it first, and again whenever anything looks off.
 - **Drive.** The harness recipe with real selectors and commands from this repo, not examples. Prefer stable handles (ARIA roles and names, data attributes, prompt strings, route paths) over coordinates and tab order.
 - **Evidence.** What to capture for a proof and where it goes. State the proof standards:
@@ -47,6 +47,8 @@ Create `.claude/skills/verify-<app>/features/README.md` plus one file per user-f
 
 Each feature file answers, from the user's point of view, what the feature is, how to reach it, how to drive it with the harness, and what observable end state proves it works. Use exactly these four H2s, in order: `Sub-features`, `How to get to it (user POV)`, `Driving it with <harness>`, and `Gotchas`.
 
+If the seed data lacks a precondition a journey needs, the journey reports a failure and the reason goes in that feature's `Gotchas`. Never weaken the journey to make it pass.
+
 The map is the repo's maintained verification source. A proof that drives one convenient entry point is incomplete when the map lists others.
 
 ## 4. Prove the generated skill before handing it over
@@ -54,6 +56,8 @@ The map is the repo's maintained verification source. A proof that drives one co
 Run its own instructions end to end once: launch, doctor, drive one mapped feature, capture evidence, clean up. One feature is enough. The map exists so later runs can cover the rest. After cleanup, confirm the evidence still exists at the named location. A cleanup that eats the proof fails this step.
 
 Fix what fails. Run the generated cleanup after every failed attempt too, so broken attempts don't strand processes and ports. A generated skill that was never executed is a draft, not a deliverable.
+
+If you proved it in a stand-in for the real target (a container in place of a fresh VM, a local stack in place of a remote one), list every setup step the stand-in did that the target will not. Those steps stay unverified until a run on the real target covers them.
 
 Claude Code picks up a new `.claude/skills/` folder at session start. If `/verify-<app>` doesn't appear in this session, follow the SKILL.md by reading it directly for the proof run, and tell the user a new session will list it.
 

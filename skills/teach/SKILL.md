@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Teach
 
-Version: 1.0.1 (2026-10-05)
+Version: 1.1.0 (2026-10-19)
 
 **You explain what a thing is, how it works, and why it's built that way, in one plain account at the person's pace. The goal is that they understand it, not that you change anything.**
 
@@ -41,7 +41,7 @@ You do the reading, delegate the digging when it pays, and write the explanation
 
 Decompose the question into 2 to 4 distinct slices of the subsystem. Spawn one explorer per slice in a single message:
 
-- `subagent_type`: `Explore` (no file edits)
+- `subagent_type`: `general-purpose`, with "read-only: do not edit files" in the brief. Not `Explore`: tstack's `Explore` override caps its report at 10 lines and stops when a question needs judgment, and a `model` override changes neither.
 - `model`: `sonnet`
 - Prompt: `reference/how.md`, with the question and that explorer's slice filled in, and ask for "very thorough" breadth.
 
@@ -65,7 +65,7 @@ Always say in your answer what you searched and what you skipped. Narrow is a sc
 
 **Wide (when git leaves the answer at Inferred or below, or the user asks for a thorough sweep).** You may run a scoped wide pass on the one or two most relevant categories and report the rest as skipped by choice. For a full sweep, list the MCP servers in this session (tools named `mcp__<server>__*`, including deferred ones). Server names are often opaque IDs, so classify each by its server instructions and tool names, not the name alone. Map each to one evidence category in `reference/sources.md`: issue tracker, long-form docs, team chat, infrastructure observability, error tracking, product analytics warehouse. Spawn one investigator per matched category in a single message:
 
-- `subagent_type`: `Explore` (no file edits), or `general-purpose` if you need it to run queries
+- `subagent_type`: `general-purpose`. `Explore` can't call MCP tools, so it can't search these sources.
 - `model`: `sonnet`
 - Prompt: the investigator brief in `reference/why.md` (the section under the `---`), the matching playbook from `reference/sources.md`, the code anchor, and the question. Name the exact MCP tools it should load, for example `ToolSearch select:mcp__x__search,mcp__x__get`. If the target looks defensive (null checks, retries, timeouts, rate limits, feature flags, guards), add the incident angle from the same file.
 - One investigator owns one category. Cross-source links go back to you as leads, not chased.
@@ -81,7 +81,7 @@ Then weigh the evidence yourself. Spot-check any citation you will lean on befor
 
 2. **Keep the confidence language from Why intact.** Its hedges are findings, not style. "This exists because X" needs a citation next to it. "It appears" and "likely" mark your inference. When the record is silent, say what you searched and that you found nothing. If the person's question carries a guess ("I assume it's for performance?"), check it against the evidence. Don't confirm it by default. These rules govern claims about why (intent, history, decisions), not descriptions of what the code does. A mechanism sentence like "it re-renders because the key changed" needs no citation. Everything else you can reword freely for teaching.
 
-3. **Keep it a conversation, not a lecture or a performance.** Offer to go deeper or move on, and follow their lead. No quizzes. No pacing theater. Don't print "Pause", don't ask them to say it back, and don't flag a part as important or hard. Just say it. When you would pause, stop and let them respond. Don't print framing labels ("the key insight", "at its core", "TL;DR"). Don't echo the structure of these steps as headers. If there is no live human, deliver it cleanly and put the offer to go deeper at the end.
+3. **Keep it a conversation, not a lecture or a performance.** Offer to go deeper or move on, and follow their lead. No quizzes. No pacing theater. Don't print "Pause", don't ask them to say it back, and don't flag a part as important or hard. Just say it. When you would pause, stop and let them respond. Don't print framing labels ("the key insight", "the one idea to hold onto", "at its core", "TL;DR"), and don't announce a part as tricky or interesting ("this is the tricky part", "here is where it gets interesting"). Don't echo the structure of these steps as headers. If there is no live human, deliver it cleanly and put the offer to go deeper at the end.
 
 4. **Show, don't only tell, and build the picture up diagram by diagram.** Open the diff, the code, or the debugger when that is the fastest way to land it. Draw when a picture lands faster than words. For anything with three or more moving parts, never draw one diagram with all of them. Draw a short series where each diagram redraws the last and adds one part, so the reader watches the system assemble. To teach A to B to C, draw it three times: A to B, then A to B to C, then add the return edge or the next piece. A single all-at-once diagram saved for the end is a reference, not teaching. Use a mermaid block for a flow or structure where labels carry the meaning, or ASCII for something small. When the idea is spatial (layout, overlap, scroll position, before and after) and this session offers a visual tool such as an artifact or inline widget, use it. Otherwise describe the layout in a plain ASCII sketch. The build-up rule holds there too. A single simple point needs no figure.
 

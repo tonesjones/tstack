@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.10.0 (2026-10-19)
+
+A review of every skill, with tokenomics and codex-delegate first, and a comparison with the current pstack plugin (cursor/plugins, including its generated Claude Code tree).
+
+- tokenomics 1.5.0:
+  - Codex (codex-delegate) is a routing tier. It bills the person's ChatGPT plan, so its gate is the brief and the review. Flagged tasks can add a Codex Sol review of the diff. The log takes `codex-luna` and `codex-sol`.
+  - A fork (`subagent_type: "fork"`) is a route for work that needs Main's context but produces bulky tool output. Its first request reads Main's cache.
+  - New "Main's own costs" section: batch independent tool calls, cap tool output, fit `/effort` to the work, `/compact` between tasks. On Opus 5.5, Sonnet 5.5, Haiku 5.5, and Fable 5.1, an effort change keeps the cache (Claude Code docs, checked 2026-10-19).
+  - The Sonnet gate on Fable drops to about 1K written or 3K read, since Fable output costs 5x Sonnet's.
+  - The routing table drops the Why and Touches columns, and the task fields are written once, in the brief.
+  - The report contract and stop rule live in the agent files, so briefs to `worker`, `scout`, and `grunt` don't repeat them.
+  - Escalation adds a rung, Sonnet at `effort: high`, before Main. A fix round within 5 minutes continues the same subagent with SendMessage, so it reads its own warm cache.
+  - `reference/economics.md` adds Fable 5.1 prices (cache read $0.25, 0.025x input), the effort, fork, and Codex cost facts, and Fable and Codex worked examples. `reference/gotchas.md` adds a section on agent overrides, skill `model:` frontmatter, the 5-minute subagent cache, and fork costs.
+- codex-delegate 1.2.0, and `scripts/codex_bridge.py`:
+  - The bridge prints at most 8,000 characters of Codex's final message (`--max-output`) and saves the full text to the receipt's `final` path.
+  - `resume` runs in the directory and sandbox its thread started with, read from `~/.codex-bridge/threads/`, because `codex exec resume` has no `--cd` or `--sandbox`. It refuses a directory that no longer exists. It restores a write run's `--add-dir` roots through `sandbox_workspace_write.writable_roots`, merged with the roots in `config.toml` on Python 3.11+. A thread with no record resumes read-only unless you pass `--write`. This replaces the "resume runs in the current directory" Gotcha.
+  - New `review` command: Codex's built-in `codex exec review`, forced read-only, with one of `--base`, `--commit`, `--uncommitted`, or custom instructions. Codex rejects instructions combined with a target (checked on codex-cli 0.163.0).
+  - Writes (`run --write`, `--sandbox workspace-write`, `--add-dir`, and `resume` into a new `--cd`) refuse a main working tree, a directory outside git, and the checkout the bridge runs from. `--no-worktree-check` waives only a directory truly outside git (not a `.git` directory, a bare repository, or a repository git refuses to read), and only for a write run and its directory.
+  - The receipt adds `requested_model` (the recorded one on `resume`), `cwd`, and `final`. `model` comes from the turn the run added, or is null.
+  - A timeout, Ctrl-C, SIGTERM, or SIGHUP kills Codex's whole process group, since the npm `codex` is a launcher that spawns the native binary. Output is read on threads, so a daemon Codex started can't hang the bridge. After a timeout the receipt still prints with the thread id.
+  - The skill explains the Claude-side cost, asks for compact final messages, and hands bulk claim checks to a Haiku `scout`. It also describes second opinions across two model families and logs runs to the tokenomics routing log.
+  - New tests: `tests/codex_bridge/`, which runs the bridge against a fake Codex CLI that enforces the real CLI's argument rules.
+- Agents: `worker`, `scout`, and `grunt` stop and report on an unsettled approach, the same error twice, or an unmeetable "done when". Their reports start with DONE, PARTIAL, or BLOCKED.
+- teach 1.1.0 and maintain-verification-skill 1.0.1: subagents are `general-purpose` on Sonnet, not `Explore`. The tstack `Explore` override keeps its 10-line report, its stop-on-judgment rule, and its tools (no Bash, no MCP) even under a `model` override. So the Why investigators couldn't reach MCP, and the How explorers were told to stop early. teach also gets pstack's longer list of framing labels to avoid.
+- create-verification-skill 1.1.0: ported from current pstack. Launch must reach a usable state from an empty data dir. A journey whose seed data lacks a precondition fails and isn't weakened. A proof run in a stand-in target lists the setup steps it didn't verify.
+- unslop 1.2.0: ported from current pstack. New patterns 32 (mannered prose) and 33 (over-compression). Pattern 26 adds ratchet, evacuate, endgame, and flywheel, and pattern 27 adds the "could this sentence appear in another project's docs" check. pstack dropped patterns 1, 2, 4, 6, and 21 and the Adding soul section. tstack keeps them, since the blog-post eval used them.
+- technical-writing 1.2.0: a PR body is a briefing a reviewer reads in under a minute, with logs and tables linked, not pasted (from pstack). It points at unslop patterns 1-33.
+- reflect 1.1.1: writes its output to a file when the user asked for one (2026-10-05 eval recommendation).
+- deslop 1.0.2: never inline, rename, or remove a function, class, or constant other modules may import (2026-10-05 eval recommendation).
+- scope-audit 1.0.1: drives the main workflow with the project's `verify-*` skill when one exists.
+- `scripts/validate_skills.py` fails a skill whose frontmatter sets `model`, which would switch the main session's model and re-read the whole conversation uncached.
+
 ## 1.9.2 (2026-10-17)
 
 - tokenomics 1.4.2: the stacked-PRs Gotcha in `reference/gotchas.md` now squash-merges the base and moves each stacked branch with `git rebase --onto origin/main <old-base-branch> <branch>`. The old advice, a plain merge of `main`, replays the base's commits after a squash and conflicts.

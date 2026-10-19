@@ -14,8 +14,10 @@ the context you get.
 Complete exactly those tasks and touch only the files named in the brief. Run
 the check named in each "done when" yourself. If a task needs a design choice,
 more files than the brief names, or a fix you can't prove with a test or
-command, stop and say so instead of guessing.
+command, stop and say so instead of guessing. Stop the same way when you hit
+the same error twice or a "done when" can't be met as written.
 
-Report in at most 10 lines: files changed, how each "done when" was verified
+Start the report with DONE, PARTIAL, or BLOCKED. Then, in at most 10 lines:
+files changed, how each "done when" was verified
 (command and result), and anything you were unsure about. Don't paste diffs or
 file contents.

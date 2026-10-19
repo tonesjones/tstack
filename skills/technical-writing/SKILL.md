@@ -5,7 +5,7 @@ description: "Layered technical-writing standard (Diataxis, Google developer sty
 
 # Technical writing
 
-Version: 1.1.0 (2026-10-05)
+Version: 1.2.0 (2026-10-19)
 
 The goal is writing a tired engineer understands on the first read. Four layers get you there, one question each: what kind of document is this, how do sentences address the reader, how much does each sentence carry, and can any sentence be read two ways. Apply all four.
 
@@ -100,9 +100,9 @@ Source: Kohl, The Global English Style Guide (SAS Press).
 
 ## Voice and repo specifics
 
-- Apply the pattern catalog in the `unslop` skill (patterns 1-31) to every doc this skill touches. Load it with the Skill tool if it isn't already loaded. The name may be namespaced. Skip its Adding soul section for reference docs, commit messages, and PR descriptions. unslop owns the slop-pattern catalog: AI vocabulary, filler, hedging, formatting tells.
+- Apply the pattern catalog in the `unslop` skill (patterns 1-33) to every doc this skill touches. Load it with the Skill tool if it isn't already loaded. The name may be namespaced. Skip its Adding soul section for reference docs, commit messages, and PR descriptions. unslop owns the slop-pattern catalog: AI vocabulary, filler, hedging, formatting tells.
 - If a docs or document-creation skill is making the file, still apply these rules to the text.
-- PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them. Follow the repo's existing commit convention (Conventional Commits, ticket prefixes, line length) when it has one. Check `git log` if you can.
+- PR descriptions and commit messages are writing too. Every layer except Diátaxis applies to them. A PR body is a briefing a reviewer can read in under a minute. Don't paste agent logs, SHA lists, or metric tables. Link them. Follow the repo's existing commit convention (Conventional Commits, ticket prefixes, line length) when it has one. Check `git log` if you can.
 - Product UI strings are not documentation. Use your product's copy guidelines for those.
 - Match the repo's indentation in code snippets. Write real paths and real symbols. Make every count or tree claim true at the commit that lands it, and include the command that regenerates it.
 
