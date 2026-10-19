@@ -21,6 +21,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from pathlib import Path
 
@@ -213,11 +214,11 @@ def git_lines(path: Path, *args: str) -> list[str] | None:
     return r.stdout.splitlines() if r.returncode == 0 else None
 
 
-def write_problem(path: Path) -> str | None:
+def write_problem(path: Path, allow_outside_git: bool) -> str | None:
     """Why Codex must not write in `path`, or None if it is a scratch linked worktree."""
     lines = git_lines(path, "rev-parse", "--git-dir", "--git-common-dir", "--show-toplevel")
     if not lines or len(lines) < 3:
-        return "it is not inside a git repository (or git is not on PATH)"
+        return None if allow_outside_git else "it is not inside a git repository (or git is not on PATH)"
     git_dir, common_dir, top = ((path / line).resolve() for line in lines[:3])
     if git_dir == common_dir:
         return "it is the repository's main working tree, not a linked worktree"
@@ -228,11 +229,10 @@ def write_problem(path: Path) -> str | None:
     return None
 
 
-def guard_writes(dirs: list[Path], skip: bool) -> None:
-    if skip:
-        return
+def guard_writes(dirs: list[Path], allow_outside_git: bool) -> None:
+    # --no-worktree-check waives only "outside git": a main tree or the caller's checkout is always refused.
     for d in dirs:
-        problem = write_problem(require_dir(d))
+        problem = write_problem(require_dir(d), allow_outside_git)
         if problem:
             sys.exit(f"refusing to let Codex write in {d}: {problem}. Run the bridge from your own checkout with "
                      "--cd on a scratch worktree from `git worktree add`, or pass --no-worktree-check for a "
@@ -250,47 +250,79 @@ def clip(text: str, limit: int, full_path: Path) -> str:
             f"not printed. Full message: {full_path}]")
 
 
-def session_model(thread: str | None) -> str | None:
-    """The model of the thread's latest turn, so a resumed turn reports what it ran on."""
+def session_models(thread: str | None) -> list[str | None]:
+    """The model of each turn the thread's newest session file records, oldest first."""
     if not thread:
-        return None
-    model = None
-    for path in (CODEX_HOME / "sessions").glob(f"**/*{thread}.jsonl"):
-        for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        return []
+    paths = sorted((CODEX_HOME / "sessions").glob(f"**/*{thread}.jsonl"), key=lambda p: p.stat().st_mtime)
+    if not paths:
+        return []
+    models = []
+    with open(paths[-1], encoding="utf-8", errors="replace") as f:
+        for line in f:
+            if '"turn_context"' not in line:
+                continue
             try:
                 row = json.loads(line)
             except ValueError:
                 continue
             if row.get("type") == "turn_context":
-                model = row.get("payload", {}).get("model") or model
-    return model
+                models.append(row.get("payload", {}).get("model"))
+    return models
+
+
+def kill_group(proc: subprocess.Popen) -> None:
+    if os.name == "nt":
+        subprocess.run(["taskkill", "/T", "/F", "/PID", str(proc.pid)], capture_output=True)
+    else:
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
 
 
 def run_codex(argv: list[str], prompt: str, timeout: int, cwd: Path) -> tuple[int, str, str]:
-    # The npm `codex` is a launcher that spawns the native binary, so a timeout has to kill the whole
-    # process group; killing only the launcher leaves Codex working on the thread.
+    # The npm `codex` is a launcher that spawns the native binary, so a timeout or an interrupt has to
+    # kill the whole process group. Killing only the launcher leaves Codex working on the thread.
     group = ({"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP} if os.name == "nt"
              else {"start_new_session": True})
     proc = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             text=True, encoding="utf-8", errors="replace", cwd=cwd, **group)
+    out: list[str] = []
+    err: list[str] = []
+    # Reader threads, so a daemon Codex started (which keeps the pipes open) can't hang the bridge.
+    readers = [threading.Thread(target=lambda s=stream, sink=sink: sink.extend(s), daemon=True)
+               for stream, sink in ((proc.stdout, out), (proc.stderr, err))]
+    for t in readers:
+        t.start()
+
+    def feed() -> None:
+        try:
+            proc.stdin.write(prompt)
+            proc.stdin.close()
+        except OSError:
+            pass
+
+    threading.Thread(target=feed, daemon=True).start()
     try:
-        out, err = proc.communicate(prompt, timeout=timeout)
-        return proc.returncode, out, err
+        code = proc.wait(timeout=timeout)
     except subprocess.TimeoutExpired:
         print(f"codex timed out after {timeout}s", file=sys.stderr)
-        if os.name == "nt":
-            subprocess.run(["taskkill", "/T", "/F", "/PID", str(proc.pid)], capture_output=True)
-        else:
-            try:
-                os.killpg(proc.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-        out, err = proc.communicate()
-        return 124, out, err
+        kill_group(proc)
+        proc.wait()
+        code = 124
+    except BaseException:
+        kill_group(proc)
+        raise
+    for t in readers:
+        t.join(timeout=5)
+    return code, "".join(list(out)), "".join(list(err))
 
 
-def execute(make_argv, prompt: str, args: argparse.Namespace, label: str, cwd: Path, record: dict) -> int:
+def execute(make_argv, prompt: str, args: argparse.Namespace, label: str, cwd: Path, record: dict,
+            resumed: str | None = None) -> int:
     """Run Codex with argv from make_argv(common flags), print the final message and a receipt."""
+    earlier_turns = len(session_models(resumed))
     logs = BRIDGE_HOME / "logs"
     logs.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="codex-bridge-") as d:
@@ -335,7 +367,8 @@ def execute(make_argv, prompt: str, args: argparse.Namespace, label: str, cwd: P
         "exit": code,
         "thread": thread,
         "requested_model": record.get("model"),
-        "model": session_model(thread),
+        # Only turns this run added: a resume that wrote none (--ephemeral, a timeout) reports null.
+        "model": (session_models(thread)[earlier_turns:] or [None])[-1],
         "seconds": round(elapsed),
         "usage": usage,
         "commands_run": len(commands),
@@ -376,7 +409,9 @@ def cmd_run(args: argparse.Namespace) -> int:
     exe = require_codex()
     prompt = read_prompt(args, preamble=not args.raw)
     extra = [arg for d in add_dirs for arg in ("--add-dir", str(d))]
-    record = {"sandbox": sandbox, "model": resolve_model(args), "unchecked": args.no_worktree_check}
+    writes = sandbox == "workspace-write"
+    record = {"sandbox": sandbox, "model": resolve_model(args), "add_dirs": [str(d) for d in add_dirs],
+              "outside_git_ok": writes and args.no_worktree_check}
     return execute(lambda flags: [exe, "exec", *flags, "-s", sandbox, "-C", str(cd), *extra, "-"],
                    prompt, args, args.tier or "default", cd, record)
 
@@ -385,21 +420,25 @@ def cmd_resume(args: argparse.Namespace) -> int:
     # `codex exec resume` takes no --cd or --sandbox and runs where it is started, so restore both.
     recorded = recorded_thread(args.thread)
     cd = require_dir(Path(args.cd or recorded.get("cwd") or ".").resolve())
-    sandbox = "workspace-write" if args.write else recorded.get("sandbox", "read-only")
+    was_writing = recorded.get("sandbox") == "workspace-write"
+    sandbox = "workspace-write" if args.write or was_writing else "read-only"
     if not recorded:
         hint = "" if args.write else " (pass --write to let it edit a scratch worktree)"
         print(f"no record for thread {args.thread}; resuming with a {sandbox} sandbox in {cd}{hint}",
               file=sys.stderr)
+    add_dirs = [Path(d) for d in recorded.get("add_dirs", [])] if sandbox == "workspace-write" else []
+    # A recorded waiver covers only the write run and directory it was given for.
+    outside_git_ok = args.no_worktree_check or (was_writing and not args.cd and recorded.get("outside_git_ok", False))
     if sandbox == "workspace-write":
-        # A recorded --no-worktree-check covers only the directory it was given for.
-        guard_writes([cd], args.no_worktree_check or (recorded.get("unchecked") and not args.cd))
+        guard_writes([cd, *add_dirs], outside_git_ok)
     exe = require_codex()
     prompt = read_prompt(args, preamble=False)
+    roots = ["-c", "sandbox_workspace_write.writable_roots=" + json.dumps([str(d) for d in add_dirs])] if add_dirs else []
     record = {"sandbox": sandbox, "model": resolve_model(args) or recorded.get("model"),
-              "unchecked": args.no_worktree_check or (recorded.get("unchecked", False) and not args.cd)}
-    return execute(lambda flags: [exe, "exec", "resume", *flags, "-c", f'sandbox_mode="{sandbox}"',
+              "add_dirs": [str(d) for d in add_dirs], "outside_git_ok": sandbox == "workspace-write" and outside_git_ok}
+    return execute(lambda flags: [exe, "exec", "resume", *flags, "-c", f'sandbox_mode="{sandbox}"', *roots,
                                   args.thread, "-"],
-                   prompt, args, "resume", cd, record)
+                   prompt, args, "resume", cd, record, resumed=args.thread)
 
 
 def cmd_review(args: argparse.Namespace) -> int:
@@ -411,7 +450,7 @@ def cmd_review(args: argparse.Namespace) -> int:
         sys.exit("review takes exactly one of --base, --commit, --uncommitted, or --prompt/--prompt-file: "
                  "Codex rejects custom instructions combined with a diff target.")
     exe = require_codex()
-    record = {"sandbox": "read-only", "model": resolve_model(args), "unchecked": False}
+    record = {"sandbox": "read-only", "model": resolve_model(args), "add_dirs": [], "outside_git_ok": False}
     return execute(lambda flags: [exe, "exec", "review", *flags, "-c", 'sandbox_mode="read-only"',
                                   *(target or ["-"])],
                    prompt, args, f"review-{args.tier or 'default'}", cd, record)
@@ -443,7 +482,7 @@ def main() -> int:
 
     def write_flags(q: argparse.ArgumentParser) -> None:
         q.add_argument("--no-worktree-check", action="store_true",
-                       help="allow writes outside a scratch linked git worktree (for a directory outside git)")
+                       help="allow writes in a directory outside git (main trees and the caller's checkout stay refused)")
 
     r = sub.add_parser("run", help="run one task through `codex exec`")
     task_flags(r)
@@ -467,12 +506,16 @@ def main() -> int:
     v = sub.add_parser("review", help="Codex's built-in review, read-only: a diff target or custom instructions")
     task_flags(v)
     v.add_argument("--cd", default=".", help="repository to review (default: current directory)")
-    v.add_argument("--base", help="review changes against this base branch")
-    v.add_argument("--commit", help="review the changes one commit introduced")
-    v.add_argument("--uncommitted", action="store_true", help="review staged, unstaged and untracked changes")
+    target = v.add_mutually_exclusive_group()
+    target.add_argument("--base", help="review changes against this base branch")
+    target.add_argument("--commit", help="review the changes one commit introduced")
+    target.add_argument("--uncommitted", action="store_true", help="review staged, unstaged and untracked changes")
     v.set_defaults(fn=cmd_review)
 
     args = p.parse_args()
+    if os.name != "nt":
+        # Turn SIGTERM (a stopped background task) into SystemExit, so run_codex kills Codex first.
+        signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))
     return args.fn(args)
 
 

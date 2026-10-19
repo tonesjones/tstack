@@ -102,14 +102,16 @@ the `final` message path, and the `log` path.
 - Run the bridge from your own checkout and point `--cd` at the scratch worktree. `--write`
   refuses `--cd` or `--add-dir` directories that are a main working tree, outside git, or the
   checkout the bridge runs from. For a scratch directory outside git, pass `--no-worktree-check`.
-- `resume` runs in the directory and sandbox its thread started with, so a write task resumes in
-  its worktree. It refuses if that directory is gone. `--cd` picks another directory, and the
+  It never waives a main working tree or the bridge's own checkout.
+- `resume` runs in the directory, sandbox, and `--add-dir` roots its thread started with, so a
+  write task resumes in its worktree. It refuses if that directory is gone. `--cd` picks another directory, and the
   write check applies to it.
 - `review` takes one of `--base <branch>`, `--commit <sha>`, `--uncommitted`, or custom
   instructions in `--prompt`. Codex rejects instructions combined with a target, so name the diff
   in the instructions instead.
-- The default timeout is 1800 s (`--timeout`). On timeout the bridge kills Codex and its child
-  processes, then prints the receipt, so you can `resume` the thread.
+- The default timeout is 1800 s (`--timeout`). On timeout, or when the bridge itself is stopped,
+  it kills Codex and its child processes. After a timeout it still prints the receipt, so you can
+  `resume` the thread.
 - `--max-output 0` prints the whole final message.
 - `--ephemeral` skips saving the Codex session, which also disables `resume`.
 
@@ -126,7 +128,8 @@ Codex output is a draft from a junior colleague, not a fact.
   the worktree, then merge or cherry-pick only what you have verified. Remove the worktree when
   done.
 - Check the receipt: a `model` different from a non-null `requested_model`, non-empty `errors`,
-  or unexpected `files_changed` means stop and look at the log. `model` is the latest turn's.
+  or unexpected `files_changed` means stop and look at the log. `model` comes from the turn this run
+  added, and is null if it added none.
 - A second opinion is the same brief on a second model family. Findings that Codex and Claude
   raise independently are the strongest signal. A finding only one of them raises still needs
   your check.

@@ -5,6 +5,7 @@ Run: python3 -m unittest discover -s tests/codex_bridge
 import json
 import os
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -34,7 +35,9 @@ class BridgeTest(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.tmp, True)
         launcher = write_launcher(self.tmp / "codex", use_exec=True)
         self.calls = self.tmp / "calls.jsonl"
-        self.env = dict(os.environ, CODEX_BIN=str(launcher), CODEX_HOME=str(self.tmp / "codex-home"),
+        # Tier overrides or a GIT_DIR from the caller's shell would change what the bridge does.
+        clean = {k: v for k, v in os.environ.items() if not k.startswith(("CODEX_MODEL_", "GIT_"))}
+        self.env = dict(clean, CODEX_BIN=str(launcher), CODEX_HOME=str(self.tmp / "codex-home"),
                         CODEX_BRIDGE_HOME=str(self.tmp / "bridge-home"), FAKE_CODEX_CALLS=str(self.calls))
         self.repo = self.tmp / "repo"
         self.repo.mkdir()
@@ -121,6 +124,14 @@ class BridgeTest(unittest.TestCase):
         self.assertRefused(self.bridge("run", "--write", "--cd", ".", "--prompt", "edit", cwd=wt),
                            "checkout the bridge was run from")
 
+    def test_no_worktree_check_never_allows_a_main_tree(self):
+        self.assertRefused(self.bridge("run", "--write", "--no-worktree-check", "--cd", str(self.repo),
+                                       "--prompt", "edit"), "main working tree")
+        scratch = self.tmp / "scratch"
+        scratch.mkdir()
+        self.assertRefused(self.bridge("run", "--write", "--no-worktree-check", "--cd", str(scratch),
+                                       "--add-dir", str(self.repo), "--prompt", "edit"), "main working tree")
+
     def test_write_refused_outside_git_unless_overridden(self):
         scratch = self.tmp / "scratch"
         scratch.mkdir()
@@ -174,6 +185,26 @@ class BridgeTest(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertIn('sandbox_mode="workspace-write"', self.last_call()["argv"])
 
+    def test_read_only_waiver_does_not_carry_into_resume_write(self):
+        _, receipt = self.bridge("run", "--no-worktree-check", "--cd", str(self.repo), "--prompt", "look")
+        calls = self.call_count()
+        self.assertRefused(self.bridge("resume", receipt["thread"], "--write", "--prompt", "edit"),
+                           "main working tree")
+        self.assertEqual(self.call_count(), calls)
+
+    def test_resume_restores_extra_writable_dirs(self):
+        wt, docs = self.worktree("wt-code"), self.worktree("wt-docs")
+        _, receipt = self.bridge("run", "--write", "--cd", str(wt), "--add-dir", str(docs), "--prompt", "edit")
+        self.bridge("resume", receipt["thread"], "--prompt", "also docs")
+        argv = self.last_call()["argv"]
+        self.assertIn("sandbox_workspace_write.writable_roots=" + json.dumps([str(docs.resolve())]), argv)
+
+    def test_resume_without_a_new_turn_reports_no_model(self):
+        _, receipt = self.bridge("run", "--tier", "luna", "--cd", str(self.repo), "--prompt", "x")
+        _, resumed = self.bridge("resume", receipt["thread"], "--tier", "sol", "--ephemeral", "--prompt", "y")
+        self.assertIsNone(resumed["model"])
+        self.assertEqual(resumed["requested_model"], "gpt-6.1-sol")
+
     def test_resume_of_unknown_thread_is_read_only_unless_write(self):
         wt = self.worktree("wt-old")
         r, _ = self.bridge("resume", "old-thread", "--cd", str(wt), "--prompt", "hi")
@@ -209,6 +240,8 @@ class BridgeTest(unittest.TestCase):
         self.assertRefused(self.bridge("review", "--cd", str(self.repo), "--base", "main", "--prompt", "auth"),
                            "exactly one of")
         self.assertRefused(self.bridge("review", "--cd", str(self.repo)), "exactly one of")
+        self.assertRefused(self.bridge("review", "--cd", str(self.repo), "--base", "main", "--commit", "HEAD"),
+                           "not allowed with argument")
         self.assertEqual(self.call_count(), 0)
 
     # timeout
@@ -224,6 +257,33 @@ class BridgeTest(unittest.TestCase):
         self.assertTrue(receipt["thread"])
         time.sleep(3.5)
         self.assertFalse(done.exists(), "the Codex process outlived the timeout")
+
+
+    @unittest.skipIf(os.name == "nt", "POSIX sessions")
+    def test_a_daemon_holding_the_pipes_does_not_hang_the_bridge(self):
+        started = time.time()
+        r, receipt = self.bridge("run", "--cd", str(self.repo), "--prompt", "x", FAKE_CODEX_DAEMON="1")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertTrue(receipt["thread"])
+        self.assertLess(time.time() - started, 15)
+
+    @unittest.skipIf(os.name == "nt", "POSIX signals")
+    def test_stopping_the_bridge_stops_codex(self):
+        launcher = write_launcher(self.tmp / "codex-wrapped", use_exec=False)
+        for sig in (signal.SIGTERM, signal.SIGINT):
+            done = self.tmp / f"done-{int(sig)}"
+            calls = self.call_count()
+            proc = subprocess.Popen([sys.executable, str(BRIDGE), "run", "--cd", str(self.repo), "--prompt", "x"],
+                                    env=dict(self.env, CODEX_BIN=str(launcher), FAKE_CODEX_SLEEP="3",
+                                             FAKE_CODEX_DONE=str(done)),
+                                    cwd=self.tmp, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            deadline = time.time() + 10
+            while self.call_count() == calls and time.time() < deadline:
+                time.sleep(0.1)
+            proc.send_signal(sig)
+            proc.wait(timeout=10)
+            time.sleep(3.5)
+            self.assertFalse(done.exists(), f"Codex outlived the bridge after signal {sig.name}")
 
 
 if __name__ == "__main__":

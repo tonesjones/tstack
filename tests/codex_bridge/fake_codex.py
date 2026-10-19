@@ -27,6 +27,11 @@ prompt = sys.stdin.read()
 with open(os.environ["FAKE_CODEX_CALLS"], "a", encoding="utf-8") as f:
     f.write(json.dumps({"argv": argv, "cwd": os.getcwd(), "stdin": prompt}) + "\n")
 
+if os.environ.get("FAKE_CODEX_DAEMON"):
+    # Like a dev server Codex started: outlives Codex in its own session, holding stdout and stderr open.
+    import subprocess
+    subprocess.Popen([sys.executable, "-c", "import time; time.sleep(20)"], start_new_session=True)
+
 thread = argv[-2] if argv[:2] == ["exec", "resume"] else str(uuid.uuid4())
 print(json.dumps({"type": "thread.started", "thread_id": thread}), flush=True)
 if os.environ.get("FAKE_CODEX_SLEEP"):
