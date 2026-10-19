@@ -5,7 +5,7 @@ description: "After a task lands, mine the current conversation for durable lear
 
 # Reflect
 
-Version: 1.1.0 (2026-10-05)
+Version: 1.1.1 (2026-10-19)
 
 Mine the current conversation for durable learnings, then route them into skill edits. Nothing is applied until the user approves it.
 
@@ -138,7 +138,7 @@ Make one last pass over Accepted. Move any row that a lint rule, script, metadat
 
 ## 4. Present and wait
 
-Show the full Accepted, Rejected, and Backlog output and stop. The user approves rows by number and may redirect routings. Skill edits change every future session, so never apply one without approval.
+Show the full Accepted, Rejected, and Backlog output and stop. If the user asked for the output in a file, write it there too before stopping. The user approves rows by number and may redirect routings. Skill edits change every future session, so never apply one without approval.
 
 Backlog items go to whatever tracker the user's team uses. List them for the user. File them only if a tracker connector is available and the user says to.
 

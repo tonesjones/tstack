@@ -85,6 +85,9 @@ def check_skill(d, changed=None, entry=""):
             errs.append("name %r != folder %r" % (fm["name"], d.name))
         if "globs" in fm:
             errs.append("Cursor-specific frontmatter key 'globs'")
+        if "model" in fm:
+            errs.append("frontmatter 'model' switches the main session's model for that turn, "
+                        "so the whole conversation is re-read uncached")
         m = next(filter(None, (VERSION_RE.match(l) for l in lines[end + 1:])), None)
         if not m:
             errs.append("no 'Version: X.Y.Z (YYYY-MM-DD)' line in body")

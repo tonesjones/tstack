@@ -5,7 +5,7 @@ description: "Remove AI-generated slop from a code diff or pasted code: needless
 
 # Deslop
 
-Version: 1.0.1 (2026-10-05)
+Version: 1.0.2 (2026-10-19)
 
 Remove the AI-generated slop a branch introduced, measured against main. Leave everything else alone.
 
@@ -41,6 +41,7 @@ Common forms of "other patterns":
 - Keep behavior unchanged unless fixing a clear bug.
 - Prefer minimal, focused edits over broad rewrites.
 - Touch only lines the branch added or changed. Pre-existing code is out of scope, even when it has the same patterns.
+- Don't inline, rename, or remove a function, class, or constant that other modules may import, even when the diff shows one caller.
 - Keep defensive checks at trust boundaries: user input, network, file I/O, external APIs, deserialization.
 - Keep comments that explain why: a non-obvious constraint, a linked workaround, the reason for an odd choice.
 - If the project's typecheck, lint, or tests are cheap and you can find the commands (package scripts, Makefile, CI config), run them after editing. Don't guess commands.

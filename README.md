@@ -9,9 +9,9 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 | [technical-writing](skills/technical-writing/SKILL.md) | Layered technical-writing standard. |
 | [reflect](skills/reflect/SKILL.md) | Turn a finished task's lessons into skill edits. Runs only when you ask. |
 | [teach](skills/teach/SKILL.md) | Explain what a body of work is, how it works, and why, in plain terms. Folds in pstack's `how` and `why`. |
-| [tokenomics](skills/tokenomics/SKILL.md) | Route a plan's tasks to the main session's model or a cheaper tier. |
+| [tokenomics](skills/tokenomics/SKILL.md) | Route a plan's tasks to the main session's model, a cheaper tier, a fork, or Codex, and keep the main session's own costs down. |
 | [scope-audit](skills/scope-audit/SKILL.md) | Audit a drifting project against its goal and recommend what to keep, cut, or park. |
-| [codex-delegate](skills/codex-delegate/SKILL.md) | Hand bounded tasks to the Codex CLI (Luna or Sol tier) and review the results. |
+| [codex-delegate](skills/codex-delegate/SKILL.md) | Hand bounded tasks or diff reviews to the Codex CLI (Luna or Sol tier) and review the results. |
 | [create-verification-skill](skills/create-verification-skill/SKILL.md) | Generate a project-local `verify-<app>` skill that launches the app, drives it like a user, and captures evidence. |
 | [maintain-verification-skill](skills/maintain-verification-skill/SKILL.md) | Audit a verification skill's feature map against source and a live run, and ship one PR of proven fixes. |
 
@@ -76,10 +76,11 @@ Each uploaded skill updates separately. After a release, upload every changed sk
 ## Release
 
 1. Bump the `Version:` line in each changed `SKILL.md` and add an entry to [CHANGELOG.md](CHANGELOG.md) that names each one as `<skill> X.Y.Z`.
-2. Run `python scripts/validate_skills.py`.
+2. Run `python scripts/validate_skills.py` and, if `codex_bridge.py` changed, the bridge tests.
 3. Push a tag such as `v1.3.0`. The release workflow validates the skills, zips each one, and attaches the zips to a GitHub release.
 
 ## Scripts
 
 - `scripts/validate_skills.py` checks frontmatter, folder names, version lines, and Cursor-specific leftovers. For each skill changed since the last `v*` tag, it also checks that the newest CHANGELOG entry names the skill's version, as `<skill> X.Y.Z`.
 - `scripts/measure_session.py` totals a Claude Code session's tokens per model and compares the cost with an all-Opus baseline.
+- `tests/codex_bridge/` tests `codex_bridge.py` against a fake Codex CLI: `python3 -m unittest discover -s tests/codex_bridge`.

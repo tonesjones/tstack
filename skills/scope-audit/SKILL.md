@@ -5,7 +5,7 @@ description: "Audit a drifting project's scope against its goal using tests, rea
 
 # Scope Audit
 
-Version: 1.0.0 (2026-10-06)
+Version: 1.0.1 (2026-10-19)
 
 Find the smallest path from the project's proven state to its intended outcome.
 Recommend what to keep, cut, or park. The audit recommends; the user decides.
@@ -34,6 +34,7 @@ These are recommendations only. Preserve all items until the user approves an ac
 Read the project description, README, plans, roadmaps, and project instructions.
 Compare them with entry points, callers, tests, recent commits, and merged PRs.
 Run relevant existing tests and the main user workflow where possible. Record commands, inputs, environment, and outputs.
+If the project has a `verify-*` skill (from create-verification-skill), drive the main workflow with it instead of working out how to launch the app.
 Check setup from the README and whether advertised features are reachable through the actual user workflow.
 Distinguish a fixture or cached result from a fresh run, and a tuned example from an unseen input.
 
