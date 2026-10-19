@@ -102,7 +102,7 @@ the `final` message path, and the `log` path.
 - Run the bridge from your own checkout and point `--cd` at the scratch worktree. `--write`
   refuses `--cd` or `--add-dir` directories that are a main working tree, outside git, or the
   checkout the bridge runs from. For a scratch directory outside git, pass `--no-worktree-check`.
-  It never waives a main working tree or the bridge's own checkout.
+  It never waives a main working tree, the bridge's own checkout, or anything inside a repository.
 - `resume` runs in the directory, sandbox, and `--add-dir` roots its thread started with, so a
   write task resumes in its worktree. It refuses if that directory is gone. `--cd` picks another directory, and the
   write check applies to it.

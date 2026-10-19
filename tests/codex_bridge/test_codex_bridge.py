@@ -132,6 +132,15 @@ class BridgeTest(unittest.TestCase):
         self.assertRefused(self.bridge("run", "--write", "--no-worktree-check", "--cd", str(scratch),
                                        "--add-dir", str(self.repo), "--prompt", "edit"), "main working tree")
 
+    def test_no_worktree_check_never_allows_repo_internals(self):
+        self.assertRefused(self.bridge("run", "--write", "--no-worktree-check", "--cd", str(self.repo / ".git"),
+                                       "--prompt", "edit"), "inside a git directory")
+        broken = self.tmp / "broken"
+        broken.mkdir()
+        (broken / ".git").write_text("gitdir: /nonexistent\n")
+        self.assertRefused(self.bridge("run", "--write", "--no-worktree-check", "--cd", str(broken),
+                                       "--prompt", "edit"), "git refuses to read")
+
     def test_write_refused_outside_git_unless_overridden(self):
         scratch = self.tmp / "scratch"
         scratch.mkdir()
@@ -186,11 +195,19 @@ class BridgeTest(unittest.TestCase):
         self.assertIn('sandbox_mode="workspace-write"', self.last_call()["argv"])
 
     def test_read_only_waiver_does_not_carry_into_resume_write(self):
-        _, receipt = self.bridge("run", "--no-worktree-check", "--cd", str(self.repo), "--prompt", "look")
+        scratch = self.tmp / "scratch"
+        scratch.mkdir()
+        _, receipt = self.bridge("run", "--no-worktree-check", "--cd", str(scratch), "--prompt", "look")
         calls = self.call_count()
         self.assertRefused(self.bridge("resume", receipt["thread"], "--write", "--prompt", "edit"),
-                           "main working tree")
+                           "not inside a git repository")
         self.assertEqual(self.call_count(), calls)
+
+    def test_read_only_add_dirs_do_not_become_writable_on_resume(self):
+        wt, docs = self.worktree("wt-ro"), self.worktree("wt-ro-docs")
+        _, receipt = self.bridge("run", "--cd", str(wt), "--add-dir", str(docs), "--prompt", "look")
+        self.bridge("resume", receipt["thread"], "--write", "--prompt", "edit")
+        self.assertFalse(any("writable_roots" in a for a in self.last_call()["argv"]))
 
     def test_resume_restores_extra_writable_dirs(self):
         wt, docs = self.worktree("wt-code"), self.worktree("wt-docs")
@@ -198,6 +215,17 @@ class BridgeTest(unittest.TestCase):
         self.bridge("resume", receipt["thread"], "--prompt", "also docs")
         argv = self.last_call()["argv"]
         self.assertIn("sandbox_workspace_write.writable_roots=" + json.dumps([str(docs.resolve())]), argv)
+
+    @unittest.skipIf(sys.version_info < (3, 11), "tomllib")
+    def test_restored_dirs_keep_the_configured_writable_roots(self):
+        home = Path(self.env["CODEX_HOME"])
+        home.mkdir(parents=True, exist_ok=True)
+        (home / "config.toml").write_text('[sandbox_workspace_write]\nwritable_roots = ["/cache/x"]\n')
+        wt, docs = self.worktree("wt-cfg"), self.worktree("wt-cfg-docs")
+        _, receipt = self.bridge("run", "--write", "--cd", str(wt), "--add-dir", str(docs), "--prompt", "edit")
+        self.bridge("resume", receipt["thread"], "--prompt", "more")
+        roots = json.dumps(["/cache/x", str(docs.resolve())])
+        self.assertIn("sandbox_workspace_write.writable_roots=" + roots, self.last_call()["argv"])
 
     def test_resume_without_a_new_turn_reports_no_model(self):
         _, receipt = self.bridge("run", "--tier", "luna", "--cd", str(self.repo), "--prompt", "x")
@@ -265,12 +293,12 @@ class BridgeTest(unittest.TestCase):
         r, receipt = self.bridge("run", "--cd", str(self.repo), "--prompt", "x", FAKE_CODEX_DAEMON="1")
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertTrue(receipt["thread"])
-        self.assertLess(time.time() - started, 15)
+        self.assertLess(time.time() - started, 12)
 
     @unittest.skipIf(os.name == "nt", "POSIX signals")
     def test_stopping_the_bridge_stops_codex(self):
         launcher = write_launcher(self.tmp / "codex-wrapped", use_exec=False)
-        for sig in (signal.SIGTERM, signal.SIGINT):
+        for sig in (signal.SIGTERM, signal.SIGINT, signal.SIGHUP):
             done = self.tmp / f"done-{int(sig)}"
             calls = self.call_count()
             proc = subprocess.Popen([sys.executable, str(BRIDGE), "run", "--cd", str(self.repo), "--prompt", "x"],

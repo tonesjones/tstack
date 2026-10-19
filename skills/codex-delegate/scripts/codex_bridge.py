@@ -14,6 +14,7 @@ Credentials are never printed or logged. Works on Linux, macOS and Windows (Pyth
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import os
 import shutil
@@ -216,9 +217,16 @@ def git_lines(path: Path, *args: str) -> list[str] | None:
 
 def write_problem(path: Path, allow_outside_git: bool) -> str | None:
     """Why Codex must not write in `path`, or None if it is a scratch linked worktree."""
+    if not shutil.which("git"):
+        return "git is not on PATH, so the bridge can't check it"
     lines = git_lines(path, "rev-parse", "--git-dir", "--git-common-dir", "--show-toplevel")
     if not lines or len(lines) < 3:
-        return None if allow_outside_git else "it is not inside a git repository (or git is not on PATH)"
+        # Only a directory truly outside git may be waived, not repo internals or a repo git won't read.
+        if git_lines(path, "rev-parse", "--git-dir") is not None:
+            return "it is inside a git directory or a bare repository, not a worktree"
+        if any(p.name == ".git" or (p / ".git").exists() for p in (path, *path.parents)):
+            return "it belongs to a repository git refuses to read (check safe.directory)"
+        return None if allow_outside_git else "it is not inside a git repository"
     git_dir, common_dir, top = ((path / line).resolve() for line in lines[:3])
     if git_dir == common_dir:
         return "it is the repository's main working tree, not a linked worktree"
@@ -254,7 +262,8 @@ def session_models(thread: str | None) -> list[str | None]:
     """The model of each turn the thread's newest session file records, oldest first."""
     if not thread:
         return []
-    paths = sorted((CODEX_HOME / "sessions").glob(f"**/*{thread}.jsonl"), key=lambda p: p.stat().st_mtime)
+    paths = sorted((CODEX_HOME / "sessions").glob(f"**/*{glob.escape(thread)}.jsonl"),
+                   key=lambda p: p.stat().st_mtime)
     if not paths:
         return []
     models = []
@@ -269,6 +278,16 @@ def session_models(thread: str | None) -> list[str | None]:
             if row.get("type") == "turn_context":
                 models.append(row.get("payload", {}).get("model"))
     return models
+
+
+def configured_roots() -> list[str]:
+    """writable_roots from config.toml, which a -c override would otherwise replace. Needs Python 3.11+."""
+    try:
+        import tomllib
+        config = tomllib.loads((CODEX_HOME / "config.toml").read_text(encoding="utf-8"))
+    except (ImportError, OSError, ValueError):
+        return []
+    return [str(r) for r in config.get("sandbox_workspace_write", {}).get("writable_roots", [])]
 
 
 def kill_group(proc: subprocess.Popen) -> None:
@@ -314,8 +333,9 @@ def run_codex(argv: list[str], prompt: str, timeout: int, cwd: Path) -> tuple[in
     except BaseException:
         kill_group(proc)
         raise
+    deadline = time.time() + 5
     for t in readers:
-        t.join(timeout=5)
+        t.join(timeout=max(0.0, deadline - time.time()))
     return code, "".join(list(out)), "".join(list(err))
 
 
@@ -368,7 +388,8 @@ def execute(make_argv, prompt: str, args: argparse.Namespace, label: str, cwd: P
         "thread": thread,
         "requested_model": record.get("model"),
         # Only turns this run added: a resume that wrote none (--ephemeral, a timeout) reports null.
-        "model": (session_models(thread)[earlier_turns:] or [None])[-1],
+        # A resume by thread name or prefix can't count its earlier turns, so it reports the latest.
+        "model": (session_models(thread)[earlier_turns if thread == resumed else 0:] or [None])[-1],
         "seconds": round(elapsed),
         "usage": usage,
         "commands_run": len(commands),
@@ -410,7 +431,8 @@ def cmd_run(args: argparse.Namespace) -> int:
     prompt = read_prompt(args, preamble=not args.raw)
     extra = [arg for d in add_dirs for arg in ("--add-dir", str(d))]
     writes = sandbox == "workspace-write"
-    record = {"sandbox": sandbox, "model": resolve_model(args), "add_dirs": [str(d) for d in add_dirs],
+    record = {"sandbox": sandbox, "model": resolve_model(args),
+              "add_dirs": [str(d) for d in add_dirs] if writes else [],
               "outside_git_ok": writes and args.no_worktree_check}
     return execute(lambda flags: [exe, "exec", *flags, "-s", sandbox, "-C", str(cd), *extra, "-"],
                    prompt, args, args.tier or "default", cd, record)
@@ -426,14 +448,15 @@ def cmd_resume(args: argparse.Namespace) -> int:
         hint = "" if args.write else " (pass --write to let it edit a scratch worktree)"
         print(f"no record for thread {args.thread}; resuming with a {sandbox} sandbox in {cd}{hint}",
               file=sys.stderr)
-    add_dirs = [Path(d) for d in recorded.get("add_dirs", [])] if sandbox == "workspace-write" else []
+    add_dirs = [Path(d) for d in recorded.get("add_dirs", [])] if was_writing else []
     # A recorded waiver covers only the write run and directory it was given for.
     outside_git_ok = args.no_worktree_check or (was_writing and not args.cd and recorded.get("outside_git_ok", False))
     if sandbox == "workspace-write":
         guard_writes([cd, *add_dirs], outside_git_ok)
     exe = require_codex()
     prompt = read_prompt(args, preamble=False)
-    roots = ["-c", "sandbox_workspace_write.writable_roots=" + json.dumps([str(d) for d in add_dirs])] if add_dirs else []
+    roots = (["-c", "sandbox_workspace_write.writable_roots="
+              + json.dumps(configured_roots() + [str(d) for d in add_dirs])] if add_dirs else [])
     record = {"sandbox": sandbox, "model": resolve_model(args) or recorded.get("model"),
               "add_dirs": [str(d) for d in add_dirs], "outside_git_ok": sandbox == "workspace-write" and outside_git_ok}
     return execute(lambda flags: [exe, "exec", "resume", *flags, "-c", f'sandbox_mode="{sandbox}"', *roots,
@@ -514,8 +537,10 @@ def main() -> int:
 
     args = p.parse_args()
     if os.name != "nt":
-        # Turn SIGTERM (a stopped background task) into SystemExit, so run_codex kills Codex first.
+        # A stopped background task (SIGTERM) or a closed terminal (SIGHUP) becomes SystemExit, so
+        # run_codex kills Codex first.
         signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))
+        signal.signal(signal.SIGHUP, lambda *_: sys.exit(129))
     return args.fn(args)
 
 
