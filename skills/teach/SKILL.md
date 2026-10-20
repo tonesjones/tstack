@@ -1,7 +1,6 @@
 ---
 name: "teach"
 description: "Run with /teach. Explains a body of work plainly so a person actually understands it: what it is, how it works, and why it is built that way. Explores the code itself and, when the reasons matter, digs through git history and any connected tools. Use for 'teach me this', 'help me really understand X', and 'explain this change or subsystem'. Gives a direct explanation of one codebase or change, git history first. Does not quiz. Not for market or literature research (deep-research) or Socratic tutoring (learn)."
-disable-model-invocation: true
 ---
 
 # Teach
