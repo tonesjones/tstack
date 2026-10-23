@@ -5,7 +5,7 @@ description: Delegate bounded work to OpenAI Codex (the person's ChatGPT/Codex s
 
 # Codex delegate
 
-Version: 1.2.0 (2026-10-19)
+Version: 1.3.0 (2026-10-22)
 
 You orchestrate; Codex does delegated work; you own the result. Everything goes through
 `scripts/codex_bridge.py` in this skill's directory (call it `$BRIDGE` below; run it with
@@ -55,8 +55,11 @@ example a project-specific assessment command), use that instead of this bridge 
 | `--tier astra` | only when the person names it |
 
 Escalate once: if a Luna answer is vague, contradicts the code, or misses the requested format,
-rerun that task on Sol. Don't retry beyond that; do it yourself or report the gap.
-`--effort low|medium|high` tunes reasoning depth within a tier.
+rerun that task on Sol. Don't retry beyond that; do it yourself or report the gap. A timeout is
+not a bad answer: `resume` the thread with a longer `--timeout` (or a lower `--effort` for bulk
+work), and don't spend the escalation on it.
+`--effort low|medium|high` tunes reasoning depth within a tier. Use `high` for reviews and bug or
+vulnerability hunts. Lower effort saves little there and misses real findings.
 
 ## 4. Write the task
 
@@ -109,6 +112,11 @@ the `final` message path, and the `log` path.
 - `review` takes one of `--base <branch>`, `--commit <sha>`, `--uncommitted`, or custom
   instructions in `--prompt`. Codex rejects instructions combined with a target, so name the diff
   in the instructions instead.
+- A re-review after fixes covers only what changed since the last review: `--commit <sha>` for a
+  single new commit, or `--prompt "Review the diff from <last reviewed sha> to HEAD."` for several.
+  Reviewing the whole branch again repeats findings you already handled.
+- When the plan changes and you no longer need a background run, stop it (TaskStop on the Bash
+  task). It keeps using the person's ChatGPT plan quota until it finishes or times out.
 - The default timeout is 1800 s (`--timeout`). On timeout, or when the bridge itself is stopped,
   it kills Codex and its child processes. After a timeout it still prints the receipt, so you can
   `resume` the thread.

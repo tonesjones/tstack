@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.11.0 (2026-10-22)
+
+Lessons from Cloudflare's "Obsessive inference optimization" (2026): fewer turns and tokens cut cost more than cheaper tokens did. Release notes now say which skills need a re-upload.
+
+- tokenomics 1.6.0:
+  - Briefs list every input up front so the agent reads them in one parallel batch on its first turn. Each extra turn re-reads the agent's whole context.
+  - Reviews, security passes, and bug hunts run at `effort: high` on any tier. Cloudflare's medium-to-high change cost about two cents per review for 58% more critical or warning findings.
+  - The routing log adds a `turns` column. A (tier, shape) pair that passes but takes many turns needs fuller briefs.
+- Agents: `worker`, `scout`, and `grunt` read every input the brief lists in one parallel batch on their first turn.
+- codex-delegate 1.3.0:
+  - A timeout resumes the thread with a longer `--timeout` and doesn't use up the Luna-to-Sol escalation.
+  - Reviews and bug or vulnerability hunts use `--effort high`.
+  - A re-review covers only the commits since the last review.
+  - Stop a background run you no longer need; it uses ChatGPT plan quota until it ends.
+- teach 1.1.1: same content as the teach merged after the v1.10.0 tag (no `disable-model-invocation`). The v1.10.0 zip still had that line under version 1.1.0, so this version tells the two apart.
+- New `scripts/release_notes.py`: the release notes start with the skills that changed since the previous tag and a table of every skill's version. The release workflow passes it to `gh release create`.
+
 ## 1.10.0 (2026-10-19)
 
 A review of every skill, with tokenomics and codex-delegate first, and a comparison with the current pstack plugin (cursor/plugins, including its generated Claude Code tree).

@@ -65,19 +65,19 @@ ln -s "$PWD/agents/explore.md" ~/.claude/agents/explore.md
 1. Download `<name>.zip` from the [latest release](https://github.com/tonesjones/tstack/releases/latest).
 2. In the Claude desktop app, open **Settings > Capabilities > Skills** and upload the zip.
 
-Each uploaded skill updates separately. After a release, upload every changed skill's zip from the same tag, so the installed set matches one version of this repo.
+Each uploaded skill updates separately. Every release attaches all the zips, but its notes start with a **Re-upload** line and a table of each skill's version and whether it changed since the previous tag. Upload only the changed zips; the others hold the same skill you already have. If you skipped a release, compare the versions in the table with the `Version:` line of your installed copies.
 
 `codex-delegate` needs Python 3.9+ and the Codex CLI with a ChatGPT login. Its `scripts/codex_bridge.py` installs the CLI if it is missing; run `python3 scripts/codex_bridge.py status` to check.
 
 `create-verification-skill` and `maintain-verification-skill` need Claude Code, since they launch and drive the app from a shell. Both run only when you invoke them.
 
-`teach` works best in Claude Code (CLI or the desktop Code tab), where it can read the repo, run git, and spawn subagents. Its `disable-model-invocation` frontmatter means it only runs when you invoke it.
+`teach` works best in Claude Code (CLI or the desktop Code tab), where it can read the repo, run git, and spawn subagents.
 
 ## Release
 
 1. Bump the `Version:` line in each changed `SKILL.md` and add an entry to [CHANGELOG.md](CHANGELOG.md) that names each one as `<skill> X.Y.Z`.
 2. Run `python scripts/validate_skills.py` and, if `codex_bridge.py` changed, the bridge tests.
-3. Push a tag such as `v1.3.0`. The release workflow validates the skills, zips each one, and attaches the zips to a GitHub release.
+3. Push a tag such as `v1.3.0`. The release workflow validates the skills, zips each one, and attaches the zips to a GitHub release. `scripts/release_notes.py` writes the top of the release notes: which skills changed since the previous tag and need a re-upload. Run it locally to preview.
 
 ## Scripts
 

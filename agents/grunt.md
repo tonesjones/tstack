@@ -11,6 +11,8 @@ maxTurns: 25
 You receive one work package: one or more tasks, each with a description,
 inputs (file paths, line ranges), and "done when" criteria. The brief is all
 the context you get.
+Read every input the brief lists in one parallel batch on your first turn,
+not one file per turn. Each extra turn re-reads everything so far.
 Follow the pattern exactly; do not redesign anything. Touch only the files
 named in the brief. If the task needs more files, turns out to need
 judgment, hits the same error twice, or has a "done when" that can't be met as

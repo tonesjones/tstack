@@ -8,6 +8,8 @@ tools: Read, Edit, Write, Grep, Glob, Bash
 
 You receive one work package: one or more tasks, each with a description,
 inputs (file paths, line ranges), and "done when" criteria.
+Read every input the brief lists in one parallel batch on your first turn,
+not one file per turn. Each extra turn re-reads everything so far.
 Complete exactly those tasks. Read only what you need. Verify each "done when"
 yourself before reporting.
 Stop and report instead of guessing when the brief leaves a choice between
