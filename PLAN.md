@@ -14,6 +14,6 @@ Source: Cloudflare, "Obsessive inference optimization" (fewer turns and tokens b
 
 ## Status
 
-- Done: all items on branch `article-lessons`.
-- Next: merge the PR, then tag `v1.11.0`.
+- Done: all items, merged in PR #23 and released as `v1.11.0` (2026-10-22).
+- Next: none.
 - Open decisions: none.
