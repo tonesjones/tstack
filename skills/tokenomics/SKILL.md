@@ -5,7 +5,7 @@ description: After a plan is drafted, decide whether delegation pays, map each t
 
 # Tokenomics
 
-Version: 1.5.0 (2026-10-19)
+Version: 1.6.0 (2026-10-22)
 
 Turn a finished plan into routed, delegated work, then review it. Routing is
 relative to whatever model the main session runs (call it **Main**): Main keeps
@@ -35,7 +35,7 @@ Every Main turn re-reads the whole context, and Main's output is the most
 expensive token in the session. No routing removes that. These habits do:
 - Batch independent tool calls into one turn. Each extra turn re-reads everything.
 - Read line ranges, cap search results (`head_limit`), and trim command output (`| tail -n 40`, quiet flags). Whatever lands in context is paid for again every later turn.
-- Fit effort to the work. Thinking bills as output. On Opus 5.5, Sonnet 5.5, Haiku 5.5, and Fable 5.1 with an API key or a Claude subscription, `/effort` changes keep the cache, so drop to `low` or `medium` for mechanical stretches and raise it for the hard parts. On other models, Bedrock, or Vertex, an effort change re-reads the whole context uncached, so set it once.
+- Fit effort to the work. Thinking bills as output. Reviews and bug hunts are the exception: run them at `high`. In Cloudflare's code reviewer (2026), moving from medium to high cost about two cents per review and gave 58% more critical or warning findings. On Opus 5.5, Sonnet 5.5, Haiku 5.5, and Fable 5.1 with an API key or a Claude subscription, `/effort` changes keep the cache, so drop to `low` or `medium` for mechanical stretches and raise it for the hard parts. On other models, Bedrock, or Vertex, an effort change re-reads the whole context uncached, so set it once.
 - `/compact` between tasks, never mid-task. `/rewind` out of a dead end instead of compacting it.
 
 ## 0. Delegation gate
@@ -106,6 +106,7 @@ Routing rules:
 - Split a mixed task rather than routing the whole thing up a tier.
 - Keep each Haiku package under about **60K tokens of reading** by Main's count. Above a 100K-token prompt, Haiku 5.5 charges 5x per token, a subagent's prompt grows with every file it reads, and Haiku counts the same text as about 30% more tokens. Split larger packages.
 - Don't give Haiku open-ended reasoning: a failed run costs a redo one tier up.
+- Review tasks (diff review, security pass, bug hunt) run at `effort: high` on whatever tier they get. Lower effort saves little on them and misses real findings.
 
 ## 3. Bundle into packages
 Group same-tier tasks that share inputs into **one** subagent call or Codex
@@ -134,7 +135,7 @@ confirmation. Otherwise continue straight to delegation.
 - Never switch the main session's model (`/model`). That cold-starts the whole conversation cache. Cheaper tiers run only as subagents.
 - Main-tier tasks run in the main session or a fork; Sonnet packages go to `worker`, Haiku medium packages to `scout`, Haiku low packages to `grunt`, read-only searches to `Explore`, and Codex packages through `codex-delegate`'s bridge in the background. Respect dependencies.
 - If `worker`, `scout`, `grunt`, or `Explore` isn't defined in `~/.claude/agents/`, use the general-purpose agent with a model override (`sonnet` / `haiku`), set its effort (`medium` for `scout` and `Explore` work, `low` for `grunt` work), and put the agent's report contract and stop rule (step 6) in the brief. The built-in `Explore` runs on Main's model (or Opus when Main is Fable), so don't use it for cheap searches.
-- Briefs carry **pointers, not pastes**: paths, line ranges, each task's description and "done when", constraints. Never paste file contents or the whole plan; Main's output is the most expensive token you can spend. The agent files already carry the report contract and stop rule, so don't repeat them in briefs to `worker`, `scout`, or `grunt`. If the work needs a skill (`deslop`, `technical-writing`), name it in the brief: Haiku 5.5 often skips a skill it isn't told to load.
+- Briefs carry **pointers, not pastes**: paths, line ranges, each task's description and "done when", constraints. Never paste file contents or the whole plan; Main's output is the most expensive token you can spend. Turns cost more than tokens: every subagent turn re-reads its whole context, and a model that makes fewer calls can halve a task's cost at the same price per token. So list every input up front, and the agent reads them all in one parallel batch on its first turn. For a `general-purpose` fallback, say so in the brief. The agent files already carry the report contract and stop rule, so don't repeat them in briefs to `worker`, `scout`, or `grunt`. If the work needs a skill (`deslop`, `technical-writing`), name it in the brief: Haiku 5.5 often skips a skill it isn't told to load.
 - Expect compact reports (the agents are told ≤ 10 lines, starting with DONE, PARTIAL, or BLOCKED). Everything returned is re-read on every later main-session turn.
 - Cache TTLs differ (Claude Code docs, checked 2026-10-19): on a Claude subscription within plan usage, the main conversation gets a **1-hour** cache; subagents get **5 minutes**. On an API key, cloud provider, or once usage credits kick in, both get 5 minutes unless `promptCacheTtl` / `subagentPromptCacheTtl` say otherwise. So a subagent idle between turns past 5 minutes pays its cold start again, and on API billing, Main should do its own tasks while a subagent runs rather than idle past 5 minutes.
 
@@ -154,16 +155,16 @@ Append to `~/.claude/routing-log.md` (create it with the header line below if
 it doesn't exist), one line per task; inline runs get one line for the whole
 plan. Use a different path only when the user names one.
 
-`date | project | task ID | shape | main model | tier | package | result (pass/fix/escalate/inline) | tokens in/out | notes`
+`date | project | task ID | shape | main model | tier | package | result (pass/fix/escalate/inline) | tokens in/out | turns | notes`
 
 `tier` is one of `main`, `fork`, `opus` (Main on Fable only), `sonnet`,
 `haiku-med`, `haiku-low`, `codex-luna`, or `codex-sol`. `project` is the
 repository or working-directory name. Record token usage when the subagent
 result or the Codex receipt reports it (one figure per package is fine);
-otherwise write `n/a`. The session transcripts under `~/.claude/projects/` hold
+otherwise write `n/a`. `turns` is the number of model calls (tool-use turns) the subagent made, or `n/a`. The session transcripts under `~/.claude/projects/` hold
 per-model usage for later cost analysis.
 
-Escalations are the tuning signal: if a (tier, shape) pair keeps escalating, route it higher next time. If inline runs were consistently trivial, raise the Sonnet thresholds.
+Escalations are the tuning signal: if a (tier, shape) pair keeps escalating, route it higher next time. Turns are the second signal: a pair that passes but takes many turns per task needs fuller inputs in its briefs, or a tier that makes fewer calls. If inline runs were consistently trivial, raise the Sonnet thresholds.
 
 ## Gotchas
 - Delegating to Codex, working in git worktrees, a Haiku run that refused or stopped early, or another skill that spawns `Explore` with a model override: read `reference/gotchas.md` first.
