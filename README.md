@@ -76,7 +76,7 @@ Each uploaded skill updates separately. Every release attaches all the zips, but
 ## Release
 
 1. Bump the `Version:` line in each changed `SKILL.md` and add an entry to [CHANGELOG.md](CHANGELOG.md) that names each one as `<skill> X.Y.Z`.
-2. Run `python scripts/validate_skills.py` and, if `codex_bridge.py` changed, the bridge tests.
+2. Run `python scripts/validate_skills.py` and, if `codex_bridge.py` changed, the bridge tests. The CI workflow runs both on every pull request to `main`. It fails a skill that changed since the previous tag but kept the same `Version:`.
 3. Push a tag such as `v1.3.0`. The release workflow validates the skills, zips each one, and attaches the zips to a GitHub release. `scripts/release_notes.py` writes the top of the release notes: which skills changed since the previous tag and need a re-upload. Run it locally to preview.
 
 ## Scripts

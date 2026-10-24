@@ -42,13 +42,26 @@ def git(*args):
     return r.stdout.split() if r.returncode == 0 else None
 
 
+def previous_tag():
+    """The newest v* tag below HEAD (ignoring tags on HEAD itself), or None."""
+    at_head = set(git("tag", "--points-at", "HEAD") or [])
+    tags = git("tag", "--merged", "HEAD", "--sort=-v:refname", "v*") or []
+    return next((t for t in tags if t not in at_head), None)
+
+
+def tagged_version(tag, name):
+    """The skill's Version at tag, or None if it didn't exist then."""
+    r = subprocess.run(["git", "show", "%s:skills/%s/SKILL.md" % (tag, name)],
+                       cwd=ROOT, capture_output=True, text=True)
+    if r.returncode != 0:
+        return None
+    m = next(filter(None, (VERSION_RE.match(l.strip()) for l in r.stdout.splitlines())), None)
+    return m.group(1) if m else None
+
+
 def changed_skills():
     """Skill folders changed since the last v* tag below HEAD, or None if git can't tell."""
-    at_head = set(git("tag", "--points-at", "HEAD") or [])
-    tags = git("tag", "--merged", "HEAD", "--sort=-v:refname", "v*")
-    if tags is None:
-        return None
-    prev = next((t for t in tags if t not in at_head), None)
+    prev = previous_tag()
     if prev is None:
         return None
     files = git("diff", "--name-only", prev, "--", "skills")
@@ -65,7 +78,7 @@ def newest_changelog_entry():
     return sections[1] if len(sections) > 1 else ""
 
 
-def check_skill(d, changed=None, entry=""):
+def check_skill(d, changed=None, entry="", prev=None):
     errs = []
     f = d / "SKILL.md"
     if not f.is_file():
@@ -91,9 +104,13 @@ def check_skill(d, changed=None, entry=""):
         m = next(filter(None, (VERSION_RE.match(l) for l in lines[end + 1:])), None)
         if not m:
             errs.append("no 'Version: X.Y.Z (YYYY-MM-DD)' line in body")
-        elif changed and d.name in changed and "%s %s" % (d.name, m.group(1)) not in entry:
-            errs.append("changed since last tag, but the newest CHANGELOG.md entry doesn't mention '%s %s'"
-                        % (d.name, m.group(1)))
+        elif changed and d.name in changed:
+            if prev and tagged_version(prev, d.name) == m.group(1):
+                errs.append("changed since %s, but Version is still %s; bump it so the new zip "
+                            "has a version of its own" % (prev, m.group(1)))
+            elif "%s %s" % (d.name, m.group(1)) not in entry:
+                errs.append("changed since last tag, but the newest CHANGELOG.md entry doesn't mention '%s %s'"
+                            % (d.name, m.group(1)))
     for p in sorted(d.rglob("*")):
         if not p.is_file():
             continue
@@ -120,9 +137,10 @@ def main():
     if changed is None:
         print("note: no earlier v* tag in git history, skipping the CHANGELOG version check")
     entry = newest_changelog_entry()
+    prev = previous_tag()
     bad = 0
     for d in dirs:
-        errs = check_skill(d, changed, entry)
+        errs = check_skill(d, changed, entry, prev)
         if errs:
             bad += 1
             print("FAIL %s: %s" % (d.name, "; ".join(errs)))
