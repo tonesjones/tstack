@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          # validate_skills.py compares each skill with the previous v* tag.
+          fetch-depth: 0
+
+      - name: Validate skills
+        run: python3 scripts/validate_skills.py
+
+      - name: Test the Codex bridge
+        run: python3 -m unittest discover -s tests/codex_bridge

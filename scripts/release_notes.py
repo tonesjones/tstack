@@ -2,7 +2,7 @@
 """Print release notes listing each skill's version and whether its zip changed. Stdlib only."""
 import sys
 
-from validate_skills import ROOT, VERSION_RE, changed_skills, git
+from validate_skills import ROOT, VERSION_RE, changed_skills, previous_tag
 
 
 def skill_version(d):
@@ -13,17 +13,17 @@ def skill_version(d):
 def main():
     dirs = sorted(p for p in (ROOT / "skills").iterdir() if p.is_dir())
     changed = changed_skills()
-    at_head = set(git("tag", "--points-at", "HEAD") or [])
-    tags = git("tag", "--merged", "HEAD", "--sort=-v:refname", "v*") or []
-    prev = next((t for t in tags if t not in at_head), None)
+    prev = previous_tag()
 
     if changed is None:
         print("First release: upload every skill's zip.\n")
         changed = {d.name for d in dirs}
-    else:
-        names = ", ".join("`%s`" % d.name for d in dirs if d.name in changed) or "none"
+    elif changed:
+        names = ", ".join("`%s`" % d.name for d in dirs if d.name in changed)
         print("**Re-upload:** %s. Every other skill is unchanged since %s, so its installed copy "
               "is already current.\n" % (names, prev))
+    else:
+        print("**Re-upload:** none. No skill changed since %s.\n" % prev)
     print("| Skill | Version | Changed |")
     print("|---|---|---|")
     for d in dirs:
