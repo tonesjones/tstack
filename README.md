@@ -14,6 +14,7 @@ Personal Claude skills, versioned in one repo and released as uploadable zips.
 | [codex-delegate](skills/codex-delegate/SKILL.md) | Hand bounded tasks or diff reviews to the Codex CLI (Luna or Sol tier) and review the results. |
 | [create-verification-skill](skills/create-verification-skill/SKILL.md) | Generate a project-local `verify-<app>` skill that launches the app, drives it like a user, and captures evidence. |
 | [maintain-verification-skill](skills/maintain-verification-skill/SKILL.md) | Audit a verification skill's feature map against source and a live run, and ship one PR of proven fixes. |
+| [shutdown-when-done](skills/shutdown-when-done/SKILL.md) | On Windows, finish the session's work after you go to sleep, then start a 10-minute cancellable shutdown. Runs only from `/shutdown-when-done <duration>`. |
 
 ## Mods
 
@@ -70,6 +71,8 @@ Each uploaded skill updates separately. Every release attaches all the zips, but
 `codex-delegate` needs Python 3.9+ and the Codex CLI with a ChatGPT login. Its `scripts/codex_bridge.py` installs the CLI if it is missing; run `python3 scripts/codex_bridge.py status` to check.
 
 `create-verification-skill` and `maintain-verification-skill` need Claude Code, since they launch and drive the app from a shell. Both run only when you invoke them.
+
+`shutdown-when-done` needs Python 3.9+ and the hook in its `reference/install.md`. Without the hook it can't arm.
 
 `teach` works best in Claude Code (CLI or the desktop Code tab), where it can read the repo, run git, and spawn subagents.
 

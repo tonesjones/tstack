@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.12.0 (2026-10-25)
+
+- Add shutdown-when-done 1.1.0: on Windows, a Claude Code desktop session keeps working after the user goes to sleep, then starts a 10-minute cancellable shutdown.
+  - `disable-model-invocation: true`. Only the user's typed `/shutdown-when-done <duration>` arms it. The duration is required and capped at 12h.
+  - `scripts/shutdown_gate.py` is a PreToolUse and UserPromptSubmit hook. It blocks shutdown, Stop-Computer, Restart-Computer and powrprof unless the arm matches the session, then allows only `shutdown /s /t 600 /c "..."` and `shutdown /a`. It blocks tool edits to the arm file. Any user message disarms and runs `shutdown /a`.
+  - `scripts/arm.py` writes, removes and reports the session-bound arm file.
+  - Finish sequence: push or bundle, handoff note, no background work, then the shutdown. The skill warns that Windows force-closes other apps.
+  - The gate squashes escapes, quotes and concatenation before matching (`shut^down`, `'shut'+'down'`, `Win32Shutdown`), blocks encoded PowerShell, and blocks `.bat`, `.cmd`, `.ps1` and `.vbs` files that contain power commands.
+  - Arming also starts `scripts/watchdog.py`, a detached backstop. If the session stops before its own shutdown step (an error, a tool outage, a turn that ended), the watchdog starts the same 10-minute shutdown when the arm expires. It exits if the user disarms or re-arms, or if the gate already allowed Claude's shutdown (the gate marks the arm as fired). If the watchdog can't start, the armed line says so and Claude tells the user.
+  - A Gotcha covers tool calls that fail with "no verdict" from the auto-mode check: tell the user at once, and spend the remaining attempts on the handoff and the shutdown, not on retrying work.
+  - `SHUTDOWN_WHEN_DONE_DRYRUN=1` denies even the allowed shutdown and logs it, for a full test run.
+  - In Git Bash the commands take a `MSYS_NO_PATHCONV=1` prefix, so `/s` and `/a` aren't rewritten as paths.
+  - `reference/install.md` has the hook settings and a test checklist for Windows Sandbox or a VM. `tests/` has pytest tests with synthetic hook JSON and end-to-end runs of the hook script; none runs a shutdown. The fixture blocks `Popen`, so arming in a test can't start a real watchdog, and it disarms after every test so a watchdog started by an end-to-end run exits. One test runs a real detached watchdog in dry run with a 2-second arm.
+- Add the `shutdown-when-done on Windows` workflow: runs those tests on a `windows-latest` runner under PowerShell and Git Bash, and checks how Git Bash passes `/s` and `/a`.
+
 ## 1.11.0 (2026-10-22)
 
 Lessons from Cloudflare's "Obsessive inference optimization" (2026): fewer turns and tokens cut cost more than cheaper tokens did. Release notes now say which skills need a re-upload.
