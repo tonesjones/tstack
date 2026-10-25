@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Shutdown when done
 
-Version: 1.0.0 (2026-10-11)
+Version: 1.1.0 (2026-10-25)
 
 The user typed `/shutdown-when-done <duration>` and is going to sleep. Finish the
 work in this session, leave it safe to pick up, then turn the PC off. The PC must
@@ -34,6 +34,11 @@ between tasks, to see the time left before the deadline.
 Warn the user now, before they leave: Windows force-closes other open apps at
 shutdown, so they should save and close everything else.
 
+The armed line also says whether the backstop watchdog started. The watchdog
+starts the 10-minute shutdown when the arm expires (deadline plus 30 minutes) if
+this session never got to step 3. If the line has a WARNING instead, tell the
+user that the shutdown depends on this session finishing.
+
 ## 2. Work
 
 Carry on with the session's task. Don't start work you can't finish before the
@@ -58,3 +63,13 @@ If `/s` or `/a` fails with a path or usage error, Git Bash rewrote it. Rerun wit
 
 If the deadline arrives mid-task, stop the task and go straight to step 1. Save
 state over finishing.
+
+## Gotchas
+
+- **Tool calls fail with "no verdict" from the auto-mode check.** This blocks the
+  shutdown command as well as the work, and after 10 such responses in a row the
+  turn ends. If the first `arm.py status` call fails this way, tell the user at
+  once, while they may still be at the PC: the session may stop early, and only
+  the watchdog will shut the PC down, at the arm's expiry. Don't spend the
+  remaining attempts retrying work edits. Use them for the handoff note, then the
+  shutdown.

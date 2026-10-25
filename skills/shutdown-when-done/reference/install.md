@@ -4,7 +4,7 @@ The skill does nothing safe without this hook. `scripts/shutdown_gate.py` runs o
 two hook events:
 
 - `PreToolUse` blocks every power command unless the session is armed, and then allows only `shutdown /s /t 600 /c "..."` and `shutdown /a`. It also blocks tool edits to the arm file.
-- `UserPromptSubmit` arms the session when you type `/shutdown-when-done 4h`, and disarms it (running `shutdown /a`) on any other message.
+- `UserPromptSubmit` arms the session when you type `/shutdown-when-done 4h`, and disarms it (running `shutdown /a`) on any other message. Arming also starts `scripts/watchdog.py` as a detached process. If the session stops before its own shutdown step (an error, a tool outage, a turn that ended), the watchdog starts the 10-minute shutdown when the arm expires. It exits without acting if you disarm, re-arm, or Claude already started the shutdown.
 
 Needs Python 3.9+ on PATH as `python`.
 
@@ -56,7 +56,8 @@ Do this in Windows Sandbox or a VM first, then once on your PC with dry run on.
 5. Ask Claude to run `python scripts/arm.py status`. It must say armed.
 6. Give it a small task and let it finish. It must push or bundle, write `HANDOFF.md`, and try the shutdown, which the gate must deny as a dry run. Check `dryrun.log`.
 7. Arm again, then send any message. `arm.py status` must say disarmed.
-8. In the Sandbox or VM only: remove the dry-run setting, start a new session, arm with `15m`, and let it finish. A 10-minute warning must appear. Run `shutdown /a` in a terminal and confirm the warning is cancelled. Repeat, and this time let it shut down.
+8. Arm with `1m` and confirm a `watchdog.py` python process is running. Send any message; the watchdog must exit within a minute. Arm with `1m` once more and close the session without a reply. About 31 minutes later, `dryrun.log` must show a `watchdog:` line.
+9. In the Sandbox or VM only: remove the dry-run setting, start a new session, arm with `15m`, and let it finish. A 10-minute warning must appear. Run `shutdown /a` in a terminal and confirm the warning is cancelled. Repeat, and this time let it shut down.
 
 Use it on your main PC only after these pass. Keep the first real runs short,
 with every other app saved and closed.

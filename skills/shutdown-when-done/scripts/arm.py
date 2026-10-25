@@ -70,6 +70,26 @@ def disarm() -> bool:
         return False
 
 
+def mark_fired() -> None:
+    """Record that a shutdown was started for this arm, so the watchdog doesn't start a second one."""
+    state = load()
+    if state:
+        state["fired"] = True
+        arm_path().write_text(json.dumps(state), encoding="utf-8")
+
+
+def dry_run() -> bool:
+    return os.environ.get("SHUTDOWN_WHEN_DONE_DRYRUN", "") not in ("", "0")
+
+
+def log_dry_run(command: str) -> None:
+    try:
+        with open(arm_path().with_name("dryrun.log"), "a", encoding="utf-8") as f:
+            f.write("%s would have allowed: %s\n" % (time.strftime("%Y-%m-%d %H:%M:%S"), command))
+    except OSError:
+        pass
+
+
 def load() -> dict | None:
     try:
         state = json.loads(arm_path().read_text(encoding="utf-8"))

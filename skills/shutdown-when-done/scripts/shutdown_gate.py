@@ -6,10 +6,12 @@ command unless it is `shutdown /a`, or the session is armed and the command is
 exactly `shutdown /s /t 600 /c "..."`. Also denies edits to the arm file and
 `arm.py arm` from a tool call, so only the user can arm.
 
-UserPromptSubmit: `/shutdown-when-done <duration>` arms this session. Any other
-prompt in an armed session disarms it and cancels a pending shutdown.
+UserPromptSubmit: `/shutdown-when-done <duration>` arms this session and starts
+watchdog.py, the backstop for a session that stops before its own shutdown step.
+Any other prompt in an armed session disarms it and cancels a pending shutdown.
 
 This script never starts a shutdown. The only command it runs is `shutdown /a`.
+The watchdog is the only other process that can, and only once the arm expires.
 """
 from __future__ import annotations
 
@@ -17,7 +19,6 @@ import json
 import os
 import re
 import subprocess
-import time
 import sys
 from pathlib import Path
 
@@ -55,16 +56,25 @@ def has_power_word(text: str) -> bool:
     return bool(POWER_RE.search(SAFE_NAMES_RE.sub(" ", text))) or any(w in flat for w in POWER_WORDS)
 
 
-def dry_run() -> bool:
-    return os.environ.get("SHUTDOWN_WHEN_DONE_DRYRUN", "") not in ("", "0")
+dry_run = armfile.dry_run
+log_dry_run = armfile.log_dry_run
+WATCHDOG = Path(__file__).resolve().parent / "watchdog.py"
+# Detached and outside the hook's job object, so the watchdog outlives the hook and Claude Code.
+DETACH_FLAGS = 0x00000008 | 0x00000200 | 0x01000000  # DETACHED_PROCESS | NEW_PROCESS_GROUP | BREAKAWAY_FROM_JOB
 
 
-def log_dry_run(command: str) -> None:
-    try:
-        with open(armfile.arm_path().with_name("dryrun.log"), "a", encoding="utf-8") as f:
-            f.write("%s would have allowed: %s\n" % (time.strftime("%Y-%m-%d %H:%M:%S"), command))
-    except OSError:
-        pass
+def start_watchdog(state: dict, popen=None) -> bool:
+    popen = popen or subprocess.Popen  # looked up per call, so tests that block Popen block this too
+    args =[sys.executable, str(WATCHDOG), state["session_id"], repr(state["armed_at"])]
+    flags = DETACH_FLAGS if IS_WINDOWS else 0
+    for attempt in (flags, flags & ~0x01000000):  # retry without breakaway if the job forbids it
+        try:
+            popen(args, creationflags=attempt, close_fds=True, stdin=subprocess.DEVNULL,
+                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            return True
+        except OSError:
+            continue
+    return False
 
 
 def deny(reason: str) -> dict:
@@ -114,7 +124,9 @@ def pre_tool_use(event: dict) -> dict | None:
     if ALLOWED_RE.match(command):
         if dry_run():
             log_dry_run(command)
+            armfile.mark_fired()
             return deny("dry run: the shutdown would have been allowed. Nothing was run. Stop here.")
+        armfile.mark_fired()
         return None
     return deny('armed, but only `shutdown /s /t 600 /c "<message>"` and `shutdown /a` are allowed, alone on the line.')
 
@@ -128,14 +140,17 @@ def cancel_shutdown(runner=subprocess.run) -> None:
         pass
 
 
-def user_prompt_submit(event: dict, runner=subprocess.run) -> dict | None:
+def user_prompt_submit(event: dict, runner=subprocess.run, popen=None) -> dict | None:
     prompt = event.get("prompt") or ""
     session = event.get("session_id") or ""
     m = ARM_PROMPT_RE.match(prompt)
     if m:
         try:
-            armfile.arm(session, m.group(1) or "")
+            state = armfile.arm(session, m.group(1) or "")
             note = "Armed: " + armfile.status(session)
+            note += (". Backstop watchdog started: if the session stops early, it starts the 10-minute shutdown when the arm expires."
+                     if start_watchdog(state, popen) else
+                     ". WARNING: the backstop watchdog failed to start; tell the user the shutdown depends on this session finishing.")
         except ValueError as e:
             armfile.disarm()
             note = "NOT armed (%s). Tell the user and stop; do not run the skill." % e
@@ -149,10 +164,10 @@ def user_prompt_submit(event: dict, runner=subprocess.run) -> dict | None:
     return None
 
 
-def handle(event: dict, runner=subprocess.run) -> dict | None:
+def handle(event: dict, runner=subprocess.run, popen=None) -> dict | None:
     name = event.get("hook_event_name")
     if name == "UserPromptSubmit":
-        return user_prompt_submit(event, runner)
+        return user_prompt_submit(event, runner, popen)
     if name == "PreToolUse":
         return pre_tool_use(event)
     return None

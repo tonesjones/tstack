@@ -34,6 +34,8 @@ def isolate(tmp_path, monkeypatch):
     monkeypatch.setattr(subprocess, "run", refuse)
     monkeypatch.setattr(subprocess, "Popen", only_the_hook)
     monkeypatch.setattr(gate.os, "system", refuse)
+    yield
+    arm.disarm()  # a watchdog started by an end-to-end hook run exits once its arm is gone
 
 
 def bash(command, session=SID):
@@ -195,9 +197,43 @@ def prompt(text, session=SID):
 
 
 def test_typed_command_arms():
-    out = gate.handle(prompt("/shutdown-when-done 4h"))
-    assert "Armed" in out["hookSpecificOutput"]["additionalContext"]
+    started = []
+    out = gate.handle(prompt("/shutdown-when-done 4h"), popen=lambda args, **k: started.append(args))
+    note = out["hookSpecificOutput"]["additionalContext"]
+    assert "Armed" in note and "watchdog started" in note
     assert arm.is_armed(SID)
+    assert started == [[sys.executable, str(gate.WATCHDOG), SID, repr(arm.load()["armed_at"])]]
+
+
+def test_arming_without_a_fake_popen_is_refused():
+    # The fixture blocks Popen, so an arm can't start a real watchdog from a test.
+    with pytest.raises(AssertionError, match="tried to run a process"):
+        gate.handle(prompt("/shutdown-when-done 4h"))
+
+
+def test_watchdog_start_failure_warns():
+    def broken(args, **k):
+        raise OSError("denied")
+    out = gate.handle(prompt("/shutdown-when-done 4h"), popen=broken)
+    assert "WARNING" in out["hookSpecificOutput"]["additionalContext"]
+    assert arm.is_armed(SID)
+
+
+def test_watchdog_retries_without_job_breakaway(monkeypatch):
+    monkeypatch.setattr(gate, "IS_WINDOWS", True)
+    flags = []
+    def no_breakaway(args, creationflags=0, **k):
+        flags.append(creationflags)
+        if creationflags & 0x01000000:
+            raise OSError("access denied")
+    assert gate.start_watchdog({"session_id": SID, "armed_at": 1.0}, popen=no_breakaway)
+    assert flags == [gate.DETACH_FLAGS, gate.DETACH_FLAGS & ~0x01000000]
+
+
+def test_allowed_shutdown_marks_the_arm_fired():
+    arm.arm(SID, "4h")
+    assert gate.pre_tool_use(bash(ALLOWED)) is None
+    assert arm.load()["fired"] is True
 
 
 @pytest.mark.parametrize("text", ["/shutdown-when-done", "/shutdown-when-done 13h", "/shutdown-when-done soon"])
@@ -348,8 +384,10 @@ def test_e2e_unarmed_denies():
 
 
 def test_e2e_arm_then_allow_then_dry_run():
-    code, out = run_hook(prompt("/shutdown-when-done 2h"))
+    # Dry run here too, so the real watchdog this starts can only log. The fixture's disarm stops it.
+    code, out = run_hook(prompt("/shutdown-when-done 2h"), {"SHUTDOWN_WHEN_DONE_DRYRUN": "1"})
     assert code == 0 and "Armed" in out["hookSpecificOutput"]["additionalContext"]
+    assert "watchdog started" in out["hookSpecificOutput"]["additionalContext"]
     code, out = run_hook(bash(ALLOWED))
     assert code == 0 and out is None
     code, out = run_hook(bash(ALLOWED), {"SHUTDOWN_WHEN_DONE_DRYRUN": "1"})
