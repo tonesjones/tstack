@@ -5,7 +5,7 @@ description: "Audit a drifting project's scope against its goal using tests, rea
 
 # Scope Audit
 
-Version: 1.0.1 (2026-10-19)
+Version: 1.1.0 (2026-10-25)
 
 Find the smallest path from the project's proven state to its intended outcome.
 Recommend what to keep, cut, or park. The audit recommends; the user decides.
@@ -41,6 +41,8 @@ Distinguish a fixture or cached result from a fresh run, and a tuned example fro
 ## Output
 
 Create a shareable document: a doc or artifact if the session offers one, otherwise a Markdown file.
+If the user didn't name a location, write the file outside the repo (the session's scratchpad, or a notes folder it was given), so the audit leaves git unchanged, and give its path.
+In plan mode, put only the summary in the plan and write the full report to that file.
 Put a short summary and the selected recommendation at the top, followed by the inventory.
 Include the audited commit, strongest findings, next actions, and verification limits in the summary.
 Then write the following ten sections in this order. Keep each conclusion tied to evidence.

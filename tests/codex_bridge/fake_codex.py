@@ -51,4 +51,5 @@ print(json.dumps({"type": "item.completed", "item": {"type": "command_execution"
 print(json.dumps({"type": "turn.completed", "usage": {"input_tokens": 10, "output_tokens": 5}}))
 lines = int(os.environ.get("FAKE_CODEX_LINES", "3"))
 out = Path(argv[argv.index("-o") + 1])
-out.write_text("\n".join(f"finding {i}: src/app.py:{i} looks wrong" for i in range(lines)), encoding="utf-8")
+text = os.environ.get("FAKE_CODEX_TEXT") or "\n".join(f"finding {i}: src/app.py:{i} looks wrong" for i in range(lines))
+out.write_text(text, encoding="utf-8")

@@ -53,7 +53,7 @@ class BridgeTest(unittest.TestCase):
         return wt
 
     def bridge(self, *args, cwd=None, **env):
-        r = subprocess.run([sys.executable, str(BRIDGE), *args], capture_output=True, text=True,
+        r = subprocess.run([sys.executable, str(BRIDGE), *args], capture_output=True, encoding="utf-8",
                            env=dict(self.env, **env), cwd=cwd or self.tmp)
         receipt = None
         if "--- codex receipt: " in r.stdout:
@@ -98,6 +98,12 @@ class BridgeTest(unittest.TestCase):
         r, _ = self.bridge("run", "--cd", str(self.repo), "--prompt", "x")
         self.assertIn("finding 2:", r.stdout)
         self.assertNotIn("not printed", r.stdout)
+
+    def test_non_ascii_answer_prints_on_a_legacy_code_page(self):
+        r, _ = self.bridge("run", "--cd", str(self.repo), "--prompt", "x",
+                           FAKE_CODEX_TEXT="fixed ✓ → done", PYTHONIOENCODING="cp1252")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("fixed ✓ → done", r.stdout)
 
     def test_missing_directory_is_reported_as_missing(self):
         self.assertRefused(self.bridge("run", "--write", "--cd", str(self.tmp / "wt-typo"), "--prompt", "x"),

@@ -491,6 +491,9 @@ def cmd_review(args: argparse.Namespace) -> int:
 
 
 def main() -> int:
+    # A Windows console code page can't encode every character in Codex's answer.
+    for stream in (sys.stdout, sys.stderr):
+        stream.reconfigure(encoding="utf-8", errors="replace")
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
 

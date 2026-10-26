@@ -5,13 +5,14 @@ description: "Remove AI-generated slop from a code diff or pasted code: needless
 
 # Deslop
 
-Version: 1.0.2 (2026-10-19)
+Version: 1.1.0 (2026-10-25)
 
-Remove the AI-generated slop a branch introduced, measured against main. Leave everything else alone.
+Remove the AI-generated slop a branch introduced, measured against `origin/main`. Leave everything else alone.
 
 ## Get the diff
 
-- **Git repo with a shell.** Find the base branch: `main`, or the default branch from `git symbolic-ref refs/remotes/origin/HEAD` if there is no `main`. Diff from the merge base so uncommitted work is included: `git diff $(git merge-base HEAD main)`. List the touched files with `--name-only`.
+- **Git repo with a shell.** Run `git fetch origin` first. Local `main` lags behind squash merges, so a diff against it shows work that already merged. Use `origin/main`, or the remote default branch from `git symbolic-ref refs/remotes/origin/HEAD` if there is no `main`. Diff from the merge base so uncommitted work is included: `git diff $(git merge-base HEAD origin/main)`. List the touched files with `--name-only`.
+- **New files the branch hasn't staged.** `git diff` skips untracked files. Add `git ls-files --others --exclude-standard` to the file list and read those files whole. Skip scratch files the user said to leave out.
 - **User names files, a commit, or a range.** Use exactly that scope.
 - **No repo.** If the user pasted a diff or code, work on the paste and return the edited code.
 
@@ -38,6 +39,7 @@ Common forms of "other patterns":
 
 ## Guardrails
 
+- If the diff touches no code (only Markdown, prose docs, or plan files), say so in one line and stop. Prose goes to `unslop` or `technical-writing`.
 - Keep behavior unchanged unless fixing a clear bug.
 - Prefer minimal, focused edits over broad rewrites.
 - Touch only lines the branch added or changed. Pre-existing code is out of scope, even when it has the same patterns.
