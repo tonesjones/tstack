@@ -21,6 +21,7 @@ Sources: a review of 14 days of transcripts for items 11 to 13 (tokenomics ran i
 ## Status
 
 - Done: items 1 to 10, merged in PR #26 (2026-10-26). PR #25 closed unmerged. Items 11 to 13 are in PR #27; item 10 moved from tokenomics 1.6.1 to 1.7.0 there.
-- Next: tag `v1.12.0`, then re-upload the seven changed zips.
+- Done: tagged `v1.12.0` (2026-10-26); stale branches deleted.
+- Next: re-upload the seven changed zips (codex-delegate, deslop, scope-audit, shutdown-when-done, teach, tokenomics, unslop).
 - Open decisions: whether to narrow the "files already in context" inline trigger to small edits.
 - Later: recheck the Haiku and Sonnet share of output tokens around 2026-11-08.
