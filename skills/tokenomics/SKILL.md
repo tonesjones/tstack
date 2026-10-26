@@ -1,11 +1,11 @@
 ---
 name: tokenomics
-description: After a plan is drafted, decide whether delegation pays, map each task to the main session's model or a cheaper tier (Sonnet, Haiku, a fork, or Codex) by difficulty and token shape, bundle and delegate to the matching subagent without breaking the main session's prompt cache, then review results in the main session against acceptance criteria. Use at the end of any planning session, when asked to "route the plan" or run /tokenomics, or when asked to cut token cost or usage.
+description: After a plan is drafted, decide whether delegation pays, map each task to the main session's model or a cheaper tier (Sonnet, Haiku, a fork, or Codex) by difficulty and token shape, bundle and delegate to the matching subagent without breaking the main session's prompt cache, then review results in the main session against acceptance criteria. Use at the end of any planning session, including each new phase of a multi-phase plan and after /compact when more planned work remains, when asked to "route the plan" or run /tokenomics, or when asked to cut token cost or usage.
 ---
 
 # Tokenomics
 
-Version: 1.6.0 (2026-10-22)
+Version: 1.6.1 (2026-10-25)
 
 Turn a finished plan into routed, delegated work, then review it. Routing is
 relative to whatever model the main session runs (call it **Main**): Main keeps

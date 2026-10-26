@@ -1,19 +1,22 @@
-# Plan: article lessons and changed-skill release notes (1.11.0)
+# Plan: skill fixes from the transcript pass (1.12.0)
 
-Source: Cloudflare, "Obsessive inference optimization" (fewer turns and tokens beat cheaper tokens).
+Source: `proposals/gotchas-2026-10-25.md` (PR #25), 211 tstack skill invocations from past transcripts. shutdown-when-done 1.1.0 (PR #12) is also in 1.12.0.
 
 | # | Change | Done when |
 |---|---|---|
-| 1 | tokenomics 1.6.0 and agents: subagents read all listed inputs in one parallel batch on their first turn | `worker`, `scout`, `grunt` and the tokenomics brief rule say so |
-| 2 | tokenomics: routing log records turns per task | log format line has a `turns` field and the tuning note uses it |
-| 3 | tokenomics: review and finding tasks run at high effort | stated in "Main's own costs" and the routing rules |
-| 4 | codex-delegate 1.3.0: a timeout resumes the thread with a longer `--timeout` and isn't the Luna to Sol escalation | stated in Route and Run |
-| 5 | codex-delegate: a re-review covers only the commits since the last review | stated in Run |
-| 6 | codex-delegate: stop background runs you no longer need | stated in Run |
-| 7 | Release notes list every skill with its version and whether it changed since the previous tag | `scripts/release_notes.py` prints the table locally; the workflow passes it to `gh release create`; README says to re-upload only changed skills |
+| 1 | deslop 1.1.0: fetch and diff against `origin/main` | "Get the diff" says to fetch and uses `origin/main` |
+| 2 | deslop: read untracked files | "Get the diff" lists `git ls-files --others --exclude-standard` |
+| 3 | codex-delegate 1.3.1: the bridge prints non-ASCII answers on a Windows code page | `main()` reconfigures stdout and stderr to UTF-8; a test with `PYTHONIOENCODING=cp1252` fails before and passes after |
+| 4 | teach 1.1.2: hedge claims about behavior not read in the session | Teaching rule 2 says so |
+| 5 | unslop 1.2.1: self-audit a draft written after the skill loads | Process says so after step 4 |
+| 6 | scope-audit 1.1.0: say where the report goes | Output says outside the repo by default, summary only in a plan |
+| 7 | shutdown-when-done 1.1.0: power words in non-command text | Gotcha added; a script file's `-e` counts only next to `powershell` or `pwsh`, with tests |
+| 8 | codex-delegate: read-only runs give partial test results | Gotcha added |
+| 9 | deslop: stop on docs-only diffs | first Guardrails bullet |
+| 10 | tokenomics 1.6.1: trigger at each plan phase and after `/compact` | description says so |
 
 ## Status
 
-- Done: all items, merged in PR #23 and released as `v1.11.0` (2026-10-22).
-- Next: none.
+- Done: all items, in the `skill/gotchas-1.12.0` PR.
+- Next: merge the PR, close PR #25, then tag `v1.12.0`.
 - Open decisions: none.

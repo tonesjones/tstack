@@ -73,3 +73,6 @@ state over finishing.
   the watchdog will shut the PC down, at the arm's expiry. Don't spend the
   remaining attempts retrying work edits. Use them for the handoff note, then the
   shutdown.
+- **The gate also matches text that isn't a command.** A power word in a file
+  name, a commit message, or a heredoc body gets the Bash call denied. Rename the
+  file, or write the text with the Write tool, rather than retrying the command.

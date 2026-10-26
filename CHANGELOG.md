@@ -7,13 +7,25 @@
   - `scripts/shutdown_gate.py` is a PreToolUse and UserPromptSubmit hook. It blocks shutdown, Stop-Computer, Restart-Computer and powrprof unless the arm matches the session, then allows only `shutdown /s /t 600 /c "..."` and `shutdown /a`. It blocks tool edits to the arm file. Any user message disarms and runs `shutdown /a`.
   - `scripts/arm.py` writes, removes and reports the session-bound arm file.
   - Finish sequence: push or bundle, handoff note, no background work, then the shutdown. The skill warns that Windows force-closes other apps.
-  - The gate squashes escapes, quotes and concatenation before matching (`shut^down`, `'shut'+'down'`, `Win32Shutdown`), blocks encoded PowerShell, and blocks `.bat`, `.cmd`, `.ps1` and `.vbs` files that contain power commands.
+  - The gate squashes escapes, quotes and concatenation before matching (`shut^down`, `'shut'+'down'`, `Win32Shutdown`), blocks encoded PowerShell, and blocks `.bat`, `.cmd`, `.ps1` and `.vbs` files that contain power commands. In a script file, `-e` counts as an encoded command only when the file also names `powershell` or `pwsh`, so `git cat-file -e` and `grep -E` pass.
   - Arming also starts `scripts/watchdog.py`, a detached backstop. If the session stops before its own shutdown step (an error, a tool outage, a turn that ended), the watchdog starts the same 10-minute shutdown when the arm expires. It exits if the user disarms or re-arms, or if the gate already allowed Claude's shutdown (the gate marks the arm as fired). If the watchdog can't start, the armed line says so and Claude tells the user.
   - A Gotcha covers tool calls that fail with "no verdict" from the auto-mode check: tell the user at once, and spend the remaining attempts on the handoff and the shutdown, not on retrying work.
+  - A Gotcha covers a power word in a file name, commit message, or heredoc body, which gets a Bash call denied: rename the file or use the Write tool instead of retrying.
   - `SHUTDOWN_WHEN_DONE_DRYRUN=1` denies even the allowed shutdown and logs it, for a full test run.
   - In Git Bash the commands take a `MSYS_NO_PATHCONV=1` prefix, so `/s` and `/a` aren't rewritten as paths.
   - `reference/install.md` has the hook settings and a test checklist for Windows Sandbox or a VM. `tests/` has pytest tests with synthetic hook JSON and end-to-end runs of the hook script; none runs a shutdown. The fixture blocks `Popen`, so arming in a test can't start a real watchdog, and it disarms after every test so a watchdog started by an end-to-end run exits. One test runs a real detached watchdog in dry run with a 2-second arm.
 - Add the `shutdown-when-done on Windows` workflow: runs those tests on a `windows-latest` runner under PowerShell and Git Bash, and checks how Git Bash passes `/s` and `/a`.
+
+Fixes from a pass over 211 skill invocations in past transcripts (`proposals/gotchas-2026-10-25.md` in PR #25):
+
+- deslop 1.1.0: fetch and diff against `origin/main`, because local `main` lags squash merges. Read untracked files too. Stop in one line on a diff with no code.
+- codex-delegate 1.3.1:
+  - The bridge writes stdout and stderr as UTF-8. On a Windows console code page, a non-ASCII character in Codex's answer used to crash it after the run finished.
+  - A Gotcha: tests that write files fail or get skipped in a read-only run, so treat its test results as partial.
+- teach 1.1.2: a claim about how another product behaves, or an estimated number, isn't a mechanism sentence. Mark it as inference or check it.
+- unslop 1.2.1: when the skill loads before the draft exists, write the draft with its rules and self-audit it before sending.
+- scope-audit 1.1.0: with no location given, write the report outside the repo and give its path. In plan mode, the plan gets only the summary.
+- tokenomics 1.6.1: the description also triggers at each new plan phase and after `/compact` when planned work remains.
 
 ## 1.11.0 (2026-10-22)
 

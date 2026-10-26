@@ -104,7 +104,8 @@ def pre_tool_use(event: dict) -> dict | None:
             return deny("the arm file can't be edited by a tool. Only the user arms it.")
         if Path(target).suffix.lower() in SCRIPT_SUFFIXES:
             text = json.dumps(tin)
-            if has_power_word(text) or ENCODED_RE.search(text):
+            calls_powershell = re.search(r"powershell|pwsh", squash(text))
+            if has_power_word(text) or (calls_powershell and ENCODED_RE.search(text)):
                 return deny("script files that contain power commands are blocked.")
         return None
 

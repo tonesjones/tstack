@@ -330,6 +330,8 @@ def test_git_bash_prefix_allowed(command):
     ("off.cmd", "shut^down /s /t 0"),
     ("off.ps1", "Stop-Computer -Force"),
     ("off.ps1", "powershell -enc AAAA"),
+    ("off.ps1", "& ('power'+'shell') -e AAAA"),
+    ("off.bat", "pwsh.exe -e AAAA"),
     ("off.vbs", 'CreateObject("WScript.Shell").Run "shutdown /s"'),
 ])
 def test_script_files_with_power_commands_blocked(tmp_path, name, content):
@@ -345,9 +347,10 @@ def test_edit_into_script_blocked(tmp_path):
     assert denied(gate.pre_tool_use(ev))
 
 
-def test_ordinary_script_file_passes(tmp_path):
+@pytest.mark.parametrize("content", ["npm run build", "git cat-file -e HEAD", "grep -E 'a|b' log.txt"])
+def test_ordinary_script_file_passes(tmp_path, content):
     ev = {"hook_event_name": "PreToolUse", "session_id": SID, "tool_name": "Write",
-          "tool_input": {"file_path": str(tmp_path / "build.ps1"), "content": "npm run build"}}
+          "tool_input": {"file_path": str(tmp_path / "build.ps1"), "content": content}}
     assert gate.pre_tool_use(ev) is None
 
 

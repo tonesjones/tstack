@@ -5,7 +5,7 @@ description: Delegate bounded work to OpenAI Codex (the person's ChatGPT/Codex s
 
 # Codex delegate
 
-Version: 1.3.0 (2026-10-22)
+Version: 1.3.1 (2026-10-25)
 
 You orchestrate; Codex does delegated work; you own the result. Everything goes through
 `scripts/codex_bridge.py` in this skill's directory (call it `$BRIDGE` below; run it with
@@ -156,6 +156,10 @@ Codex output is a draft from a junior colleague, not a fact.
 - **Codex may lack the test runner.** Codex can use a different Python than the project (on Windows,
   for example, a system `C:\Python3xx` with no pytest), so it may not run the tests. Run them
   yourself in the worktree before merging anything.
+- **Read-only runs can't create temp directories.** In the default read-only sandbox, tests that
+  write files or run the CLI end to end fail or get skipped, and a review can still report "no
+  defects". Treat test results from a read-only run as partial: run those tests yourself, or use
+  `--write` in a scratch worktree.
 - **Worktree and pytest problems.** Codex can't commit in a worktree, and on Windows it can leave
   pytest folders that block `git worktree remove`. See tokenomics `reference/gotchas.md`.
 - **`--ephemeral` leaves `model` null.** The bridge reads the receipt's `model` from the Codex

@@ -5,7 +5,7 @@ description: "Remove AI writing tells from prose and add a human voice. Use when
 
 # Unslop
 
-Version: 1.2.0 (2026-10-19)
+Version: 1.2.1 (2026-10-25)
 
 Edit text to remove AI patterns and add human voice.
 
@@ -29,6 +29,8 @@ When writing as the user (an email, a post), "add soul" means their voice, not y
 2. Rewrite. Preserve meaning, match intended tone. Don't add facts, steps, or escalation paths that aren't in the source. Specifics in "add soul" come from the source, not from you.
 3. Add soul (see next section).
 4. Self-audit: "What makes this obviously AI generated?" Fix remaining tells.
+
+If the skill loads before the text exists (for example, ahead of a commit message or PR description), write the draft with these rules, then run step 4 on the finished draft before you commit, post, or send it.
 
 ## Adding soul
 
