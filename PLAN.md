@@ -1,6 +1,6 @@
 # Plan: skill fixes from the transcript pass (1.12.0)
 
-Source: `proposals/gotchas-2026-10-25.md` (PR #25), 211 tstack skill invocations from past transcripts. shutdown-when-done 1.1.0 (PR #12) is also in 1.12.0.
+Sources: a review of 14 days of transcripts for items 11 to 13 (tokenomics ran in 15 of 118 sessions, and about 95% of output tokens stayed on Main), and `proposals/gotchas-2026-10-25.md` (PR #25), 211 tstack skill invocations from past transcripts. shutdown-when-done 1.1.0 (PR #12) is also in 1.12.0.
 
 | # | Change | Done when |
 |---|---|---|
@@ -13,10 +13,14 @@ Source: `proposals/gotchas-2026-10-25.md` (PR #25), 211 tstack skill invocations
 | 7 | shutdown-when-done 1.1.0: power words in non-command text | Gotcha added; a script file's `-e` counts only next to `powershell` or `pwsh`, with tests |
 | 8 | codex-delegate: read-only runs give partial test results | Gotcha added |
 | 9 | deslop: stop on docs-only diffs | first Guardrails bullet |
-| 10 | tokenomics 1.6.1: trigger at each plan phase and after `/compact` | description says so |
+| 10 | tokenomics 1.7.0: trigger at each plan phase and after `/compact` | description says so |
+| 11 | tokenomics: Main asks the user to type `/effort low`, because `set_session_effort` refuses the calling session | stated in "Main's own costs" and step 0 |
+| 12 | tokenomics: the routing log line is written after review, and a stale header is replaced | stated in step 7 |
+| 13 | Global CLAUDE.md (outside this repo): use `Explore`, `scout` and `grunt` even when tokenomics doesn't run | rule added to `~/.claude/CLAUDE.md` |
 
 ## Status
 
-- Done: all items, merged in PR #26 (2026-10-26). PR #25 closed unmerged.
+- Done: items 1 to 10, merged in PR #26 (2026-10-26). PR #25 closed unmerged. Items 11 to 13 are in PR #27; item 10 moved from tokenomics 1.6.1 to 1.7.0 there.
 - Next: tag `v1.12.0`, then re-upload the seven changed zips.
-- Open decisions: none.
+- Open decisions: whether to narrow the "files already in context" inline trigger to small edits.
+- Later: recheck the Haiku and Sonnet share of output tokens around 2026-11-08.

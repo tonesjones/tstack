@@ -2,6 +2,10 @@
 
 ## 1.12.0 (2026-10-25)
 
+- tokenomics 1.7.0:
+  - The description also triggers at each new plan phase and after `/compact` when planned work remains (from the transcript pass below).
+  - Main can't change its own effort, so it asks the user to type `/effort low` for mechanical stretches. It sets effort directly only on subagents (the Agent tool's `effort` parameter) and on other sessions (`set_session_effort`).
+  - The routing log line is written after review, so `result` is final, and a log whose header lacks a field gets the current header.
 - Add shutdown-when-done 1.1.0: on Windows, a Claude Code desktop session keeps working after the user goes to sleep, then starts a 10-minute cancellable shutdown.
   - `disable-model-invocation: true`. Only the user's typed `/shutdown-when-done <duration>` arms it. The duration is required and capped at 12h.
   - `scripts/shutdown_gate.py` is a PreToolUse and UserPromptSubmit hook. It blocks shutdown, Stop-Computer, Restart-Computer and powrprof unless the arm matches the session, then allows only `shutdown /s /t 600 /c "..."` and `shutdown /a`. It blocks tool edits to the arm file. Any user message disarms and runs `shutdown /a`.
@@ -25,7 +29,6 @@ Fixes from a pass over 211 skill invocations in past transcripts (`proposals/got
 - teach 1.1.2: a claim about how another product behaves, or an estimated number, isn't a mechanism sentence. Mark it as inference or check it.
 - unslop 1.2.1: when the skill loads before the draft exists, write the draft with its rules and self-audit it before sending.
 - scope-audit 1.1.0: with no location given, write the report outside the repo and give its path. In plan mode, the plan gets only the summary.
-- tokenomics 1.6.1: the description also triggers at each new plan phase and after `/compact` when planned work remains.
 
 ## 1.11.0 (2026-10-22)
 

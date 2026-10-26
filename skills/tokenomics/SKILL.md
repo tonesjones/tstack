@@ -5,7 +5,7 @@ description: After a plan is drafted, decide whether delegation pays, map each t
 
 # Tokenomics
 
-Version: 1.6.1 (2026-10-25)
+Version: 1.7.0 (2026-10-25)
 
 Turn a finished plan into routed, delegated work, then review it. Routing is
 relative to whatever model the main session runs (call it **Main**): Main keeps
@@ -35,7 +35,7 @@ Every Main turn re-reads the whole context, and Main's output is the most
 expensive token in the session. No routing removes that. These habits do:
 - Batch independent tool calls into one turn. Each extra turn re-reads everything.
 - Read line ranges, cap search results (`head_limit`), and trim command output (`| tail -n 40`, quiet flags). Whatever lands in context is paid for again every later turn.
-- Fit effort to the work. Thinking bills as output. Reviews and bug hunts are the exception: run them at `high`. In Cloudflare's code reviewer (2026), moving from medium to high cost about two cents per review and gave 58% more critical or warning findings. On Opus 5.5, Sonnet 5.5, Haiku 5.5, and Fable 5.1 with an API key or a Claude subscription, `/effort` changes keep the cache, so drop to `low` or `medium` for mechanical stretches and raise it for the hard parts. On other models, Bedrock, or Vertex, an effort change re-reads the whole context uncached, so set it once.
+- Fit effort to the work. Thinking bills as output. Reviews and bug hunts are the exception: run them at `high`. In Cloudflare's code reviewer (2026), moving from medium to high cost about two cents per review and gave 58% more critical or warning findings. On Opus 5.5, Sonnet 5.5, Haiku 5.5, and Fable 5.1 with an API key or a Claude subscription, `/effort` changes keep the cache, so drop to `low` or `medium` for mechanical stretches and raise it for the hard parts. Main can't change its own effort: only the user can type `/effort`, and the desktop app's `set_session_effort` refuses the calling session. So at the start of a mechanical stretch, ask the user in one line to type `/effort low`, and to raise it again before the hard part. Main sets effort directly only on work it starts: the Agent tool's `effort` parameter, or `set_session_effort` on another session. On other models, Bedrock, or Vertex, an effort change re-reads the whole context uncached, so set it once.
 - `/compact` between tasks, never mid-task. `/rewind` out of a dead end instead of compacting it.
 
 ## 0. Delegation gate
@@ -53,8 +53,8 @@ in Main's context.
   task is self-contained, its result is cheap to check, and minutes of latency
   are fine. The Claude-side cost is the brief, the printed result, and the review.
 
-Execute the whole plan inline in the main session (lower `/effort` if the work
-is routine) and skip steps 2–5 when **any** of these is true:
+Execute the whole plan inline in the main session (if the work is routine, ask
+the user to type `/effort low`) and skip steps 2–5 when **any** of these is true:
 - No task passes its tier's gate.
 - One dependent chain where each step needs the last one's reasoning.
 - The files involved are already in context.
@@ -152,8 +152,9 @@ For each completed task:
 
 ## 7. Log
 Append to `~/.claude/routing-log.md` (create it with the header line below if
-it doesn't exist), one line per task; inline runs get one line for the whole
-plan. Use a different path only when the user names one.
+it doesn't exist, and replace its header if it lacks a field below), one line
+per task, written after the step 6 review so `result` is final. Inline runs get
+one line for the whole plan. Use a different path only when the user names one.
 
 `date | project | task ID | shape | main model | tier | package | result (pass/fix/escalate/inline) | tokens in/out | turns | notes`
 
