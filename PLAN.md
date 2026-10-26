@@ -17,6 +17,6 @@ Source: `proposals/gotchas-2026-10-25.md` (PR #25), 211 tstack skill invocations
 
 ## Status
 
-- Done: all items, in the `skill/gotchas-1.12.0` PR.
-- Next: merge the PR, close PR #25, then tag `v1.12.0`.
+- Done: all items, merged in PR #26 (2026-10-26). PR #25 closed unmerged.
+- Next: tag `v1.12.0`, then re-upload the seven changed zips.
 - Open decisions: none.
