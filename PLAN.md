@@ -25,3 +25,14 @@ Sources: a review of 14 days of transcripts for items 11 to 13 (tokenomics ran i
 - Next: re-upload the seven changed zips (codex-delegate, deslop, scope-audit, shutdown-when-done, teach, tokenomics, unslop).
 - Open decisions: whether to narrow the "files already in context" inline trigger to small edits.
 - Later: recheck the Haiku and Sonnet share of output tokens around 2026-11-08.
+- Next: tokenomics 1.7.1 (2026-10-28 cookbook review): Main confirms each fact from a Haiku report before repeating it or acting on it, as it already does for Codex results. A wrong fact repeated from a report fails silently, so this one isn't waiting for a real case.
+
+## Watch list (2026-10-28 cookbook review)
+
+These items come from Anthropic's claude-cookbooks (`multimodal/using_sub_agents`, `misc/prompt_caching`, `cost_optimization/cost_optimization`). The cookbooks ran on Opus 5, Sonnet 5, and Haiku 4.5. Add an item to tokenomics as a Gotcha only when its trigger shows up in real use.
+
+| # | Item | Trigger |
+|---|---|---|
+| B | A brief that condenses a spec or policy drops its exceptions. In the cost cookbook, a rule card kept an exclusion but lost its exception, and the cheap pipeline denied a claim it should have approved. Point the agent at the source, or keep the decision on Main. | A subagent decides wrongly because the brief summarized a rule instead of pointing to it |
+| C | Main's own costs: images bill at about one token per 28×28 pixel patch and are re-read every turn, so take scaled screenshots or read page text. Compute an aggregate over a big file with a command instead of reading the file. | A session's usage shows screenshots or a large data file read into Main's context |
+| D | Spawns of the same agent may share a prompt cache. Identical prefixes can share a cache entry, but concurrent requests hit it only on a best-effort basis. If this holds in Claude Code, a second sequential `grunt` within 5 minutes reads the agent prompt from cache, and "each parallel spawn is another cold start" applies only to parallel spawns. | A transcript shows nonzero `cache_read_input_tokens` on the first request of a second spawn of the same agent |
