@@ -5,7 +5,7 @@ description: After a plan is drafted, decide whether delegation pays, map each t
 
 # Tokenomics
 
-Version: 1.7.0 (2026-10-25)
+Version: 1.7.1 (2026-10-28)
 
 Turn a finished plan into routed, delegated work, then review it. Routing is
 relative to whatever model the main session runs (call it **Main**): Main keeps
@@ -144,6 +144,7 @@ For each completed task:
 - Objective "done when" (tests, lint, build, file exists): run the check yourself and accept on pass. Don't re-read the diff.
 - Read the diff only for flagged tasks (auth, crypto, deletion, migrations), spot-checks of Haiku output, and integration points between tasks. When you read one, review adversarially: assume it is wrong and look for the failure, and write one line per finding (`file:line — problem`). No praise, no summary.
 - Codex results follow `codex-delegate`'s review step: confirm each claim you will repeat or act on, and read write-run diffs in full.
+- Facts in a Haiku report (an `Explore` answer, a `grunt` extraction or summary) get the same check: before you repeat a fact or act on it, read the source it came from (`Explore` gives `path:line`). A wrong fact fails no test, so nothing later catches it. In Anthropic's sub-agents cookbook, Haiku compared mismatched periods and the orchestrator repeated its figures unchecked.
 - Mark it **pass**, **fix** (small correction done by Main), or **escalate** (redo one tier up, with the original brief plus the failure reason). The order is Haiku low, Haiku medium, Sonnet, Sonnet at `effort: high` (the Agent tool's `effort` parameter), Main.
 - When the subagent should fix its own work and its report arrived less than 5 minutes ago, continue it with SendMessage instead of spawning a new one: it re-reads its own warm cache, and Main skips a second brief. An escalation always starts a fresh agent.
 - Subagents stop and report back to Main, rather than guessing, at three decision points: choosing between approaches the brief didn't settle, the same error twice, or "done when" can't be met as written. The `worker`, `scout`, and `grunt` files carry this rule. Put it in the brief only for a general-purpose fallback. Main answers with a short brief, never by handing over its transcript.
