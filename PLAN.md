@@ -25,7 +25,8 @@ Sources: a review of 14 days of transcripts for items 11 to 13 (tokenomics ran i
 - Next: re-upload the seven changed zips (codex-delegate, deslop, scope-audit, shutdown-when-done, teach, tokenomics, unslop).
 - Open decisions: whether to narrow the "files already in context" inline trigger to small edits.
 - Later: recheck the Haiku and Sonnet share of output tokens around 2026-11-08.
-- Next: tokenomics 1.7.1 (2026-10-28 cookbook review): Main confirms each fact from a Haiku report before repeating it or acting on it, as it already does for Codex results. A wrong fact repeated from a report fails silently, so this one isn't waiting for a real case.
+- Done: tokenomics 1.7.1 (2026-10-28 cookbook review), merged in PR #28 and released in `v1.13.0`. Main confirms each fact from a Haiku report before repeating it or acting on it, as it already does for Codex results. A wrong fact repeated from a report fails silently, so this one didn't wait for a real case.
+- Next: re-upload the tokenomics zip from `v1.13.0`.
 
 ## Watch list (2026-10-28 cookbook review)
 
