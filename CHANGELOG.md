@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.13.0 (2026-10-28)
+
+- tokenomics 1.7.1: before Main repeats or acts on a fact from a Haiku report (an `Explore` answer, a `grunt` extraction or summary), it reads the fact's source, as it already does for Codex results. A wrong fact fails no test, so no later check catches it. Source: Anthropic's sub-agents cookbook, where the orchestrator repeated Haiku's mismatched-period figures. The rest of that review is a watch list in PLAN.md.
+
 ## 1.12.0 (2026-10-25)
 
 - tokenomics 1.7.0:
