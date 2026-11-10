@@ -24,9 +24,10 @@ Sources: a review of 14 days of transcripts for items 11 to 13 (tokenomics ran i
 - Done: tagged `v1.12.0` (2026-10-26); stale branches deleted.
 - Next: re-upload the seven changed zips (codex-delegate, deslop, scope-audit, shutdown-when-done, teach, tokenomics, unslop).
 - Open decisions: whether to narrow the "files already in context" inline trigger to small edits.
-- Later: recheck the Haiku and Sonnet share of output tokens around 2026-11-08.
+- Later: recheck the Haiku and Sonnet share of output tokens (was due around 2026-11-08; not done yet).
 - Done: tokenomics 1.7.1 (2026-10-28 cookbook review), merged in PR #28 and released in `v1.13.0`. Main confirms each fact from a Haiku report before repeating it or acting on it, as it already does for Codex results. A wrong fact repeated from a report fails silently, so this one didn't wait for a real case.
-- Next: re-upload the tokenomics zip from `v1.13.0`.
+- Done: tokenomics 1.7.2 (2026-11-10 review of Anthropic's model-choice guide), merged in PR #29 and released in `v1.14.0`. Prices now match Fable 5.2 and Sonnet 5.5's $0.10 cache read; the guide's routing advice matched the skill, so no routing rules changed.
+- Next: re-upload the tokenomics zip from `v1.14.0` (it replaces the `v1.13.0` one).
 
 ## Watch list (2026-10-28 cookbook review)
 
