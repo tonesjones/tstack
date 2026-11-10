@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.14.0 (2026-11-10)
+
+- tokenomics 1.7.2: prices updated from Anthropic's model-choice guide and the pricing page. Fable 5.2 replaces Fable 5.1 ($8 / $40, cache read $0.20), and Sonnet 5.5's cache read is $0.10, not $0.20. The Fable gate keeps its 1K / 3K thresholds; its ratio (now 4x Sonnet's output), the per-1K saving ($0.03), and the inline Fable worked example follow the new prices. Also notes that `opusplan` pays a model-switch cold start, how to switch Main's model when it must change, and that the `haiku` alias still means Haiku 4.5 on cloud providers.
+
 ## 1.13.0 (2026-10-28)
 
 - tokenomics 1.7.1: before Main repeats or acts on a fact from a Haiku report (an `Explore` answer, a `grunt` extraction or summary), it reads the fact's source, as it already does for Codex results. A wrong fact fails no test, so no later check catches it. Source: Anthropic's sub-agents cookbook, where the orchestrator repeated Haiku's mismatched-period figures. The rest of that review is a watch list in PLAN.md.

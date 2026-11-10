@@ -6,16 +6,20 @@ Read this only when it's unclear whether delegating a task pays off.
 
 | Model | Input | Output | Cache read | Cache write (5 min / 1 h) |
 |---|---:|---:|---:|---:|
-| Fable 5.1 | $10.00 | $50.00 | $0.25 | $12.50 / $20.00 |
+| Fable 5.2 | $8.00 | $40.00 | $0.20 | $10.00 / $16.00 |
 | Opus 5.5 | $4.00 | $20.00 | $0.20 | $5.00 / $8.00 |
-| Sonnet 5.5 | $2.00 | $10.00 | $0.20 | $2.50 / $4.00 |
+| Sonnet 5.5 | $2.00 | $10.00 | $0.10 | $2.50 / $4.00 |
 | Haiku 5.5, prompt ≤ 100K tokens | $0.10 | $0.50 | $0.01 | $0.125 / $0.20 |
 | Haiku 5.5, prompt > 100K tokens | $0.50 | $2.50 | $0.05 | $0.625 / $1.00 |
 
-All rows checked 2026-10-19 against the claude-api skill's model table and
-prompt-caching guide. Cache writes cost 1.25x input for 5 minutes and 2x for
-1 hour on every model. Cache reads cost 0.1x input on Sonnet and Haiku, 0.05x
-on Opus 5.5, and 0.025x on Fable 5.1. Refresh from the official pricing page
+All rows checked 2026-11-10 against https://claude.com/pricing, the API
+prompt-caching docs
+(https://platform.claude.com/docs/en/build-with-claude/prompt-caching), and
+Anthropic's model-choice guide
+(https://claude.dev/blog/which-claude-model-should-you-build-with/). Cache
+writes cost 1.25x input for 5 minutes and 2x for 1 hour on every model. Cache
+reads cost 0.1x input on Haiku, 0.05x on Sonnet 5.5 and Opus 5.5, and 0.025x
+on Fable 5.2. Refresh from the official pricing page
 (https://claude.com/pricing) when models change. On a
 subscription plan these translate into usage-limit consumption rather than
 dollars, but the ratios still hold.
@@ -29,9 +33,9 @@ dollars, but the ratios still hold.
 - **Switching the main session's model cold-starts everything.** The whole
   conversation is re-written to cache at the new model's write price. Use
   subagents, never `/model`, to reach cheaper tiers mid-task.
-- **Warm re-reads are cheap.** Opus reads its cached context at $0.20/MTok, the
-  same as Sonnet's cache read, and Fable at $0.25. Re-reading what Main already
-  holds is not the expensive part.
+- **Warm re-reads are cheap.** Opus 5.5 and Fable 5.2 read cached context at
+  $0.20/MTok, twice Sonnet 5.5's $0.10 but a tenth of Sonnet's fresh input.
+  Re-reading what Main already holds is not the expensive part.
 - **But context is re-read every turn.** Anything that lands in the main
   context (file contents, tool output, subagent reports) is paid for again on
   every later turn. Bulky reading done inline costs once to read and then keeps
@@ -45,20 +49,21 @@ dollars, but the ratios still hold.
 - **Break-even for Sonnet.** With a few thousand to ~10K tokens of cold
   overhead per spawn, delegating to Sonnet starts to pay above about 3K tokens
   written or 6K tokens of new input read. Below both, keep the task in the
-  main session. From Fable, every 1K output tokens moved to Sonnet saves $0.04,
-  so the break-even drops to about 1K written or 3K read.
+  main session. From Fable 5.2, every 1K output tokens moved to Sonnet saves
+  $0.03, so the break-even drops to about 1K written or 3K read.
 - **Break-even for Haiku.** Haiku 5.5 reads fresh input at $0.10/MTok, half of
   what Opus pays to re-read its own cache. A 10K-token cold start costs about
   $0.001. What's left is Main's side: the brief Opus writes at $20/MTok and the
   report it re-reads every later turn. Delegate when the brief is clearly
   shorter than doing the work inline.
-- **Minimum cacheable prefix** is 512 tokens on Fable 5.1, Opus 5.5, Sonnet
+- **Minimum cacheable prefix** is 512 tokens on Fable 5.2, Opus 5.5, Sonnet
   5.5, and Haiku 5.5. Shorter prefixes silently don't cache.
 - **Effort is Main's cheapest lever.** Thinking tokens bill as output at Main's
-  price. On Opus 5.5, Sonnet 5.5, Haiku 5.5, and Fable 5.1 with an API key or a
-  Claude subscription (not Bedrock or Vertex), changing effort mid-session keeps
-  the cache (Claude Code prompt-caching docs, checked 2026-10-19). On other
-  models it re-reads the whole context uncached.
+  price. On Opus 5.5, Sonnet 5.5, Haiku 5.5, and Fable 5.1 or later with an
+  API key or a Claude subscription (not Bedrock, Google Cloud, or a Claude
+  apps gateway), changing effort mid-session keeps the cache (Claude Code
+  prompt-caching docs, checked 2026-11-10). On other models it re-reads the
+  whole context uncached.
 - **Forks read Main's cache.** A fork inherits Main's system prompt, tools, and
   history, so its first request is a cache read, not a cold start. Each fork
   turn re-reads that whole context at Main's cache price, so a fork saves
@@ -106,10 +111,10 @@ For Haiku, multiply the subagent's token counts by about 1.3 for the tokenizer.
   its turns ≈ $0.015, ~6.5K output ≈ $0.003, brief and report ≈ $0.01 ≈
   **$0.03**. A third of that is Main's brief and report. Only if the task is
   pattern-following and objectively checkable.
-- Inline Fable 5.1: ~$0.50 to read (written to cache at $12.50/MTok) + ~$0.25
-  to write ≈ **$0.75**, then about $0.34 more over 30 turns. The same Sonnet
-  `worker` package costs about $0.18 to $0.20, because only the brief is
-  written at Fable's price.
+- Inline Fable 5.2: ~$0.40 to read (written to cache at $10/MTok) + ~$0.20
+  to write ≈ **$0.60**, then about $0.27 more over 30 turns. The same Sonnet
+  `worker` package costs about $0.18, because only the brief is written at
+  Fable's price.
 - Codex Luna (Main on Opus): the run bills ChatGPT. Claude pays a ~300-token
   brief ≈ $0.006 and a ~1.5K-token result read once and re-read for 30 turns ≈
   $0.017, so ≈ **$0.02** before review. Checking ten cited excerpts of about

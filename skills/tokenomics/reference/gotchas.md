@@ -5,7 +5,7 @@
 From the move to Haiku 5.5 (2026-10-07) and its migration guide in the
 claude-api skill.
 
-- **The `haiku` alias resolves to `claude-haiku-5-5`.** Checked 2026-10-07 in a `grunt` subagent transcript. If a transcript ever shows another Haiku ID, pin `model: claude-haiku-5-5` in the agent files.
+- **The `haiku` alias resolves to `claude-haiku-5-5`.** Checked 2026-10-07 in a `grunt` subagent transcript. If a transcript ever shows another Haiku ID, pin `model: claude-haiku-5-5` in the agent files. That holds on the Anthropic API, and Haiku 5.5 needs Claude Code v2.1.293 or later. On Bedrock, Google Cloud, Microsoft Foundry, and Claude Platform on AWS the alias still resolves to Haiku 4.5 (Anthropic's model-choice guide, 2026-11-10). If the provider offers Haiku 5.5, point `ANTHROPIC_DEFAULT_HAIKU_MODEL` at its ID there; otherwise the Haiku tier is 4.5, and this skill's Haiku prices, 100K cliff, and gate don't apply.
 - **Refusals have no fallback.** Haiku 5.5 runs safety classifiers that can decline a benign request (categories include `cyber` and `general_harms`), and unlike the larger models it has no server-side fallback. Re-run the package on Sonnet with the same brief; it doesn't count as the task's escalation.
 - **Set effort explicitly.** Haiku 5.5 defaults to medium effort. An agent file without `effort:` runs at medium, so `grunt` needs `effort: low` to be the cheap tier.
 - **Low effort can stop early.** With a long agent system prompt at low effort, Haiku 5.5 sometimes hands the task back before it's done. If `grunt` reports unfinished work without a reason, re-run it on `scout`; that counts as the escalation.
