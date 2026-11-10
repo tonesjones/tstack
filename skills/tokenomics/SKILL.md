@@ -5,7 +5,7 @@ description: After a plan is drafted, decide whether delegation pays, map each t
 
 # Tokenomics
 
-Version: 1.7.1 (2026-10-28)
+Version: 1.7.2 (2026-11-10)
 
 Turn a finished plan into routed, delegated work, then review it. Routing is
 relative to whatever model the main session runs (call it **Main**): Main keeps
@@ -22,9 +22,9 @@ tool output out of Main's context. **Codex** (the `codex-delegate` skill) bills
 the person's ChatGPT plan instead of Claude usage.
 
 Cheaper tiers save money on **output tokens and new input** (file reads, tool
-output), not on re-reading context: Main re-reads its warm cache at about the
-price Sonnet charges for a cache read ($0.20/MTok on Opus 5.5, $0.25 on Fable
-5.1). Every subagent starts cold. Haiku 5.5 is the exception to that cost: it
+output), not on re-reading context: Main re-reads its warm cache for
+$0.20/MTok on Opus 5.5 or Fable 5.2: twice Sonnet 5.5's cache read, but a
+tenth of Sonnet's fresh input. Every subagent starts cold. Haiku 5.5 is the exception to that cost: it
 reads fresh input for half what Opus pays to re-read its cache, so a Haiku
 subagent's cost is mostly the brief Main writes and the report Main reads. If
 unsure whether delegation pays, see `reference/economics.md`.
@@ -35,7 +35,7 @@ Every Main turn re-reads the whole context, and Main's output is the most
 expensive token in the session. No routing removes that. These habits do:
 - Batch independent tool calls into one turn. Each extra turn re-reads everything.
 - Read line ranges, cap search results (`head_limit`), and trim command output (`| tail -n 40`, quiet flags). Whatever lands in context is paid for again every later turn.
-- Fit effort to the work. Thinking bills as output. Reviews and bug hunts are the exception: run them at `high`. In Cloudflare's code reviewer (2026), moving from medium to high cost about two cents per review and gave 58% more critical or warning findings. On Opus 5.5, Sonnet 5.5, Haiku 5.5, and Fable 5.1 with an API key or a Claude subscription, `/effort` changes keep the cache, so drop to `low` or `medium` for mechanical stretches and raise it for the hard parts. Main can't change its own effort: only the user can type `/effort`, and the desktop app's `set_session_effort` refuses the calling session. So at the start of a mechanical stretch, ask the user in one line to type `/effort low`, and to raise it again before the hard part. Main sets effort directly only on work it starts: the Agent tool's `effort` parameter, or `set_session_effort` on another session. On other models, Bedrock, or Vertex, an effort change re-reads the whole context uncached, so set it once.
+- Fit effort to the work. Thinking bills as output. Reviews and bug hunts are the exception: run them at `high`. In Cloudflare's code reviewer (2026), moving from medium to high cost about two cents per review and gave 58% more critical or warning findings. On Opus 5.5, Sonnet 5.5, Haiku 5.5, and Fable 5.1 or later with an API key or a Claude subscription, `/effort` changes keep the cache, so drop to `low` or `medium` for mechanical stretches and raise it for the hard parts. Main can't change its own effort: only the user can type `/effort`, and the desktop app's `set_session_effort` refuses the calling session. So at the start of a mechanical stretch, ask the user in one line to type `/effort low`, and to raise it again before the hard part. Main sets effort directly only on work it starts: the Agent tool's `effort` parameter, or `set_session_effort` on another session. On other models, Bedrock, Google Cloud, or a Claude apps gateway, an effort change re-reads the whole context uncached, so set it once.
 - `/compact` between tasks, never mid-task. `/rewind` out of a dead end instead of compacting it.
 
 ## 0. Delegation gate
@@ -43,7 +43,7 @@ Each tier has its own gate. "New input" means files and tool output not already
 in Main's context.
 - **Sonnet:** delegate only when the task is expected to **write more than
   about 3K tokens or read more than about 6K tokens of new input**. Below both,
-  the cold start costs more than it saves. Main on Fable, whose output costs 5x
+  the cold start costs more than it saves. Main on Fable, whose output costs 4x
   Sonnet's: about 1K written or 3K read.
 - **Haiku:** delegate when the brief is clearly shorter than what Main would
   write doing the task inline, or when the task reads new input Main doesn't
@@ -132,7 +132,7 @@ tokens go to subagents, unless the user already said to proceed without
 confirmation. Otherwise continue straight to delegation.
 
 ## 5. Delegate (cache-safe)
-- Never switch the main session's model (`/model`). That cold-starts the whole conversation cache. Cheaper tiers run only as subagents.
+- Don't switch the main session's model (`/model`) mid-task. That cold-starts the whole conversation cache. Cheaper tiers run only as subagents. The `opusplan` setting switches between Opus and Sonnet each time plan mode toggles, so it pays the same cold start. If Main's model must change, do it between tasks: run `/compact` first, or start a new session from a short written plan.
 - Main-tier tasks run in the main session or a fork; Sonnet packages go to `worker`, Haiku medium packages to `scout`, Haiku low packages to `grunt`, read-only searches to `Explore`, and Codex packages through `codex-delegate`'s bridge in the background. Respect dependencies.
 - If `worker`, `scout`, `grunt`, or `Explore` isn't defined in `~/.claude/agents/`, use the general-purpose agent with a model override (`sonnet` / `haiku`), set its effort (`medium` for `scout` and `Explore` work, `low` for `grunt` work), and put the agent's report contract and stop rule (step 6) in the brief. The built-in `Explore` runs on Main's model (or Opus when Main is Fable), so don't use it for cheap searches.
 - Briefs carry **pointers, not pastes**: paths, line ranges, each task's description and "done when", constraints. Never paste file contents or the whole plan; Main's output is the most expensive token you can spend. Turns cost more than tokens: every subagent turn re-reads its whole context, and a model that makes fewer calls can halve a task's cost at the same price per token. So list every input up front, and the agent reads them all in one parallel batch on its first turn. For a `general-purpose` fallback, say so in the brief. The agent files already carry the report contract and stop rule, so don't repeat them in briefs to `worker`, `scout`, or `grunt`. If the work needs a skill (`deslop`, `technical-writing`), name it in the brief: Haiku 5.5 often skips a skill it isn't told to load.
