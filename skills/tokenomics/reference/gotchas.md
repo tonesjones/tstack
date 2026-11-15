@@ -21,13 +21,19 @@ From the Claude Code subagent and prompt-caching docs (checked 2026-10-19).
 - **Subagent caches last 5 minutes.** A `worker` that waits on a command longer than that (a slow test suite) rewrites its cache on its next turn. If that happens often, add `experimental: {cacheTtl: 1h}` to the agent file (Claude Code 2.1.248 or later). A 1-hour write costs 2x input instead of 1.25x.
 - **A fork carries Main's whole context.** Its first request reads Main's cache, but every fork turn re-reads all of it. A 20-turn fork on a 150K-token context re-reads 3M tokens, about $0.60 on Opus 5.5. A fork pays off by keeping bulky tool output out of Main, not by making turns cheaper.
 
-## Codex and git worktrees
+## Git worktrees and stacked PRs
 
-Problems hit while delegating to Codex in git worktrees and merging the
-resulting stacked PRs. Read this before delegating to Codex or using worktrees.
+These apply to any worktree or stacked PR, whoever did the work. Read this
+before creating or removing a worktree, or merging a PR that others target.
+
+- **Never link an ignored data folder into a worktree.** On Windows, `git worktree remove` deletes the worktree's ignored contents recursively and follows junctions. In one project each worktree had a `data` junction to the main checkout's ignored `data/`, and removing the worktrees emptied the real folder. Only a 3-day-old backup saved it. Pass subagents absolute paths into the main checkout instead of creating junctions or symlinks. If a link already exists, remove it with `cmd /c rmdir <link>` (no `/s`) before removing the worktree. Never remove a worktree you haven't checked for links.
+- **Deleting the base of stacked PRs closes them.** `gh pr merge --delete-branch` on a PR that other PRs target closes those PRs instead of retargeting them, and a closed PR whose base is gone can't be reopened. Squash-merge the base PR without `--delete-branch`. Then retarget each stacked PR with `gh pr edit <n> --base main`, run `git rebase --onto origin/main <old-base-branch> <branch>`, and push with `--force-with-lease`. The squash gives the base's commits new hashes, so a plain merge of `main` replays them and conflicts. Delete the base branch after every stacked PR is retargeted.
+
+## Codex
+
+Codex is off unless the user asks for it in the conversation. These problems
+were hit while delegating to Codex in git worktrees.
 
 - **Codex in the background waits on stdin.** A bare `codex exec` run in the background with no TTY prints "Reading additional input from stdin..." and does nothing. Append `< /dev/null` to it. Don't add the redirect to a command that already reads a heredoc or a pipe, because it replaces that input. A backgrounded `python - <<'EOF' ... EOF < /dev/null` got empty stdin, looped on a missing console, and wrote a 1.5 GB error log.
 - **Codex can't commit in a git worktree.** Its `workspace-write` sandbox can't reach the git metadata, which lives outside the worktree. Tell it not to commit, and commit yourself after review.
 - **Codex leaves locked pytest folders.** Cache and temp folders created in its sandbox get ACLs that block deletion, so `git worktree remove` fails. Have it run `python -m pytest -p no:cacheprovider`. If folders are already locked, the user runs `takeown /f <dir> /r /d y` from an elevated shell, then deletes them.
-- **Never link an ignored data folder into a worktree.** On Windows, `git worktree remove` deletes the worktree's ignored contents recursively and follows junctions. In one project each worktree had a `data` junction to the main checkout's ignored `data/`, and removing the worktrees emptied the real folder. Only a 3-day-old backup saved it. Pass subagents absolute paths into the main checkout instead of creating junctions or symlinks. If a link already exists, remove it with `cmd /c rmdir <link>` (no `/s`) before removing the worktree. Never remove a worktree you haven't checked for links.
-- **Deleting the base of stacked PRs closes them.** `gh pr merge --delete-branch` on a PR that other PRs target closes those PRs instead of retargeting them, and a closed PR whose base is gone can't be reopened. Squash-merge the base PR without `--delete-branch`. Then retarget each stacked PR with `gh pr edit <n> --base main`, run `git rebase --onto origin/main <old-base-branch> <branch>`, and push with `--force-with-lease`. The squash gives the base's commits new hashes, so a plain merge of `main` replays them and conflicts. Delete the base branch after every stacked PR is retargeted.

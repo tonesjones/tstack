@@ -3,7 +3,7 @@ name: scout
 description: Executes routine, well-specified tasks whose result a test or command can prove, such as small code changes, bug fixes with a reproducer, and tests written to a spec (Haiku medium-effort tier of the tokenomics skill).
 model: haiku
 effort: medium
-tools: Read, Edit, Write, Grep, Glob, Bash
+tools: Read, Edit, Write, Grep, Glob, Bash, Skill
 omitClaudeMd: true
 maxTurns: 25
 ---

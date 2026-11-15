@@ -1,33 +1,35 @@
-# Plan: skill fixes from the transcript pass (1.12.0)
+# Plan: fixes from the Fable 5.2 skill audit (1.15.0)
 
-Sources: a review of 14 days of transcripts for items 11 to 13 (tokenomics ran in 15 of 118 sessions, and about 95% of output tokens stayed on Main), and `proposals/gotchas-2026-10-25.md` (PR #25), 211 tstack skill invocations from past transcripts. shutdown-when-done 1.1.0 (PR #12) is also in 1.12.0.
+Source: a second review of every skill and agent on 2026-11-14, run on Fable 5.2. The skills were mostly planned and written with Opus 5.5. The Codex subscription is cancelled, so Codex stays off until it is reactivated.
 
 | # | Change | Done when |
 |---|---|---|
-| 1 | deslop 1.1.0: fetch and diff against `origin/main` | "Get the diff" says to fetch and uses `origin/main` |
-| 2 | deslop: read untracked files | "Get the diff" lists `git ls-files --others --exclude-standard` |
-| 3 | codex-delegate 1.3.1: the bridge prints non-ASCII answers on a Windows code page | `main()` reconfigures stdout and stderr to UTF-8; a test with `PYTHONIOENCODING=cp1252` fails before and passes after |
-| 4 | teach 1.1.2: hedge claims about behavior not read in the session | Teaching rule 2 says so |
-| 5 | unslop 1.2.1: self-audit a draft written after the skill loads | Process says so after step 4 |
-| 6 | scope-audit 1.1.0: say where the report goes | Output says outside the repo by default, summary only in a plan |
-| 7 | shutdown-when-done 1.1.0: power words in non-command text | Gotcha added; a script file's `-e` counts only next to `powershell` or `pwsh`, with tests |
-| 8 | codex-delegate: read-only runs give partial test results | Gotcha added |
-| 9 | deslop: stop on docs-only diffs | first Guardrails bullet |
-| 10 | tokenomics 1.7.0: trigger at each plan phase and after `/compact` | description says so |
-| 11 | tokenomics: Main asks the user to type `/effort low`, because `set_session_effort` refuses the calling session | stated in "Main's own costs" and step 0 |
-| 12 | tokenomics: the routing log line is written after review, and a stale header is replaced | stated in step 7 |
-| 13 | Global CLAUDE.md (outside this repo): use `Explore`, `scout` and `grunt` even when tokenomics doesn't run | rule added to `~/.claude/CLAUDE.md` |
+| 1 | tokenomics 1.8.0: Codex is opt-in | The gate routes to Codex only when the user asks for it in the conversation; the description no longer lists Codex |
+| 2 | tokenomics: worktree and stacked-PR gotchas get their own section | `reference/gotchas.md` has a "Git worktrees and stacked PRs" section apart from "Codex"; the Gotchas line in `SKILL.md` names both |
+| 3 | tokenomics: rules for Opus as a tier under Fable | Opus has a gate, a routing-table row, a delegate target, a place in the escalation order, and a break-even note in `reference/economics.md` |
+| 4 | Agents: `worker` and `scout` can load skills | Both list `Skill` in `tools`; tokenomics step 5 says which agents can load a named skill. Not yet proven: agents load at session start, so a spawn in a new session has to confirm it |
+| 5 | tokenomics: narrower inline rule, fewer approval stops | "Files already in context" keeps the plan inline only when no task passes its write gate; step 4 stops only for flagged tasks |
+| 6 | shutdown-when-done 1.1.1: never commit to the default branch unattended | Step 3 says to create a branch first when the session is on the default branch |
 
 ## Status
 
-- Done: items 1 to 10, merged in PR #26 (2026-10-26). PR #25 closed unmerged. Items 11 to 13 are in PR #27; item 10 moved from tokenomics 1.6.1 to 1.7.0 there.
-- Done: tagged `v1.12.0` (2026-10-26); stale branches deleted.
-- Next: re-upload the seven changed zips (codex-delegate, deslop, scope-audit, shutdown-when-done, teach, tokenomics, unslop).
-- Open decisions: whether to narrow the "files already in context" inline trigger to small edits.
-- Later: recheck the Haiku and Sonnet share of output tokens (was due around 2026-11-08; not done yet).
-- Done: tokenomics 1.7.1 (2026-10-28 cookbook review), merged in PR #28 and released in `v1.13.0`. Main confirms each fact from a Haiku report before repeating it or acting on it, as it already does for Codex results. A wrong fact repeated from a report fails silently, so this one didn't wait for a real case.
-- Done: tokenomics 1.7.2 (2026-11-10 review of Anthropic's model-choice guide), merged in PR #29 and released in `v1.14.0`. Prices now match Fable 5.2 and Sonnet 5.5's $0.10 cache read; the guide's routing advice matched the skill, so no routing rules changed.
-- Next: re-upload the tokenomics zip from `v1.14.0` (it replaces the `v1.13.0` one).
+- Done: items 1 to 6, in the `tokenomics-1.8.0` branch (2026-11-14).
+- Next: merge the PR, tag `v1.15.0`, then re-upload the tokenomics and shutdown-when-done zips. Copy shutdown-when-done to `~/.claude/skills/shutdown-when-done` too, because the hook runs from that copy.
+- Next: in a new session, spawn `worker` with a brief that names a skill and confirm it loads (item 4). If it doesn't, briefs give the path to the skill's `SKILL.md` instead.
+- Next: disable `codex-delegate` in the desktop app's skill settings. Its description still triggers on "save Claude usage".
+- Earlier: `v1.14.0` is released (tokenomics 1.7.2). Its tokenomics zip is replaced by the `v1.15.0` one.
+
+## Later (from the same audit)
+
+| Item | Why |
+|---|---|
+| tokenomics: read the routing log before routing, and count `fix` results | The log is only written. 15 of 26 Sonnet packages needed a fix by Main, none escalated, and `grunt` was never used |
+| tokenomics: add `blocked` to the log's result values | It is already used in the log |
+| reflect: "up to 5 findings per lens, zero is fine"; add memory and `CLAUDE.md` as routing targets | The minimum of 3 per lens pads the list, and a user preference is rejected as `skill-not-used` |
+| unslop: make "Adding soul" opt-in; add signposting and question-then-answer patterns; drop the "patterns 1-33" range | The soul rules create their own tells, and teach bans patterns the catalog lacks |
+| scope-audit: a short mode | Ten sections is too much for a small tool |
+| Housekeeping: delete the root `routing-log.md`; fix the skill name in the global `CLAUDE.md` (`technical-writing:technical-writing`) | Both are stale |
+| Recheck the Haiku and Sonnet share of output tokens | Was due around 2026-11-08 |
 
 ## Watch list (2026-10-28 cookbook review)
 

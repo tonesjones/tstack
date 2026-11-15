@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Shutdown when done
 
-Version: 1.1.0 (2026-10-25)
+Version: 1.1.1 (2026-11-14)
 
 The user typed `/shutdown-when-done <duration>` and is going to sleep. Finish the
 work in this session, leave it safe to pick up, then turn the PC off. The PC must
@@ -48,7 +48,7 @@ deadline. Commit as you go.
 
 When the work is done, or `status` says the deadline passed, run these in order:
 
-1. **Save the work.** Commit, then push. If the push fails or there is no remote, run `git bundle create <repo>-<date>.bundle --all` in the parent folder of the repo.
+1. **Save the work.** If the session is on the repo's default branch, create a branch first (`git switch -c <name>`). Nobody is awake to review, so never commit to or push the default branch. Commit, then push the branch. If the push fails or there is no remote, run `git bundle create <repo>-<date>.bundle --all` in the parent folder of the repo.
 2. **Write a handoff note.** Write `HANDOFF.md` in the repo root, or next to the bundle: what was done, what is left, what failed, where the work is (branch, PR link, or bundle path), and the deadline hit if it did.
 3. **Check for background work.** Confirm no background shells, subagents, builds or test runs are still going. Wait for them or stop them, and note it in the handoff.
 4. **Start the shutdown.** Run exactly:
