@@ -51,6 +51,12 @@ dollars, but the ratios still hold.
   written or 6K tokens of new input read. Below both, keep the task in the
   main session. From Fable 5.2, every 1K output tokens moved to Sonnet saves
   $0.03, so the break-even drops to about 1K written or 3K read.
+- **Break-even for Opus under Fable.** An Opus subagent's cold start writes
+  about 10K tokens at $5/MTok, about $0.05, and Fable writes the brief at
+  $40/MTok. Every 1K output tokens moved from Fable to Opus saves $0.02, and
+  every 1K of new input saves $0.005 plus the re-reads Main avoids. So Opus
+  starts to pay above about 3K written or 10K read. Use it only for work a
+  Sonnet brief can't settle in advance; Sonnet's output costs half of Opus's.
 - **Break-even for Haiku.** Haiku 5.5 reads fresh input at $0.10/MTok, half of
   what Opus pays to re-read its own cache. A 10K-token cold start costs about
   $0.001. What's left is Main's side: the brief Opus writes at $20/MTok and the
@@ -68,7 +74,8 @@ dollars, but the ratios still hold.
   history, so its first request is a cache read, not a cold start. Each fork
   turn re-reads that whole context at Main's cache price, so a fork saves
   Main's context growth, not per-turn cost.
-- **Codex is off Claude's budget.** A Codex run bills the person's ChatGPT
+- **Codex is off Claude's budget.** The skill routes to Codex only when the
+  user asks for it. A Codex run bills the person's ChatGPT
   plan. Claude pays for the brief (Main output), the printed result (Main
   input, then re-read every later turn), and the review. The bridge prints at
   most 8,000 characters, about 2K tokens, and saves the rest to a file.

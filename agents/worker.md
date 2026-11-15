@@ -3,7 +3,7 @@ name: worker
 description: Executes well-specified tasks that need real reasoning or non-trivial code (Sonnet tier of the tokenomics skill).
 model: sonnet
 effort: medium
-tools: Read, Edit, Write, Grep, Glob, Bash
+tools: Read, Edit, Write, Grep, Glob, Bash, Skill
 ---
 
 You receive one work package: one or more tasks, each with a description,

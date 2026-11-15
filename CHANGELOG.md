@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.15.0 (2026-11-14)
+
+Fixes from a second review of every skill, run on Fable 5.2.
+
+- tokenomics 1.8.0:
+  - Codex is off by default. The skill routes to it only when the user asks for Codex in the conversation. An installed, logged-in CLI used to be enough, and the login outlasts a cancelled plan.
+  - Opus as a tier under Fable now has a gate (about 3K written or 10K read), a routing-table row, a delegate target, a place in the escalation order, and a break-even note in `reference/economics.md`.
+  - "Files already in context" keeps a plan inline only when no task writes past its tier's gate.
+  - The routing table no longer waits for approval when more than half the tokens go to subagents. It still waits for flagged tasks.
+  - `reference/gotchas.md` has a "Git worktrees and stacked PRs" section. The junction and stacked-PR gotchas used to sit under Codex.
+  - Step 5 says which agents can load a skill named in a brief.
+- shutdown-when-done 1.1.1: when the session is on the default branch, step 3 creates a branch before it commits and pushes.
+- Agents: `worker` and `scout` list the `Skill` tool, so a brief can name a skill for them to load. A spawn in a new session still has to confirm this.
+
 ## 1.14.0 (2026-11-10)
 
 - tokenomics 1.7.2: prices updated from Anthropic's model-choice guide and the pricing page. Fable 5.2 replaces Fable 5.1 ($8 / $40, cache read $0.20), and Sonnet 5.5's cache read is $0.10, not $0.20. The Fable gate keeps its 1K / 3K thresholds; its ratio (now 4x Sonnet's output), the per-1K saving ($0.03), and the inline Fable worked example follow the new prices. Also notes that `opusplan` pays a model-switch cold start, how to switch Main's model when it must change, and that the `haiku` alias still means Haiku 4.5 on cloud providers.

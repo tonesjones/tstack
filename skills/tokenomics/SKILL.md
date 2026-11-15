@@ -1,11 +1,11 @@
 ---
 name: tokenomics
-description: After a plan is drafted, decide whether delegation pays, map each task to the main session's model or a cheaper tier (Sonnet, Haiku, a fork, or Codex) by difficulty and token shape, bundle and delegate to the matching subagent without breaking the main session's prompt cache, then review results in the main session against acceptance criteria. Use at the end of any planning session, including each new phase of a multi-phase plan and after /compact when more planned work remains, when asked to "route the plan" or run /tokenomics, or when asked to cut token cost or usage.
+description: After a plan is drafted, decide whether delegation pays, map each task to the main session's model or a cheaper tier (Opus under Fable, Sonnet, Haiku, or a fork) by difficulty and token shape, bundle and delegate to the matching subagent without breaking the main session's prompt cache, then review results in the main session against acceptance criteria. Use at the end of any planning session, including each new phase of a multi-phase plan and after /compact when more planned work remains, when asked to "route the plan" or run /tokenomics, or when asked to cut token cost or usage.
 ---
 
 # Tokenomics
 
-Version: 1.7.2 (2026-11-10)
+Version: 1.8.0 (2026-11-14)
 
 Turn a finished plan into routed, delegated work, then review it. Routing is
 relative to whatever model the main session runs (call it **Main**): Main keeps
@@ -19,7 +19,8 @@ two effort levels: medium (`scout`, `Explore`) and low (`grunt`).
 
 Two routes sit beside the ladder. A **fork** runs on Main's model but keeps its
 tool output out of Main's context. **Codex** (the `codex-delegate` skill) bills
-the person's ChatGPT plan instead of Claude usage.
+the person's ChatGPT plan instead of Claude usage. It is off by default: route
+to it only when the user asks for Codex in this conversation.
 
 Cheaper tiers save money on **output tokens and new input** (file reads, tool
 output), not on re-reading context: Main re-reads its warm cache for
@@ -45,19 +46,25 @@ in Main's context.
   about 3K tokens or read more than about 6K tokens of new input**. Below both,
   the cold start costs more than it saves. Main on Fable, whose output costs 4x
   Sonnet's: about 1K written or 3K read.
+- **Opus (Main on Fable only):** delegate when the task is expected to write
+  more than about 3K tokens or read more than about 10K tokens of new input,
+  and the agent has to make choices a Sonnet brief can't settle in advance.
+  Opus output costs half of Fable's, and its cold start costs twice Sonnet's.
 - **Haiku:** delegate when the brief is clearly shorter than what Main would
   write doing the task inline, or when the task reads new input Main doesn't
   need to keep (searches, bulk reads). The cold start costs about a tenth of a
   cent; Main's brief and review are the real cost.
-- **Codex:** delegate when `codex-delegate` is installed and logged in, the
-  task is self-contained, its result is cheap to check, and minutes of latency
-  are fine. The Claude-side cost is the brief, the printed result, and the review.
+- **Codex:** only when the user asks for Codex in this conversation. An
+  installed, logged-in CLI is not enough, because the login outlasts a
+  cancelled plan. Then delegate when the task is self-contained, its result is
+  cheap to check, and minutes of latency are fine. The Claude-side cost is the
+  brief, the printed result, and the review.
 
 Execute the whole plan inline in the main session (if the work is routine, ask
 the user to type `/effort low`) and skip steps 2–5 when **any** of these is true:
 - No task passes its tier's gate.
 - One dependent chain where each step needs the last one's reasoning.
-- The files involved are already in context.
+- The files involved are already in context, and no task is expected to write past its tier's gate. Loaded files don't make Main's output cheaper.
 - The "done when" can't be checked objectively (a cheap tier risks paying twice).
 - No tier exists below Main.
 
@@ -89,11 +96,12 @@ If a task can't be given concrete acceptance criteria, it is still ambiguous and
 |---|---|---|
 | **Main** (main session) | needs judgment, design choices, ambiguity resolution, planning, cross-cutting reasoning, or security-sensitive decisions; is a `reasoning`/`touch-up` task; or doesn't pass its tier's gate | architecture, planning, ambiguous tasks, hard reviews, tricky debugging, API design, small fixes in loaded files |
 | **Main fork** (`subagent_type: "fork"`) | needs Main's context and judgment but produces bulky tool output Main won't need again | a long debug loop, a noisy test-and-fix cycle, a sweep over files Main already discussed |
+| **Opus** (general-purpose agent, `model: opus`; Main on Fable only) | is well specified and `read-heavy` or `write-heavy`, but leaves the agent choices that need judgment, and doesn't need Main's context | a design-heavy implementation to spec, debugging without a reproducer across modules, a long task driven through a browser or other tools |
 | **Sonnet** (`worker`) | is well specified, needs real reasoning or non-trivial code, and is `read-heavy` or `write-heavy` | implementing a feature to spec, multi-file refactors, debugging without a reproducer, larger test suites |
 | **Haiku medium** (`scout`) | is routine and well specified, and a test or command proves the result | small code changes with a test, bug fixes with a failing test or reproducer, tests written to a spec |
 | **Haiku medium** (`Explore`) | is a read-only search with a clear question | codebase searches, repo exploration, "where is X used" |
 | **Haiku low** (`grunt`) | is mechanical, follows a pattern given in the brief, and has an objective "done when" | classification, extraction, summarizing, processing search results, formatting, renames, boilerplate, docstrings, simple transforms |
-| **Codex** (`codex-delegate`, Luna or Sol) | is self-contained, checkable from its output, can wait minutes, and needs no MCP, connectors, or secrets | bulk reading and triage, first-draft tests in a worktree, a cross-family second opinion on a diff |
+| **Codex** (`codex-delegate`, Luna or Sol; only when the user asked for Codex) | is self-contained, checkable from its output, can wait minutes, and needs no MCP, connectors, or secrets | bulk reading and triage, first-draft tests in a worktree, a cross-family second opinion on a diff |
 
 Routing rules:
 - Never route a task to a tier at or above Main; that tier is Main itself, inline.
@@ -102,7 +110,8 @@ Routing rules:
 - Debugging goes to `scout` only when the brief includes a failing test or a reproducer. Without one, "done when" isn't objective: route to Sonnet.
 - Any task touching auth, crypto, data deletion, or migrations goes to Sonnet at minimum (Main if Main is Sonnet) and is always flagged for review by Main. Codex takes these only on Sol.
 - A fork reads Main's warm cache on its first request, so it has no cold start. It runs at Main's price per token, so it saves context growth, not rate. Use it only when the tool output is large.
-- Codex picks Luna or Sol by that skill's table. A flagged task can add a Codex Sol review of its diff (`codex_bridge.py review`): a second model family at almost no Claude cost.
+- Sonnet vs Opus (Main on Fable): Sonnet when the brief settles the approach, Opus when the agent has to choose one. If you can't tell, write the brief first: a brief that needs more than a few lines of "if you find X, do Y" is an Opus task.
+- When Codex is on, it picks Luna or Sol by that skill's table. A flagged task can add a Codex Sol review of its diff (`codex_bridge.py review`): a second model family at almost no Claude cost.
 - Split a mixed task rather than routing the whole thing up a tier.
 - Keep each Haiku package under about **60K tokens of reading** by Main's count. Above a 100K-token prompt, Haiku 5.5 charges 5x per token, a subagent's prompt grows with every file it reads, and Haiku counts the same text as about 30% more tokens. Split larger packages.
 - Don't give Haiku open-ended reasoning: a failed run costs a redo one tier up.
@@ -127,15 +136,15 @@ rule overrides the shape (a flagged task, a split). Then add a one-line estimate
 of the share of expected **tokens** (not tasks) on each tier.
 
 Stop and wait for the user to approve or adjust the table when any task is
-flagged (auth, crypto, deletion, migrations) or more than half the expected
-tokens go to subagents, unless the user already said to proceed without
-confirmation. Otherwise continue straight to delegation.
+flagged (auth, crypto, deletion, migrations), unless the user already said to
+proceed without confirmation. Otherwise continue straight to delegation. A
+large share of tokens on subagents is the goal, not a reason to stop.
 
 ## 5. Delegate (cache-safe)
 - Don't switch the main session's model (`/model`) mid-task. That cold-starts the whole conversation cache. Cheaper tiers run only as subagents. The `opusplan` setting switches between Opus and Sonnet each time plan mode toggles, so it pays the same cold start. If Main's model must change, do it between tasks: run `/compact` first, or start a new session from a short written plan.
-- Main-tier tasks run in the main session or a fork; Sonnet packages go to `worker`, Haiku medium packages to `scout`, Haiku low packages to `grunt`, read-only searches to `Explore`, and Codex packages through `codex-delegate`'s bridge in the background. Respect dependencies.
+- Main-tier tasks run in the main session or a fork; Opus packages go to the general-purpose agent with `model: opus` and the report contract and stop rule (step 6) in the brief, Sonnet packages to `worker`, Haiku medium packages to `scout`, Haiku low packages to `grunt`, read-only searches to `Explore`, and Codex packages (when the user asked for Codex) through `codex-delegate`'s bridge in the background. Respect dependencies.
 - If `worker`, `scout`, `grunt`, or `Explore` isn't defined in `~/.claude/agents/`, use the general-purpose agent with a model override (`sonnet` / `haiku`), set its effort (`medium` for `scout` and `Explore` work, `low` for `grunt` work), and put the agent's report contract and stop rule (step 6) in the brief. The built-in `Explore` runs on Main's model (or Opus when Main is Fable), so don't use it for cheap searches.
-- Briefs carry **pointers, not pastes**: paths, line ranges, each task's description and "done when", constraints. Never paste file contents or the whole plan; Main's output is the most expensive token you can spend. Turns cost more than tokens: every subagent turn re-reads its whole context, and a model that makes fewer calls can halve a task's cost at the same price per token. So list every input up front, and the agent reads them all in one parallel batch on its first turn. For a `general-purpose` fallback, say so in the brief. The agent files already carry the report contract and stop rule, so don't repeat them in briefs to `worker`, `scout`, or `grunt`. If the work needs a skill (`deslop`, `technical-writing`), name it in the brief: Haiku 5.5 often skips a skill it isn't told to load.
+- Briefs carry **pointers, not pastes**: paths, line ranges, each task's description and "done when", constraints. Never paste file contents or the whole plan; Main's output is the most expensive token you can spend. Turns cost more than tokens: every subagent turn re-reads its whole context, and a model that makes fewer calls can halve a task's cost at the same price per token. So list every input up front, and the agent reads them all in one parallel batch on its first turn. For a `general-purpose` fallback, say so in the brief. The agent files already carry the report contract and stop rule, so don't repeat them in briefs to `worker`, `scout`, or `grunt`. If the work needs a skill (`deslop`, `technical-writing`), name it in the brief: Haiku 5.5 often skips a skill it isn't told to load. `worker` and `scout` have the Skill tool. `grunt` and `Explore` don't, so put the rule they need in the brief. If an agent reports that it couldn't load the skill, give it the path to the skill's `SKILL.md` to read.
 - Expect compact reports (the agents are told ≤ 10 lines, starting with DONE, PARTIAL, or BLOCKED). Everything returned is re-read on every later main-session turn.
 - Cache TTLs differ (Claude Code docs, checked 2026-10-19): on a Claude subscription within plan usage, the main conversation gets a **1-hour** cache; subagents get **5 minutes**. On an API key, cloud provider, or once usage credits kick in, both get 5 minutes unless `promptCacheTtl` / `subagentPromptCacheTtl` say otherwise. So a subagent idle between turns past 5 minutes pays its cold start again, and on API billing, Main should do its own tasks while a subagent runs rather than idle past 5 minutes.
 
@@ -145,7 +154,7 @@ For each completed task:
 - Read the diff only for flagged tasks (auth, crypto, deletion, migrations), spot-checks of Haiku output, and integration points between tasks. When you read one, review adversarially: assume it is wrong and look for the failure, and write one line per finding (`file:line — problem`). No praise, no summary.
 - Codex results follow `codex-delegate`'s review step: confirm each claim you will repeat or act on, and read write-run diffs in full.
 - Facts in a Haiku report (an `Explore` answer, a `grunt` extraction or summary) get the same check: before you repeat a fact or act on it, read the source it came from (`Explore` gives `path:line`). A wrong fact fails no test, so nothing later catches it. In Anthropic's sub-agents cookbook, Haiku compared mismatched periods and the orchestrator repeated its figures unchecked.
-- Mark it **pass**, **fix** (small correction done by Main), or **escalate** (redo one tier up, with the original brief plus the failure reason). The order is Haiku low, Haiku medium, Sonnet, Sonnet at `effort: high` (the Agent tool's `effort` parameter), Main.
+- Mark it **pass**, **fix** (small correction done by Main), or **escalate** (redo one tier up, with the original brief plus the failure reason). The order is Haiku low, Haiku medium, Sonnet, Sonnet at `effort: high` (the Agent tool's `effort` parameter), Opus (Main on Fable only), Main.
 - When the subagent should fix its own work and its report arrived less than 5 minutes ago, continue it with SendMessage instead of spawning a new one: it re-reads its own warm cache, and Main skips a second brief. An escalation always starts a fresh agent.
 - Subagents stop and report back to Main, rather than guessing, at three decision points: choosing between approaches the brief didn't settle, the same error twice, or "done when" can't be met as written. The `worker`, `scout`, and `grunt` files carry this rule. Put it in the brief only for a general-purpose fallback. Main answers with a short brief, never by handing over its transcript.
 - A task escalates at most once. If it fails again, Main does it inline.
@@ -169,4 +178,4 @@ per-model usage for later cost analysis.
 Escalations are the tuning signal: if a (tier, shape) pair keeps escalating, route it higher next time. Turns are the second signal: a pair that passes but takes many turns per task needs fuller inputs in its briefs, or a tier that makes fewer calls. If inline runs were consistently trivial, raise the Sonnet thresholds.
 
 ## Gotchas
-- Delegating to Codex, working in git worktrees, a Haiku run that refused or stopped early, or another skill that spawns `Explore` with a model override: read `reference/gotchas.md` first.
+- Working in git worktrees, merging stacked PRs, delegating to Codex, a Haiku run that refused or stopped early, or another skill that spawns `Explore` with a model override: read `reference/gotchas.md` first.
