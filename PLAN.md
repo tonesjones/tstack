@@ -13,8 +13,8 @@ Source: a second review of every skill and agent on 2026-11-14, run on Fable 5.2
 
 ## Status
 
-- Done: items 1 to 6, in the `tokenomics-1.8.0` branch (2026-11-14).
-- Next: merge the PR, tag `v1.15.0`, then re-upload the tokenomics and shutdown-when-done zips. Copy shutdown-when-done to `~/.claude/skills/shutdown-when-done` too, because the hook runs from that copy.
+- Done: items 1 to 6, merged in PR #30 (2026-11-14).
+- Next: tag `v1.15.0`, then re-upload the tokenomics and shutdown-when-done zips. Copy shutdown-when-done to `~/.claude/skills/shutdown-when-done` too, because the hook runs from that copy.
 - Next: in a new session, spawn `worker` with a brief that names a skill and confirm it loads (item 4). If it doesn't, briefs give the path to the skill's `SKILL.md` instead.
 - Next: disable `codex-delegate` in the desktop app's skill settings. Its description still triggers on "save Claude usage".
 - Earlier: `v1.14.0` is released (tokenomics 1.7.2). Its tokenomics zip is replaced by the `v1.15.0` one.
